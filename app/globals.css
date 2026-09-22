@@ -1,26 +1,294 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary — Reference 1 */
+  --jyoti-rich-black: #00072d;
+  --jyoti-navy-deep: #02060e; /* Reference 2 midnight */
+  --jyoti-navy-mid: #051650;
+  --jyoti-navy: #0a2472;
+  --jyoti-navy-soft: #123499;
+
+  /* Secondary / accent — Reference 2 */
+  --jyoti-accent: #0356c5;
+  --jyoti-accent-soft: #123499;
+  --jyoti-accent-deep: #0a2472;
+
+  /* Legacy token aliases mapped to brand blues (no warm/gold hues) */
+  --jyoti-gold: var(--jyoti-accent);
+  --jyoti-gold-soft: var(--jyoti-accent-soft);
+  --jyoti-gold-deep: var(--jyoti-accent-deep);
+  --jyoti-teal: var(--jyoti-accent);
+
+  /* Surfaces — white + tints derived only from primary navy */
+  --jyoti-white: #ffffff;
+  --jyoti-ivory: #ffffff;
+  --jyoti-cream: color-mix(in srgb, var(--jyoti-navy) 6%, white);
+  --jyoti-surface: #ffffff;
+
+  /* Text */
+  --jyoti-text: var(--jyoti-rich-black);
+  --jyoti-text-muted: color-mix(in srgb, var(--jyoti-navy) 62%, white);
+  --jyoti-text-subtle: color-mix(in srgb, var(--jyoti-navy) 45%, white);
+  --jyoti-text-inverse: var(--jyoti-white);
+
+  /* Borders */
+  --jyoti-border: color-mix(in srgb, var(--jyoti-navy) 14%, white);
+  --jyoti-border-strong: color-mix(in srgb, var(--jyoti-navy) 28%, white);
+
+  /* Buttons */
+  --jyoti-button-primary: var(--jyoti-navy);
+  --jyoti-button-primary-text: var(--jyoti-white);
+  --jyoti-button-primary-hover: var(--jyoti-navy-mid);
+  --jyoti-button-secondary: transparent;
+  --jyoti-button-secondary-text: var(--jyoti-navy);
+  --jyoti-button-secondary-border: var(--jyoti-navy);
+  --jyoti-button-secondary-hover: var(--jyoti-navy);
+  --jyoti-button-secondary-hover-text: var(--jyoti-white);
+
+  /* Cards & sections */
+  --jyoti-card: var(--jyoti-surface);
+  --jyoti-section: var(--jyoti-white);
+  --jyoti-section-muted: var(--jyoti-cream);
+  --jyoti-section-inverse: var(--jyoti-navy-deep);
+
+  /* Reference 2 visual treatment */
+  --jyoti-gradient-midnight: linear-gradient(
+    165deg,
+    var(--jyoti-navy-deep) 0%,
+    var(--jyoti-navy-mid) 42%,
+    var(--jyoti-accent) 100%
+  );
+  --jyoti-gradient-midnight-soft: linear-gradient(
+    180deg,
+    var(--jyoti-rich-black) 0%,
+    var(--jyoti-navy) 100%
+  );
+
+  /* Elevation & motion */
+  --jyoti-shadow-card: 0 10px 28px rgb(2 6 14 / 0.08);
+  --jyoti-shadow-soft: 0 2px 12px rgb(2 6 14 / 0.05);
+  --jyoti-radius-sm: 0.5rem;
+  --jyoti-radius-md: 0.875rem;
+  --jyoti-radius-lg: 1.25rem;
+  --jyoti-radius-pill: 999px;
+  --jyoti-transition: 180ms ease;
+  --jyoti-focus: var(--jyoti-accent);
+
+  /* Layout */
+  --jyoti-content: 82.5rem;
+  --jyoti-gutter: clamp(1rem, 0.55rem + 2.2vw, 2rem);
+  --jyoti-section-space: clamp(3.5rem, 2.4rem + 4vw, 6.5rem);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: Calibri, sans-serif;
+
+  --color-navy: var(--jyoti-navy);
+  --color-navy-deep: var(--jyoti-navy-deep);
+  --color-navy-mid: var(--jyoti-navy-mid);
+  --color-navy-soft: var(--jyoti-navy-soft);
+  --color-rich-black: var(--jyoti-rich-black);
+  --color-accent: var(--jyoti-accent);
+  --color-accent-soft: var(--jyoti-accent-soft);
+  --color-accent-deep: var(--jyoti-accent-deep);
+  --color-gold: var(--jyoti-gold);
+  --color-gold-soft: var(--jyoti-gold-soft);
+  --color-gold-deep: var(--jyoti-gold-deep);
+  --color-teal: var(--jyoti-teal);
+  --color-ivory: var(--jyoti-ivory);
+  --color-cream: var(--jyoti-cream);
+  --color-surface: var(--jyoti-surface);
+  --color-white: var(--jyoti-white);
+  --color-card: var(--jyoti-card);
+  --color-section: var(--jyoti-section);
+  --color-section-muted: var(--jyoti-section-muted);
+  --color-section-inverse: var(--jyoti-section-inverse);
+  --color-border: var(--jyoti-border);
+  --color-border-strong: var(--jyoti-border-strong);
+  --color-muted: var(--jyoti-text-muted);
+  --color-subtle: var(--jyoti-text-subtle);
+  --color-inverse: var(--jyoti-text-inverse);
+  --color-button-primary: var(--jyoti-button-primary);
+  --color-button-primary-text: var(--jyoti-button-primary-text);
+  --color-button-primary-hover: var(--jyoti-button-primary-hover);
+  --color-button-secondary: var(--jyoti-button-secondary);
+  --color-button-secondary-text: var(--jyoti-button-secondary-text);
+  --color-button-secondary-hover: var(--jyoti-button-secondary-hover);
+  --color-background: var(--jyoti-white);
+  --color-foreground: var(--jyoti-text);
+
+  --shadow-card: var(--jyoti-shadow-card);
+  --shadow-soft: var(--jyoti-shadow-soft);
+  --radius-sm: var(--jyoti-radius-sm);
+  --radius-md: var(--jyoti-radius-md);
+  --radius-lg: var(--jyoti-radius-lg);
+  --radius-pill: var(--jyoti-radius-pill);
+
+  --container-content: var(--jyoti-content);
+  --spacing-gutter: var(--jyoti-gutter);
+  --spacing-section: var(--jyoti-section-space);
+
+  --text-h1: clamp(2rem, 1.35rem + 2.8vw, 3.25rem);
+  --text-h1--line-height: 1.15;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h2: clamp(1.5rem, 1.15rem + 1.6vw, 2.25rem);
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.015em;
+  --text-h3: clamp(1.2rem, 1.08rem + 0.6vw, 1.5rem);
+  --text-h3--line-height: 1.3;
+  --text-body: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --text-body--line-height: 1.7;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-button: 0.9375rem;
+  --text-button--line-height: 1;
+  --text-button--letter-spacing: 0.04em;
+  --text-nav: 0.875rem;
+  --text-nav--line-height: 1.2;
+  --text-nav--letter-spacing: 0.08em;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    overflow-x: clip;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    overflow-x: clip;
+    background: var(--jyoti-white);
+    color: var(--jyoti-text);
+    font-family: Calibri, sans-serif;
+    font-size: var(--text-body);
+    line-height: 1.7;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--jyoti-rich-black);
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: var(--text-h1);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  h2 {
+    font-size: var(--text-h2);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+
+  h3 {
+    font-size: var(--text-h3);
+    line-height: 1.3;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-underline-offset: 0.2em;
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--jyoti-focus);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--jyoti-navy);
+    color: var(--jyoti-white);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .nav-link {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    font-size: var(--text-nav);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--jyoti-rich-black);
+    transition: color var(--jyoti-transition);
+  }
+
+  .nav-link:hover {
+    color: var(--jyoti-accent);
+  }
+
+  .nav-link[data-active="true"] {
+    color: var(--jyoti-accent);
+  }
+
+  .bg-midnight-gradient {
+    background: var(--jyoti-gradient-midnight);
+  }
+
+  .bg-midnight-gradient-soft {
+    background: var(--jyoti-gradient-midnight-soft);
+  }
+
+  @keyframes hero-copy-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.35rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-copy-in {
+    animation: hero-copy-in 480ms ease-out;
+  }
 }

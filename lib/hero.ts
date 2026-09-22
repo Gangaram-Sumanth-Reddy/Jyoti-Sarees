@@ -1,0 +1,40 @@
+export const heroSlides = [
+  {
+    id: "h1",
+    src: "/assets/hero/H1.png",
+    alt: "Model in an ivory saree with royal blue and gold border",
+    contentAlign: "left" as const,
+    tone: "light" as const,
+    objectPosition: "right center",
+    eyebrow: "NEW COLLECTION 2026",
+    headline: "Timeless",
+    accent: "Elegance",
+    subtext: "Tradition, refined for the moments that matter.",
+  },
+  {
+    id: "h2",
+    src: "/assets/hero/H2.png",
+    alt: "Model in a deep navy saree with gold zari border",
+    contentAlign: "left" as const,
+    tone: "dark" as const,
+    objectPosition: "right center",
+    eyebrow: "THE ROYAL EDIT",
+    headline: "Grace in Every",
+    accent: "Drape",
+    subtext: "Rich weaves and exquisite details for unforgettable occasions.",
+  },
+  {
+    id: "h3",
+    src: "/assets/hero/H3.png",
+    alt: "Three models in silk sarees against a warm studio backdrop",
+    contentAlign: "right" as const,
+    tone: "light" as const,
+    objectPosition: "left center",
+    eyebrow: "CELEBRATION COLLECTION",
+    headline: "Made for Every",
+    accent: "Occasion",
+    subtext: "Discover sarees crafted to make every celebration memorable.",
+  },
+] as const;
+
+export type HeroSlide = (typeof heroSlides)[number];
