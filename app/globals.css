@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Brittany Signature";
+  src: url("/fonts/BrittanySignature.woff2") format("woff2");
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+}
+
 :root {
   /* Primary — Reference 1 */
   --jyoti-rich-black: #00072d;
@@ -36,9 +44,9 @@
   --jyoti-border-strong: color-mix(in srgb, var(--jyoti-navy) 28%, white);
 
   /* Buttons */
-  --jyoti-button-primary: var(--jyoti-navy);
+  --jyoti-button-primary: var(--jyoti-accent);
   --jyoti-button-primary-text: var(--jyoti-white);
-  --jyoti-button-primary-hover: var(--jyoti-navy-mid);
+  --jyoti-button-primary-hover: var(--jyoti-accent-deep);
   --jyoti-button-secondary: transparent;
   --jyoti-button-secondary-text: var(--jyoti-navy);
   --jyoti-button-secondary-border: var(--jyoti-navy);
@@ -78,6 +86,9 @@
   --jyoti-content: 82.5rem;
   --jyoti-gutter: clamp(1rem, 0.55rem + 2.2vw, 2rem);
   --jyoti-section-space: clamp(3.5rem, 2.4rem + 4vw, 6.5rem);
+  --site-header-height: 4.25rem;
+  --hero-art-width: 1672;
+  --hero-art-height: 941;
 }
 
 @theme inline {
@@ -253,14 +264,14 @@
 @layer components {
   .nav-link {
     display: inline-flex;
-    min-height: 2.75rem;
+    min-height: 2.5rem;
     align-items: center;
     font-size: var(--text-nav);
     font-weight: var(--text-nav--font-weight);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--jyoti-rich-black);
-    transition: color var(--jyoti-transition);
+    transition: color 300ms ease;
   }
 
   .nav-link:hover {
@@ -269,6 +280,103 @@
 
   .nav-link[data-active="true"] {
     color: var(--jyoti-accent);
+  }
+
+  .nav-link--inverse {
+    color: rgb(255 255 255 / 0.92);
+  }
+
+  .nav-link--inverse:hover {
+    color: var(--jyoti-white);
+  }
+
+  .nav-link--inverse[data-active="true"] {
+    color: var(--jyoti-white);
+  }
+
+  .hero-stage {
+    --hero-available-height: calc(100svh - var(--site-header-height));
+    --hero-natural-height: calc(
+      100vw * var(--hero-art-height) / var(--hero-art-width)
+    );
+    --hero-target-height: min(
+      var(--hero-available-height),
+      max(
+        var(--hero-natural-height),
+        clamp(15rem, 45svh, var(--hero-available-height))
+      )
+    );
+    width: 100%;
+    max-width: 100%;
+    height: var(--hero-target-height);
+    max-height: var(--hero-available-height);
+  }
+
+  .hero-stage--viewport {
+    --hero-available-height: 100svh;
+    --hero-natural-height: calc(
+      100vw * var(--hero-art-height) / var(--hero-art-width)
+    );
+    --hero-target-height: min(
+      100svh,
+      max(
+        var(--hero-natural-height),
+        clamp(15rem, 45svh, 100svh)
+      )
+    );
+    max-height: 100svh;
+  }
+
+  .hero-slide {
+    background-color: var(--jyoti-cream);
+  }
+
+  .hero-slide[data-tone="dark"] {
+    background-color: var(--jyoti-navy-deep);
+  }
+
+  .hero-slide-image {
+    object-fit: cover;
+  }
+
+  .hero-slide[data-slide="h1"] .hero-slide-image {
+    object-position: 62% 90%;
+  }
+
+  .hero-slide[data-slide="h2"] .hero-slide-image {
+    object-position: 72% 88%;
+  }
+
+  @media (max-width: 1279px) {
+    .hero-slide[data-slide="h1"] .hero-slide-image {
+      object-position: 64% 88%;
+    }
+
+    .hero-slide[data-slide="h2"] .hero-slide-image {
+      object-position: 74% 86%;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .hero-slide[data-slide="h1"] .hero-slide-image {
+      object-position: 68% 86%;
+    }
+
+    .hero-slide[data-slide="h2"] .hero-slide-image {
+      object-position: 78% 84%;
+    }
+  }
+
+  .hero-accent-word {
+    display: inline-block;
+    font-family: "Brittany Signature", inherit;
+    font-size: 1.22em;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    vertical-align: baseline;
   }
 
   .bg-midnight-gradient {

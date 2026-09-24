@@ -39,7 +39,7 @@ export function ProductCard({
       className={cn("flex flex-col overflow-hidden p-0 shadow-soft", className)}
     >
       <Link href={href} className="group relative block min-w-0">
-        <ImageFrame aspect="portrait" radius="none" className="rounded-t-md">
+        <ImageFrame aspect="card" radius="none" className="rounded-t-md">
           <ImagePlaceholder label={name} />
         </ImageFrame>
         {badge ? (
@@ -51,8 +51,8 @@ export function ProductCard({
           </Badge>
         ) : null}
       </Link>
-      <div className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
-        <div className="space-y-1.5">
+      <div className="flex flex-col gap-2.5 px-4 py-3.5 sm:px-5 sm:py-4">
+        <div className="space-y-1">
           <p className="text-small font-semibold uppercase tracking-[0.12em] text-accent">
             {meta}
           </p>
@@ -61,10 +61,15 @@ export function ProductCard({
               {name}
             </Link>
           </h3>
-          <p className="text-body font-semibold text-rich-black">{price}</p>
+          <p className="text-body font-semibold leading-snug text-rich-black">{price}</p>
         </div>
-        <div className="mt-auto flex flex-col gap-2 pt-1 sm:flex-row sm:flex-wrap">
-          <ButtonLink href={href} variant="secondary" size="sm" className="w-full sm:w-auto">
+        <div className="flex flex-col gap-2">
+          <ButtonLink
+            href={href}
+            variant="primary"
+            size="sm"
+            className="w-fit max-w-full self-start"
+          >
             View Saree
           </ButtonLink>
           {showWhatsApp ? (
@@ -72,7 +77,7 @@ export function ProductCard({
               href={whatsappEnquiryUrl(name, site.whatsappUrl, productId)}
               variant="secondary"
               size="sm"
-              className="w-full border-accent/40 text-accent hover:border-accent hover:bg-accent hover:text-white sm:w-auto"
+              className="w-fit max-w-full self-start border-accent/40 text-accent hover:border-accent hover:bg-accent hover:text-white"
             >
               WhatsApp Enquiry
             </ExternalButtonLink>

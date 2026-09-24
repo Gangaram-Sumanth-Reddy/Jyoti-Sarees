@@ -1,44 +1,132 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/layout/BrandMark";
 import { MobileMenu } from "@/components/layout/MobileMenu";
 import { Container } from "@/components/ui/Container";
 import { ExternalButtonLink } from "@/components/ui/Button";
+import { cn } from "@/lib/cn";
+import { useHeroNavTone } from "@/lib/hero-nav-tone";
 import { navigation, site } from "@/lib/site";
+
+const SCROLL_THRESHOLD = 16;
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const isHome = pathname === "/";
+  const heroTone = useHeroNavTone();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
   const menuId = useId();
 
+  const overlayNav = isHome && !scrolled;
+  const homeNavSolid = isHome && scrolled;
+  const overlayOnDark = overlayNav && heroTone === "dark";
+  const overlayOnLight = overlayNav && heroTone === "light";
+  const inverseChrome = homeNavSolid || overlayOnDark;
+
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+
+    const syncHeaderHeight = () => {
+      document.documentElement.style.setProperty(
+        "--site-header-height",
+        `${header.offsetHeight}px`,
+      );
+    };
+
+    syncHeaderHeight();
+
+    const observer = new ResizeObserver(syncHeaderHeight);
+    observer.observe(header);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isHome) {
+      setScrolled(false);
+      return;
+    }
+
+    const onScroll = () => {
+      setScrolled(window.scrollY > SCROLL_THRESHOLD);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isHome]);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-white/95 backdrop-blur-sm">
-      <Container className="flex items-center justify-between gap-4 py-3 lg:py-4">
-        <BrandMark />
+    <header
+      ref={headerRef}
+      data-overlay={overlayNav ? "true" : undefined}
+      data-hero-tone={overlayNav ? heroTone : undefined}
+      data-solid={homeNavSolid ? "true" : undefined}
+      className={cn(
+        "sticky top-0 z-50 border-b transition-[background-color,border-color,box-shadow,color] duration-300 ease-out",
+        overlayNav && "border-transparent bg-transparent shadow-none",
+        homeNavSolid &&
+          "border-transparent bg-navy/95 shadow-soft backdrop-blur-sm",
+        !isHome && "border-border bg-white/95 backdrop-blur-sm",
+      )}
+    >
+      <Container className="flex items-center justify-between gap-4 py-2.5 lg:py-3">
+        <BrandMark tone={inverseChrome ? "inverse" : "default"} />
         <nav className="hidden items-center gap-0.5 xl:flex" aria-label="Primary">
           {navigation.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               data-active={pathname === item.href}
-              className="nav-link px-2.5 xl:px-3"
+              className={cn(
+                "nav-link px-2.5 xl:px-3",
+                inverseChrome && "nav-link--inverse",
+              )}
             >
               {item.label}
             </Link>
           ))}
         </nav>
         <div className="hidden xl:block">
-          <ExternalButtonLink href={site.whatsappUrl} size="sm">
-            WhatsApp Us
-          </ExternalButtonLink>
+          {overlayOnLight ? (
+            <ExternalButtonLink
+              href={site.whatsappUrl}
+              variant="primary"
+              size="sm"
+              className="bg-navy text-white hover:bg-navy-mid"
+            >
+              WhatsApp Us
+            </ExternalButtonLink>
+          ) : inverseChrome ? (
+            <ExternalButtonLink
+              href={site.whatsappUrl}
+              variant="secondary"
+              size="sm"
+              className="border-white text-white hover:border-white hover:bg-white hover:text-navy"
+            >
+              WhatsApp Us
+            </ExternalButtonLink>
+          ) : (
+            <ExternalButtonLink href={site.whatsappUrl} size="sm">
+              WhatsApp Us
+            </ExternalButtonLink>
+          )}
         </div>
         <button
           type="button"
-          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-pill text-navy transition-colors hover:bg-cream xl:hidden"
+          className={cn(
+            "inline-flex min-h-11 min-w-11 items-center justify-center rounded-pill transition-colors duration-300 xl:hidden",
+            inverseChrome
+              ? "text-white hover:bg-white/15"
+              : "text-navy hover:bg-cream",
+          )}
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls={menuId}
