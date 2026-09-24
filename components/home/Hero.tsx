@@ -33,7 +33,6 @@ export function Hero() {
   if (!slide) return null;
 
   const dark = slide.tone === "dark";
-  const alignRight = slide.contentAlign === "right";
 
   return (
     <section
@@ -84,20 +83,13 @@ export function Hero() {
             "pointer-events-none absolute inset-0 transition-opacity duration-700",
             dark
               ? "bg-gradient-to-r from-navy-deep/55 via-navy-deep/15 to-transparent sm:from-navy-deep/40 sm:via-navy-deep/8"
-              : alignRight
-                ? "bg-gradient-to-l from-white/75 via-white/25 to-transparent sm:from-white/40 sm:via-white/8"
-                : "bg-gradient-to-r from-white/75 via-white/25 to-transparent sm:from-white/35 sm:via-white/6",
+              : "bg-gradient-to-r from-white/75 via-white/25 to-transparent sm:from-white/35 sm:via-white/6",
           )}
           aria-hidden="true"
         />
 
         <div className="hero-copy relative z-10 flex h-full items-center px-gutter pb-12 pt-[calc(var(--site-header-height)+1.25rem)] sm:pb-14 sm:pt-[calc(var(--site-header-height)+1.5rem)]">
-          <div
-            className={cn(
-              "mx-auto flex w-full max-w-content",
-              alignRight ? "justify-end" : "justify-start",
-            )}
-          >
+          <div className="mx-auto flex w-full max-w-content justify-start">
             <div
               key={slide.id}
               className="hero-copy-in max-w-[18rem] text-left sm:max-w-md lg:max-w-lg"
