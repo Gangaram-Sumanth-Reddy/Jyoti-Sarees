@@ -62,7 +62,9 @@ export function FoundationPreview() {
               <p className="text-small text-muted">
                 Small text is reserved for captions, hints, and supporting labels.
               </p>
-              <p className="text-nav uppercase text-rich-black">Navigation label</p>
+              <p className="text-nav font-semibold uppercase text-rich-black">
+                Navigation label
+              </p>
               <p className="text-button font-semibold uppercase tracking-[0.04em]">
                 Button label
               </p>

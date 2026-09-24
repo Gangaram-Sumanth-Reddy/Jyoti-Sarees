@@ -146,6 +146,7 @@
   --text-nav: 0.875rem;
   --text-nav--line-height: 1.2;
   --text-nav--letter-spacing: 0.08em;
+  --text-nav--font-weight: 600;
 }
 
 @layer base {
@@ -255,6 +256,7 @@
     min-height: 2.75rem;
     align-items: center;
     font-size: var(--text-nav);
+    font-weight: var(--text-nav--font-weight);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--jyoti-rich-black);
