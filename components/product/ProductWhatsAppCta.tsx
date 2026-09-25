@@ -16,11 +16,11 @@ export function ProductWhatsAppCta({
 }: ProductWhatsAppCtaProps) {
   return (
     <Section tone="inverse" className="bg-midnight-gradient">
-      <Container>
+      <Container className="max-w-[82.5rem]">
         <div className="mx-auto max-w-2xl text-center">
           <SectionHeading
-            title="Have a question about this saree?"
-            description="Message our team on WhatsApp for availability, styling advice or similar options."
+            title="Interested in this Saree?"
+            description="Talk to our team for availability and details."
             align="center"
             tone="inverse"
             className="mb-8 sm:mb-10"
@@ -30,7 +30,7 @@ export function ProductWhatsAppCta({
             size="lg"
             className="border-transparent bg-white text-rich-black hover:bg-cream"
           >
-            WhatsApp Our Team
+            Enquire on WhatsApp
           </ExternalButtonLink>
         </div>
       </Container>

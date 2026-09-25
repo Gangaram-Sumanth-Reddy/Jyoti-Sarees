@@ -5,6 +5,7 @@ import Link from "next/link";
 import { navigation, site } from "@/lib/site";
 import { BrandMark } from "@/components/layout/BrandMark";
 import { ExternalButtonLink } from "@/components/ui/Button";
+import { isNavActive } from "@/lib/nav";
 
 type MobileMenuProps = {
   open: boolean;
@@ -61,7 +62,7 @@ export function MobileMenu({
               key={item.href}
               href={item.href}
               onClick={onClose}
-              data-active={activeHref === item.href}
+              data-active={isNavActive(activeHref, item.href) ? "true" : undefined}
               className="flex min-h-12 items-center border-b border-border text-h3 font-semibold tracking-[0.04em] text-rich-black data-[active=true]:text-accent"
             >
               {item.label}

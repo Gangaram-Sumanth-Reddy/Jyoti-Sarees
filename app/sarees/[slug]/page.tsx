@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ProductAbout } from "@/components/product/ProductAbout";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductInfo } from "@/components/product/ProductInfo";
 import { ProductWhatsAppCta } from "@/components/product/ProductWhatsAppCta";
@@ -49,16 +49,34 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <>
-      <Section className="pt-8 sm:pt-10 lg:pt-12">
-        <Container>
-          <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
-            <ProductGallery productName={product.name} gallery={product.gallery} />
-            <ProductInfo product={product} />
+      <Section className="overflow-x-clip pt-6 sm:pt-8 lg:pt-10">
+        <Container className="max-w-[82.5rem]">
+          <Link
+            href="/sarees"
+            className="inline-flex items-center gap-1.5 text-small font-semibold text-navy transition-colors hover:text-accent"
+          >
+            <span aria-hidden="true">←</span>
+            Back to Sarees
+          </Link>
+
+          {/*
+            Narrow sticky gallery on the left; taller product details scroll on the right.
+          */}
+          <div className="mt-6 grid items-start gap-8 lg:mt-8 lg:grid-cols-[minmax(0,28rem)_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[minmax(0,30rem)_minmax(0,1fr)] xl:gap-10">
+            <div className="min-w-0 lg:sticky lg:top-[calc(var(--site-header-height)+1rem)] lg:self-start">
+              <ProductGallery
+                productName={product.name}
+                gallery={product.gallery}
+              />
+            </div>
+
+            <div className="min-w-0">
+              <ProductInfo product={product} />
+            </div>
           </div>
         </Container>
       </Section>
 
-      <ProductAbout product={product} />
       <RelatedProducts products={related} />
       <ProductWhatsAppCta
         productName={product.name}

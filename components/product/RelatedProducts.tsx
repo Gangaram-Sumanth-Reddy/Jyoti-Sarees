@@ -14,7 +14,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
 
   return (
     <Section>
-      <Container>
+      <Container className="max-w-[82.5rem]">
         <SectionHeading
           title="You May Also Like"
           description="Related sarees from a similar collection, fabric, colour or style."
@@ -25,12 +25,9 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
           {products.map((product) => (
             <ProductCard
               key={product.slug}
-              name={product.name}
-              category={product.category}
-              fabric={product.fabric}
-              price={product.priceLabel}
+              product={product}
               href={productHref(product.slug)}
-              productId={product.productId}
+              className="h-full"
             />
           ))}
         </ul>

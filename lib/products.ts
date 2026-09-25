@@ -1,6 +1,8 @@
 export type ProductGalleryItem = {
   id: string;
   label: string;
+  /** Optional real image path under /public when available. */
+  src?: string;
 };
 
 export type Product = {
@@ -17,6 +19,7 @@ export type Product = {
   price: number;
   priceLabel: string;
   createdAt: string;
+  available: boolean;
   shortDescription: string;
   about: string;
   gallery: ProductGalleryItem[];
@@ -29,23 +32,29 @@ export type CategoryNavItem = {
 
 export type PriceRangeId = "all" | "under-10k" | "10k-20k" | "20k-plus";
 
+export type AvailabilityId = "all" | "in-stock" | "out-of-stock";
+
 export type SortId = "newest" | "price-asc" | "price-desc";
 
 export type CatalogueFilters = {
   categoryNav: string;
   category: string;
+  collection: string;
   colour: string;
   fabric: string;
   priceRange: PriceRangeId;
+  availability: AvailabilityId;
   sort: SortId;
 };
 
 export const defaultCatalogueFilters: CatalogueFilters = {
   categoryNav: "all",
   category: "all",
+  collection: "all",
   colour: "all",
   fabric: "all",
   priceRange: "all",
+  availability: "all",
   sort: "newest",
 };
 
@@ -57,14 +66,16 @@ export const defaultGallery: ProductGalleryItem[] = [
   { id: "extra", label: "Additional view" },
 ];
 
-type ProductInput = Omit<Product, "gallery" | "collection"> & {
+type ProductInput = Omit<Product, "gallery" | "collection" | "available"> & {
   collection?: string;
+  available?: boolean;
   gallery?: ProductGalleryItem[];
 };
 
 function createProduct(input: ProductInput): Product {
   return {
     ...input,
+    available: input.available ?? true,
     collection: input.collection ?? input.category,
     gallery: input.gallery ?? defaultGallery,
   };
@@ -229,6 +240,7 @@ export const products: Product[] = [
     price: 11200,
     priceLabel: "₹11,200",
     createdAt: "2026-09-02",
+    available: false,
     shortDescription:
       "A silver designer organza with light metallic accents. Airy, modern and suited to evening receptions.",
     about:
@@ -326,6 +338,7 @@ export function getCategoryNav(items: Product[] = products): CategoryNavItem[] {
 export function getFilterOptions(items: Product[] = products) {
   return {
     categories: uniqueSorted(items.map((item) => item.category)),
+    collections: uniqueSorted(items.map((item) => item.collection)),
     colours: uniqueSorted(items.map((item) => item.colour)),
     fabrics: uniqueSorted(items.map((item) => item.fabric)),
   };
@@ -336,6 +349,12 @@ export const priceRangeOptions: { id: PriceRangeId; label: string }[] = [
   { id: "under-10k", label: "Under ₹10,000" },
   { id: "10k-20k", label: "₹10,000 – ₹20,000" },
   { id: "20k-plus", label: "₹20,000 & above" },
+];
+
+export const availabilityOptions: { id: AvailabilityId; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "in-stock", label: "In stock" },
+  { id: "out-of-stock", label: "Out of stock" },
 ];
 
 export const sortOptions: { id: SortId; label: string }[] = [
@@ -363,6 +382,12 @@ function matchesCategoryNav(product: Product, categoryNav: string) {
   return slugify(product.category) === categoryNav;
 }
 
+function matchesAvailability(product: Product, availability: AvailabilityId) {
+  if (availability === "in-stock") return product.available;
+  if (availability === "out-of-stock") return !product.available;
+  return true;
+}
+
 export function filterAndSortProducts(
   items: Product[],
   filters: CatalogueFilters,
@@ -372,6 +397,12 @@ export function filterAndSortProducts(
     if (filters.category !== "all" && product.category !== filters.category) {
       return false;
     }
+    if (
+      filters.collection !== "all" &&
+      product.collection !== filters.collection
+    ) {
+      return false;
+    }
     if (filters.colour !== "all" && product.colour !== filters.colour) {
       return false;
     }
@@ -379,6 +410,7 @@ export function filterAndSortProducts(
       return false;
     }
     if (!matchesPriceRange(product.price, filters.priceRange)) return false;
+    if (!matchesAvailability(product, filters.availability)) return false;
     return true;
   });
 
@@ -393,10 +425,16 @@ export function hasActiveFilters(filters: CatalogueFilters) {
   return (
     filters.categoryNav !== "all" ||
     filters.category !== "all" ||
+    filters.collection !== "all" ||
     filters.colour !== "all" ||
     filters.fabric !== "all" ||
-    filters.priceRange !== "all"
+    filters.priceRange !== "all" ||
+    filters.availability !== "all"
   );
+}
+
+export function formatPrice(price: number) {
+  return `₹${price.toLocaleString("en-IN")}`;
 }
 
 export function slugify(value: string) {
@@ -452,6 +490,44 @@ export function whatsappEnquiryUrl(
   const text = productId
     ? `Hi, I'm interested in ${productName} (${productId}). Please share more details.`
     : `Hi, I'm interested in ${productName}. Please share more details.`;
+  const separator = baseUrl.includes("?") ? "&" : "?";
+  return `${baseUrl}${separator}text=${encodeURIComponent(text)}`;
+}
+
+export function whatsappOrderUrl(
+  baseUrl: string,
+  lines: {
+    name: string;
+    productId: string;
+    quantity: number;
+    price: number;
+    priceLabel: string;
+  }[],
+  storeName: string,
+) {
+  const total = lines.reduce(
+    (sum, line) => sum + line.price * line.quantity,
+    0,
+  );
+  const itemBlock = lines
+    .map(
+      (line, index) =>
+        `${index + 1}. ${line.name}\n   SKU: ${line.productId}\n   Qty: ${line.quantity}\n   Price: ${line.priceLabel}`,
+    )
+    .join("\n\n");
+
+  const text = [
+    `*${storeName} — Saree Enquiry*`,
+    "",
+    "I would like to enquire about the following sarees:",
+    "",
+    itemBlock,
+    "",
+    `*Total enquiry value:* ${formatPrice(total)}`,
+    "",
+    "Please confirm availability and share order details. Thank you.",
+  ].join("\n");
+
   const separator = baseUrl.includes("?") ? "&" : "?";
   return `${baseUrl}${separator}text=${encodeURIComponent(text)}`;
 }

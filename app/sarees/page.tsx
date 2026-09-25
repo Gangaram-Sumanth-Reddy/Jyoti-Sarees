@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
+import { CatalogueBanner } from "@/components/catalogue/CatalogueBanner";
 import { CatalogueBrowser } from "@/components/catalogue/CatalogueBrowser";
-import { CatalogueCollections } from "@/components/catalogue/CatalogueCollections";
 import { CatalogueCta } from "@/components/catalogue/CatalogueCta";
-import { CatalogueHero } from "@/components/catalogue/CatalogueHero";
 import { products } from "@/lib/products";
 
 export const metadata: Metadata = {
@@ -14,8 +13,7 @@ export const metadata: Metadata = {
 export default function SareesPage() {
   return (
     <>
-      <CatalogueHero />
-      <CatalogueCollections />
+      <CatalogueBanner />
       <CatalogueBrowser products={products} />
       <CatalogueCta />
     </>
