@@ -8,6 +8,9 @@ import type { ProductGalleryItem } from "@/lib/products";
 type ProductGalleryProps = {
   productName: string;
   gallery: ProductGalleryItem[];
+  /** Selected colourway — tints placeholders so only the saree colour changes. */
+  colourHex?: string;
+  colourLabel?: string;
 };
 
 function GalleryVisual({
@@ -15,33 +18,60 @@ function GalleryVisual({
   productName,
   compact = false,
   priority = false,
+  colourHex,
 }: {
   item: ProductGalleryItem;
   productName: string;
   compact?: boolean;
   priority?: boolean;
+  colourHex?: string;
 }) {
   if (item.src) {
     return (
-      <Image
-        src={item.src}
-        alt={`${productName} — ${item.label}`}
-        fill
-        priority={priority}
-        sizes={compact ? "56px" : "(max-width: 1024px) 90vw, 280px"}
-        className="object-contain p-1.5"
-      />
+      <>
+        <Image
+          src={item.src}
+          alt={`${productName} — ${item.label}`}
+          fill
+          priority={priority}
+          sizes={compact ? "56px" : "(max-width: 1024px) 90vw, 280px"}
+          className="object-contain p-1.5"
+        />
+        {colourHex ? (
+          <span
+            className="pointer-events-none absolute inset-0 mix-blend-multiply opacity-35"
+            style={{ backgroundColor: colourHex }}
+            aria-hidden="true"
+          />
+        ) : null}
+      </>
     );
   }
 
   return (
     <div
-      className="absolute inset-0 flex items-center justify-center bg-cream px-2 text-center"
+      className="absolute inset-0 flex items-center justify-center px-2 text-center transition-colors duration-300"
+      style={{
+        backgroundColor: colourHex
+          ? `color-mix(in srgb, ${colourHex} 28%, #f5f0e8)`
+          : undefined,
+      }}
       aria-hidden="true"
     >
+      {!colourHex ? (
+        <div className="absolute inset-0 bg-cream" />
+      ) : (
+        <div
+          className="absolute inset-x-[12%] inset-y-[8%] rounded-sm opacity-90"
+          style={{
+            background: `linear-gradient(160deg, color-mix(in srgb, ${colourHex} 55%, white) 0%, ${colourHex} 45%, color-mix(in srgb, ${colourHex} 70%, #1a1a1a) 100%)`,
+          }}
+        />
+      )}
       <span
         className={cn(
-          "font-semibold uppercase tracking-[0.1em] text-subtle",
+          "relative z-10 font-semibold uppercase tracking-[0.1em]",
+          colourHex ? "text-white/90 drop-shadow-sm" : "text-navy/55",
           compact
             ? "text-[0.52rem] leading-tight"
             : "max-w-[12ch] text-[0.68rem] sm:text-small",
@@ -53,7 +83,12 @@ function GalleryVisual({
   );
 }
 
-export function ProductGallery({ productName, gallery }: ProductGalleryProps) {
+export function ProductGallery({
+  productName,
+  gallery,
+  colourHex,
+  colourLabel,
+}: ProductGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const lightboxRef = useRef<HTMLDialogElement>(null);
@@ -98,6 +133,7 @@ export function ProductGallery({ productName, gallery }: ProductGalleryProps) {
                     item={item}
                     productName={productName}
                     compact
+                    colourHex={colourHex}
                   />
                 </button>
               </li>
@@ -112,12 +148,12 @@ export function ProductGallery({ productName, gallery }: ProductGalleryProps) {
             className="group relative block w-full overflow-hidden rounded-lg border border-border bg-cream text-left shadow-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             aria-label={`View ${active.label} fullscreen`}
           >
-            {/* True portrait card — width is limited by the sticky column */}
             <div className="relative aspect-[3/4] w-full">
               <GalleryVisual
                 item={active}
                 productName={productName}
                 priority
+                colourHex={colourHex}
               />
             </div>
             <span className="pointer-events-none absolute bottom-2 right-2 rounded-pill border border-border bg-white/95 px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.08em] text-navy opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
@@ -125,8 +161,11 @@ export function ProductGallery({ productName, gallery }: ProductGalleryProps) {
             </span>
           </button>
 
-          <p id={labelId} className="mt-2 text-small text-muted">
+          <p id={labelId} className="mt-2 text-small font-medium text-navy">
             {active.label}
+            {colourLabel ? (
+              <span className="font-normal text-muted"> · {colourLabel}</span>
+            ) : null}
           </p>
         </div>
       </div>
@@ -154,7 +193,10 @@ export function ProductGallery({ productName, gallery }: ProductGalleryProps) {
       >
         <div className="relative flex h-full w-full max-w-5xl flex-col px-4 py-5 sm:px-8">
           <div className="mb-4 flex items-center justify-between gap-3">
-            <p className="text-small text-white/80">{active.label}</p>
+            <p className="text-small text-white/80">
+              {active.label}
+              {colourLabel ? ` · ${colourLabel}` : ""}
+            </p>
             <button
               type="button"
               onClick={() => setLightboxOpen(false)}
@@ -167,7 +209,11 @@ export function ProductGallery({ productName, gallery }: ProductGalleryProps) {
 
           <div className="relative mx-auto min-h-0 w-full flex-1">
             <div className="absolute inset-0 overflow-hidden rounded-lg bg-cream">
-              <GalleryVisual item={active} productName={productName} />
+              <GalleryVisual
+                item={active}
+                productName={productName}
+                colourHex={colourHex}
+              />
             </div>
           </div>
 

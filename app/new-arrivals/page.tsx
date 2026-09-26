@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { NewArrivalsBrowser } from "@/components/new-arrivals/NewArrivalsBrowser";
-import { NewArrivalsCollections } from "@/components/new-arrivals/NewArrivalsCollections";
-import { NewArrivalsCta } from "@/components/new-arrivals/NewArrivalsCta";
+import { CatalogueBrowser } from "@/components/catalogue/CatalogueBrowser";
+import { CatalogueCta } from "@/components/catalogue/CatalogueCta";
 import { NewArrivalsHero } from "@/components/new-arrivals/NewArrivalsHero";
-import { NewArrivalsIntro } from "@/components/new-arrivals/NewArrivalsIntro";
-import { getNewArrivals } from "@/lib/products";
+import { getNewArrivals, products } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "New Arrivals",
@@ -13,15 +11,13 @@ export const metadata: Metadata = {
 };
 
 export default function NewArrivalsPage() {
-  const arrivals = getNewArrivals(12);
+  const arrivals = getNewArrivals(products.length);
 
   return (
     <>
       <NewArrivalsHero />
-      <NewArrivalsIntro />
-      <NewArrivalsBrowser products={arrivals} />
-      <NewArrivalsCollections />
-      <NewArrivalsCta />
+      <CatalogueBrowser products={arrivals} cardBadge="New" />
+      <CatalogueCta />
     </>
   );
 }

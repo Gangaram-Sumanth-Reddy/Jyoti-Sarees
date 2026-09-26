@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import {
-  catalogueProducts,
   getCatalogueProductBySlug,
   getColourOption,
   getNewArrivalProductBySlug,
+  getNewArrivals,
   productHref,
+  products,
 } from "@/lib/products";
 
 type ProductPageProps = {
@@ -13,14 +14,16 @@ type ProductPageProps = {
 };
 
 export function generateStaticParams() {
-  return catalogueProducts.map((product) => ({ slug: product.slug }));
+  return getNewArrivals(products.length).map((product) => ({
+    slug: product.slug,
+  }));
 }
 
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = getCatalogueProductBySlug(slug);
+  const product = getNewArrivalProductBySlug(slug);
   if (!product) return { title: "Saree not found" };
   return {
     title: product.name,
@@ -28,19 +31,19 @@ export async function generateMetadata({
   };
 }
 
-/** Canonical colour URL lives at `/sarees/[slug]/[colour]`. */
-export default async function SareeProductIndexPage({
+/** Canonical colour URL lives at `/new-arrivals/[slug]/[colour]`. */
+export default async function NewArrivalProductIndexPage({
   params,
 }: ProductPageProps) {
   const { slug } = await params;
-  const product = getCatalogueProductBySlug(slug);
+  const product = getNewArrivalProductBySlug(slug);
 
   if (!product) {
-    const arrival = getNewArrivalProductBySlug(slug);
-    if (arrival) {
-      redirect(productHref(arrival, getColourOption(arrival).id));
+    const catalogue = getCatalogueProductBySlug(slug);
+    if (catalogue) {
+      redirect(productHref(catalogue, getColourOption(catalogue).id));
     }
-    redirect("/sarees");
+    redirect("/new-arrivals");
   }
 
   const colour = getColourOption(product);

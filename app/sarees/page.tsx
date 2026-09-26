@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CatalogueBanner } from "@/components/catalogue/CatalogueBanner";
 import { CatalogueBrowser } from "@/components/catalogue/CatalogueBrowser";
 import { CatalogueCta } from "@/components/catalogue/CatalogueCta";
-import { products } from "@/lib/products";
+import { catalogueProducts } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Sarees",
@@ -14,7 +14,7 @@ export default function SareesPage() {
   return (
     <>
       <CatalogueBanner />
-      <CatalogueBrowser products={products} />
+      <CatalogueBrowser products={catalogueProducts} />
       <CatalogueCta />
     </>
   );

@@ -37,7 +37,7 @@ export function FinalCta() {
           <p className="mt-8 text-small text-white/75">
             Planning a larger order?{" "}
             <Link
-              href="/contact#bulk-enquiry"
+              href="/contact"
               className="font-semibold text-white underline decoration-white/40 underline-offset-4 transition-colors hover:text-white hover:decoration-white"
             >
               Bulk Enquiry

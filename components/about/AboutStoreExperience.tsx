@@ -32,7 +32,7 @@ export function AboutStoreExperience() {
           ))}
         </ul>
         <div className="mt-10 flex justify-center sm:mt-12">
-          <ButtonLink href="/contact#stores">Visit Our Stores</ButtonLink>
+          <ButtonLink href="/contact">Visit Our Stores</ButtonLink>
         </div>
       </Container>
     </Section>

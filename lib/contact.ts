@@ -1,115 +1,128 @@
+import {
+  getCountryByCodeAndIso,
+  sortedCountryCodes,
+  type CountryDialCode,
+} from "@/lib/country-codes";
+import { products } from "@/lib/products";
 import { site } from "@/lib/site";
 
-export type StoreLocation = {
+export type ContactAddress = {
   id: string;
-  name: string;
-  city: string;
-  address: string;
-  phone: string;
-  phoneHref: string;
-  hours: string;
-  mapEmbedUrl: string;
-  directionsUrl: string;
+  label: string;
+  lines: string[];
 };
 
-/** Placeholder store data — replace with verified locations before launch. */
-export const stores: StoreLocation[] = [
+export const contactAddresses: ContactAddress[] = [
   {
     id: "flagship",
-    name: "Jyoti Sarees — Flagship",
-    city: "Your City",
-    address: "123 Main Road, Market Area, Your City, India 000000",
-    phone: site.phone,
-    phoneHref: site.phoneHref,
-    hours: "Mon–Sat: 10:30 AM – 8:00 PM · Sun: 11:00 AM – 7:00 PM",
-    mapEmbedUrl:
-      "https://maps.google.com/maps?q=Your+City+India&output=embed",
-    directionsUrl:
-      "https://www.google.com/maps/search/?api=1&query=Jyoti+Sarees+Your+City",
+    label: "Flagship store",
+    lines: ["123 Main Road, Market Area", "Your City, India 000000"],
   },
   {
     id: "branch",
-    name: "Jyoti Sarees — Branch",
-    city: "Your City",
-    address: "45 Silk Street, Textile Lane, Your City, India 000000",
-    phone: site.phone,
-    phoneHref: site.phoneHref,
-    hours: "Mon–Sat: 10:30 AM – 8:00 PM · Sun: Closed",
-    mapEmbedUrl:
-      "https://maps.google.com/maps?q=Silk+Street+Your+City&output=embed",
-    directionsUrl:
-      "https://www.google.com/maps/search/?api=1&query=Jyoti+Sarees+Silk+Street+Your+City",
+    label: "Branch",
+    lines: ["45 Silk Street, Textile Lane", "Your City, India 000000"],
   },
 ];
 
-export const contactOptions = [
+export const contactSocials = [
   {
     id: "whatsapp",
-    title: "WhatsApp",
-    description: "Saree enquiries and quick assistance",
+    label: "WhatsApp",
     href: site.whatsappUrl,
-    cta: "WhatsApp Us",
-    external: true,
   },
   {
-    id: "call",
-    title: "Call Us",
-    description: "Direct enquiries",
-    href: site.phoneHref,
-    cta: "Call Now",
-    external: false,
+    id: "instagram",
+    label: "Instagram",
+    href: site.instagramUrl,
   },
   {
-    id: "email",
-    title: "Email",
-    description: "General/business enquiries",
-    href: `mailto:${site.email}`,
-    cta: "Email Us",
-    external: false,
+    id: "facebook",
+    label: "Facebook",
+    href: site.facebookUrl,
   },
 ] as const;
 
-export const enquiryTypes = [
-  { value: "general", label: "General" },
-  { value: "saree", label: "Saree Enquiry" },
-  { value: "bulk", label: "Bulk Order" },
-  { value: "other", label: "Other" },
-] as const;
+export { sortedCountryCodes };
+export type { CountryDialCode };
+
+export function getPhoneCountry(isoOrCode: string, code?: string): CountryDialCode {
+  if (code) return getCountryByCodeAndIso(code, isoOrCode);
+  const byIso = sortedCountryCodes.find((entry) => entry.iso === isoOrCode);
+  if (byIso) return byIso;
+  return getCountryByCodeAndIso(isoOrCode);
+}
+
+export function isValidMobileForCountry(iso: string, mobile: string) {
+  const country = getPhoneCountry(iso);
+  const digits = mobile.replace(/\D/g, "");
+  if (digits.length !== country.digits) return false;
+  if (country.iso === "IN") return /^[6-9]\d{9}$/.test(digits);
+  return new RegExp(`^\\d{${country.digits}}$`).test(digits);
+}
 
 export const contactCopy = {
   hero: {
-    title: "Visit or Get in Touch",
+    title: "Get in Touch",
     description:
-      "Have a question, looking for a specific saree, or interested in a bulk order? Our team is here to help.",
+      "Share your enquiry and our team will help you find the right saree — no online payment required.",
   },
-  stores: {
-    title: "Store Locations",
+  form: {
+    title: "Send an enquiry",
     description:
-      "Visit us in person to explore the collection. Address and hours below are placeholders until confirmed by the brand.",
-  },
-  options: {
-    title: "Contact Options",
-    description: "Choose the channel that works best for you.",
-  },
-  bulk: {
-    title: "Bulk & Business Enquiries",
-    description:
-      "Planning a larger order for an event, boutique or business? Share your requirements and our team will get back to you with suitable options.",
-  },
-  general: {
-    title: "General Enquiry",
-    description: "Send us a message and we will respond as soon as we can.",
-  },
-  finalCta: {
-    title: "Looking for a particular saree?",
-    description:
-      "Tell us what you're looking for and our team will help you find it.",
+      "Tell us what you need. We will confirm availability and details with you.",
+    successTitle: "Enquiry received",
+    successDescription:
+      "Thank you. Our team will review your request and get back to you shortly. For a quicker response, you can also message us on WhatsApp.",
   },
 } as const;
 
-export function bulkWhatsAppUrl(baseUrl: string) {
-  const text =
-    "Hi Jyoti Sarees, I would like to discuss a bulk / business enquiry.";
+/** Catalogue-driven saree type / requirement suggestions. */
+export function getSareeRequirementSuggestions(): string[] {
+  const values = new Set<string>();
+
+  for (const product of products) {
+    values.add(product.name);
+    values.add(product.category);
+    values.add(product.collection);
+    values.add(product.fabric);
+    if (product.occasion) values.add(product.occasion);
+    if (product.design) values.add(product.design);
+  }
+
+  return [...values].sort((a, b) => a.localeCompare(b, "en"));
+}
+
+export function contactEnquiryWhatsAppUrl(
+  baseUrl: string,
+  payload: {
+    name: string;
+    mobile: string;
+    email: string;
+    address: string;
+    pincode: string;
+    state: string;
+    city: string;
+    requirement: string;
+    quantity: string;
+  },
+) {
+  const text = [
+    `*${site.name} — Contact Enquiry*`,
+    "",
+    `Name: ${payload.name}`,
+    `Mobile: ${payload.mobile}`,
+    `Email: ${payload.email}`,
+    `Address: ${payload.address}`,
+    `PIN code: ${payload.pincode}`,
+    `State: ${payload.state}`,
+    `City: ${payload.city}`,
+    `Saree / Requirement: ${payload.requirement}`,
+    `Quantity: ${payload.quantity}`,
+    "",
+    "Please share availability and details. Thank you.",
+  ].join("\n");
+
   const separator = baseUrl.includes("?") ? "&" : "?";
   return `${baseUrl}${separator}text=${encodeURIComponent(text)}`;
 }

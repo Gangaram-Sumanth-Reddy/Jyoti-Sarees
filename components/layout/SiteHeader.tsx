@@ -26,10 +26,10 @@ export function SiteHeader() {
   const menuId = useId();
 
   const overlayNav = isHome && !scrolled;
-  const homeNavSolid = isHome && scrolled;
+  const solidNav = !overlayNav;
   const overlayOnDark = overlayNav && heroTone === "dark";
   const overlayOnLight = overlayNav && heroTone === "light";
-  const inverseChrome = homeNavSolid || overlayOnDark;
+  const inverseChrome = solidNav || overlayOnDark;
 
   useEffect(() => {
     const header = headerRef.current;
@@ -52,7 +52,7 @@ export function SiteHeader() {
 
   useEffect(() => {
     if (!isHome) {
-      setScrolled(false);
+      setScrolled(true);
       return;
     }
 
@@ -70,13 +70,12 @@ export function SiteHeader() {
       ref={headerRef}
       data-overlay={overlayNav ? "true" : undefined}
       data-hero-tone={overlayNav ? heroTone : undefined}
-      data-solid={homeNavSolid ? "true" : undefined}
+      data-solid={solidNav ? "true" : undefined}
       className={cn(
         "sticky top-0 z-50 border-b transition-[background-color,border-color,box-shadow,color] duration-300 ease-out",
         overlayNav && "border-transparent bg-transparent shadow-none",
-        homeNavSolid &&
+        solidNav &&
           "border-transparent bg-navy/95 shadow-soft backdrop-blur-sm",
-        !isHome && "border-border bg-white/95 backdrop-blur-sm",
       )}
     >
       <Container className="flex items-center justify-between gap-4 py-2.5 lg:py-3">

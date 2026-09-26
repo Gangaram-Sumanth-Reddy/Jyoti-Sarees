@@ -26,7 +26,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
             <ProductCard
               key={product.slug}
               product={product}
-              href={productHref(product.slug)}
+              href={productHref(product)}
               className="h-full"
             />
           ))}

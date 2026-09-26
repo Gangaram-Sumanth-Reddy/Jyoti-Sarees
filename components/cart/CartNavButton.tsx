@@ -1,11 +1,10 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
-import {
-  getEnquiryCartCount,
-  openEnquiryCart,
-  useEnquiryCart,
-} from "@/lib/enquiry-cart";
+import { getEnquiryCartCount, useEnquiryCart } from "@/lib/enquiry-cart";
+import { isNavActive } from "@/lib/nav";
 
 type CartNavButtonProps = {
   inverse?: boolean;
@@ -13,24 +12,33 @@ type CartNavButtonProps = {
 };
 
 export function CartNavButton({ inverse = false, className }: CartNavButtonProps) {
+  const pathname = usePathname();
+  const active = isNavActive(pathname, "/cart");
   const { items } = useEnquiryCart();
   const count = getEnquiryCartCount(items);
 
   return (
-    <button
-      type="button"
-      onClick={openEnquiryCart}
+    <Link
+      href="/cart"
+      aria-current={active ? "page" : undefined}
+      data-active={active ? "true" : undefined}
       className={cn(
         "relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-pill transition-colors duration-300",
         inverse
-          ? "text-white hover:bg-white/15"
-          : "text-navy hover:bg-cream",
+          ? active
+            ? "bg-white/20 text-white ring-1 ring-white/55"
+            : "text-white hover:bg-white/15"
+          : active
+            ? "bg-cream text-navy ring-1 ring-navy/25"
+            : "text-navy hover:bg-cream",
         className,
       )}
       aria-label={
         count > 0
-          ? `Open enquiry basket, ${count} items`
-          : "Open enquiry basket"
+          ? `Enquiry cart, ${count} items`
+          : active
+            ? "Enquiry cart, current page"
+            : "Open enquiry cart"
       }
     >
       <CartIcon />
@@ -44,7 +52,7 @@ export function CartNavButton({ inverse = false, className }: CartNavButtonProps
           {count > 99 ? "99+" : count}
         </span>
       ) : null}
-    </button>
+    </Link>
   );
 }
 

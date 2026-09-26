@@ -7,6 +7,8 @@ export type Collection = {
   description: string;
   /** Product categories that belong to this collection. */
   categories: readonly string[];
+  /** Optional fabric match (e.g. Georgette, Organza). */
+  fabrics?: readonly string[];
 };
 
 export const collections: Collection[] = [
@@ -58,6 +60,24 @@ export const collections: Collection[] = [
       "Wedding sarees selected for presence, rich fabrics and ceremonial detailing—made for bridal and wedding celebrations.",
     categories: ["Wedding"],
   },
+  {
+    slug: "georgette",
+    name: "Georgette",
+    shortDescription: "Fluid drape for evening ease.",
+    description:
+      "Georgette sarees with soft movement and contemporary finish—chosen for parties, receptions and light evening wear.",
+    categories: ["Designer"],
+    fabrics: ["Georgette"],
+  },
+  {
+    slug: "organza",
+    name: "Organza",
+    shortDescription: "Airy sheers with festive light.",
+    description:
+      "Organza sarees with translucent movement and delicate accents—ideal for receptions, parties and celebratory evenings.",
+    categories: ["Designer", "Festive"],
+    fabrics: ["Organza"],
+  },
 ];
 
 export function getCollectionBySlug(slug: string) {
@@ -66,12 +86,20 @@ export function getCollectionBySlug(slug: string) {
 
 export function getProductsForCollection(collection: Collection): Product[] {
   const categories = new Set(collection.categories);
-  return products.filter(
-    (product) =>
+  const fabrics = collection.fabrics
+    ? new Set(collection.fabrics)
+    : null;
+
+  return products.filter((product) => {
+    if (fabrics) {
+      return fabrics.has(product.fabric);
+    }
+    return (
       categories.has(product.category) ||
       categories.has(product.collection) ||
-      product.collection === collection.name,
-  );
+      product.collection === collection.name
+    );
+  });
 }
 
 export function collectionHref(slug: string) {

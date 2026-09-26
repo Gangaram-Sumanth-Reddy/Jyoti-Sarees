@@ -3,7 +3,7 @@ import { Container } from "@/components/ui/Container";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { getNewArrivals, productHref } from "@/lib/products";
+import { getColourOption, getNewArrivals, productHref } from "@/lib/products";
 import { copy } from "@/lib/site";
 
 export function NewArrivals() {
@@ -18,16 +18,15 @@ export function NewArrivals() {
           align="center"
           className="max-w-2xl"
         />
-        <ul className="grid list-none items-start gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        <ul className="mt-2 grid list-none grid-cols-1 items-stretch gap-4 p-0 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-5">
           {arrivals.map((product) => (
             <ProductCard
               key={product.slug}
-              name={product.name}
-              category={product.category}
-              fabric={product.fabric}
-              price={product.priceLabel}
-              href={productHref(product.slug)}
-              productId={product.productId}
+              product={product}
+              href={productHref(product, getColourOption(product).id)}
+              showAddToCart
+              badge="New"
+              className="h-full"
             />
           ))}
         </ul>

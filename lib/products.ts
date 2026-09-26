@@ -5,6 +5,12 @@ export type ProductGalleryItem = {
   src?: string;
 };
 
+export type ProductColourOption = {
+  id: string;
+  label: string;
+  hex: string;
+};
+
 export type Product = {
   slug: string;
   productId: string;
@@ -13,6 +19,7 @@ export type Product = {
   collection: string;
   fabric: string;
   colour: string;
+  colourOptions: ProductColourOption[];
   occasion: string;
   weave: string;
   design: string;
@@ -20,6 +27,8 @@ export type Product = {
   priceLabel: string;
   createdAt: string;
   available: boolean;
+  /** Shown on New Arrivals — kept separate from the main Sarees catalogue. */
+  isNewArrival: boolean;
   shortDescription: string;
   about: string;
   gallery: ProductGalleryItem[];
@@ -66,25 +75,90 @@ export const defaultGallery: ProductGalleryItem[] = [
   { id: "extra", label: "Additional view" },
 ];
 
-type ProductInput = Omit<Product, "gallery" | "collection" | "available"> & {
+/** Fixed colourways per design family — order never changes on select. */
+const STYLE_COLOURWAYS: Record<string, string[]> = {
+  Kanchipuram: ["Ruby Red", "Peacock Green", "Crimson", "Gold", "Ivory"],
+  Banarasi: ["Ivory", "Rose", "Gold", "Crimson", "Silver"],
+  "Soft Silk": ["Jade", "Teal", "Ivory", "Marigold", "Rose"],
+  Designer: ["Midnight Blue", "Silver", "Ruby Red", "Ivory", "Teal"],
+  Festive: ["Marigold", "Orange", "Ruby Red", "Gold", "Rose"],
+  Wedding: ["Gold", "Crimson", "Ruby Red", "Ivory", "Peacock Green"],
+};
+
+function colourOptionsFor(
+  category: string,
+  defaultColour: string,
+): ProductColourOption[] {
+  const palette = [
+    ...(STYLE_COLOURWAYS[category] ?? [
+      "Ruby Red",
+      "Ivory",
+      "Jade",
+      "Midnight Blue",
+      "Gold",
+    ]),
+  ];
+
+  if (!palette.includes(defaultColour)) {
+    palette[palette.length - 1] = defaultColour;
+  }
+
+  return palette.slice(0, 5).map((label) => ({
+    id: label
+      .toLowerCase()
+      .replace(/&/g, "and")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, ""),
+    label,
+    hex: colourHex(label),
+  }));
+}
+
+function colourHex(label: string) {
+  const map: Record<string, string> = {
+    "Ruby Red": "#9b1b30",
+    Ivory: "#f3efe6",
+    Jade: "#2f7a5c",
+    "Midnight Blue": "#0a2472",
+    Marigold: "#e2a015",
+    Gold: "#c9a227",
+    "Peacock Green": "#0d5c4d",
+    Rose: "#c96b8a",
+    Silver: "#b8bec6",
+    Crimson: "#b01030",
+    Orange: "#d96a1f",
+    Teal: "#1a7a7a",
+  };
+  return map[label] ?? "#6b7280";
+}
+
+type ProductInput = Omit<
+  Product,
+  "gallery" | "collection" | "available" | "colourOptions" | "isNewArrival"
+> & {
   collection?: string;
   available?: boolean;
   gallery?: ProductGalleryItem[];
+  colourOptions?: ProductColourOption[];
+  isNewArrival?: boolean;
 };
 
 function createProduct(input: ProductInput): Product {
   return {
     ...input,
     available: input.available ?? true,
+    isNewArrival: input.isNewArrival ?? false,
     collection: input.collection ?? input.category,
     gallery: input.gallery ?? defaultGallery,
+    colourOptions:
+      input.colourOptions ?? colourOptionsFor(input.category, input.colour),
   };
 }
 
 /** Placeholder catalogue data — replace with live inventory later. */
 export const products: Product[] = [
   createProduct({
-    slug: "kanjeevaram-ruby",
+    slug: "ruby-kanjivaram",
     productId: "JS-001",
     name: "Ruby Kanjivaram",
     category: "Kanchipuram",
@@ -300,7 +374,241 @@ export const products: Product[] = [
     about:
       "Made in soft silk for everyday ease, this teal saree keeps the field clean and the border restrained. Craft and design favour wearability with quiet elegance. Suited to festive days and elevated daily looks, with a light drape and smooth finish.",
   }),
+  // —— New Arrivals (distinct styles, names and pricing from the main catalogue) ——
+  createProduct({
+    slug: "coral-temple-silk",
+    productId: "JS-N01",
+    name: "Coral Temple Silk",
+    category: "Kanchipuram",
+    fabric: "Pure Silk",
+    colour: "Orange",
+    occasion: "Wedding / Festive",
+    weave: "Temple-border Kanchipuram handloom",
+    design: "Coral body with temple zari borders",
+    price: 19800,
+    priceLabel: "₹19,800",
+    createdAt: "2026-09-25",
+    isNewArrival: true,
+    shortDescription:
+      "A coral Kanchipuram with temple borders and warm zari. Fresh from the loom for festive weddings.",
+    about:
+      "Newly woven in pure silk, this coral temple silk pairs a warm body with classic Kanchipuram borders. The design feels celebratory and contemporary. Ideal for festive weddings, with a luminous fall and structured pallu.",
+  }),
+  createProduct({
+    slug: "mist-grey-banarasi",
+    productId: "JS-N02",
+    name: "Mist Grey Banarasi",
+    category: "Banarasi",
+    fabric: "Silk Brocade",
+    colour: "Silver",
+    occasion: "Reception / Evening",
+    weave: "Fine Banarasi brocade",
+    design: "Soft mist jaal with silver zari",
+    price: 15600,
+    priceLabel: "₹15,600",
+    createdAt: "2026-09-24",
+    isNewArrival: true,
+    shortDescription:
+      "A mist-grey Banarasi with silver jaal work. Quiet luxury for receptions and evening gatherings.",
+    about:
+      "Crafted in silk brocade with a soft mist ground, this Banarasi uses silver zari in a light floral jaal. The look is understated and modern. Suited to receptions and evening events, with a refined sheen and easy drape.",
+  }),
+  createProduct({
+    slug: "saffron-soft-silk",
+    productId: "JS-N03",
+    name: "Saffron Soft Silk",
+    category: "Soft Silk",
+    fabric: "Soft Silk",
+    colour: "Marigold",
+    occasion: "Festive / Everyday",
+    weave: "Lightweight soft silk",
+    design: "Saffron field with slim tonal border",
+    price: 8400,
+    priceLabel: "₹8,400",
+    createdAt: "2026-09-23",
+    isNewArrival: true,
+    shortDescription:
+      "A saffron soft silk with a slim border. Bright, light and easy for festive days.",
+    about:
+      "Woven in soft silk for comfort, this saffron saree keeps ornament minimal and colour bold. Fresh seasonal colouring with a wearable fall. Perfect for festive days and polished everyday looks.",
+  }),
+  createProduct({
+    slug: "indigo-evening-georgette",
+    productId: "JS-N04",
+    name: "Indigo Evening Georgette",
+    category: "Designer",
+    fabric: "Georgette",
+    colour: "Midnight Blue",
+    occasion: "Party / Evening",
+    weave: "Fluid designer georgette",
+    design: "Deep indigo with scattered shimmer motifs",
+    price: 13900,
+    priceLabel: "₹13,900",
+    createdAt: "2026-09-22",
+    isNewArrival: true,
+    shortDescription:
+      "A deep indigo designer georgette with soft shimmer. Made for evening parties and modern celebrations.",
+    about:
+      "A new designer drape in fluid georgette, this indigo saree uses scattered shimmer for evening light. The silhouette stays contemporary and light. Ideal for parties and cocktails, with soft movement and a sleek finish.",
+  }),
+  createProduct({
+    slug: "blush-organza-bloom",
+    productId: "JS-N05",
+    name: "Blush Organza Bloom",
+    category: "Designer",
+    fabric: "Organza",
+    colour: "Rose",
+    occasion: "Reception / Party",
+    weave: "Airy organza with floral accents",
+    design: "Blush organza with delicate bloom motifs",
+    price: 10500,
+    priceLabel: "₹10,500",
+    createdAt: "2026-09-21",
+    isNewArrival: true,
+    shortDescription:
+      "A blush organza with delicate floral accents. Light, romantic and reception-ready.",
+    about:
+      "Finished in airy organza, this blush saree features soft bloom motifs and a romantic palette. Newly added for the season’s evening calendar. Best for receptions and parties, with translucent movement and gentle colour.",
+  }),
+  createProduct({
+    slug: "emerald-festive-tissue",
+    productId: "JS-N06",
+    name: "Emerald Festive Tissue",
+    category: "Festive",
+    fabric: "Tissue Silk",
+    colour: "Peacock Green",
+    occasion: "Festive",
+    weave: "Festive tissue silk",
+    design: "Emerald tissue with light festive shimmer",
+    price: 11200,
+    priceLabel: "₹11,200",
+    createdAt: "2026-09-20",
+    isNewArrival: true,
+    shortDescription:
+      "An emerald tissue silk with festive shimmer. Bright colour for celebrations and seasonal gatherings.",
+    about:
+      "Newly stocked in tissue silk, this emerald saree brings festive glow without heaviness. Motifs stay light and celebratory. Ideal for festivals and family functions, with an airy drape and luminous surface.",
+  }),
+  createProduct({
+    slug: "champagne-bridal-silk",
+    productId: "JS-N07",
+    name: "Champagne Bridal Silk",
+    category: "Wedding",
+    fabric: "Pure Silk",
+    colour: "Gold",
+    occasion: "Wedding",
+    weave: "Bridal wedding silk",
+    design: "Champagne gold with rich bridal borders",
+    price: 32000,
+    priceLabel: "₹32,000",
+    createdAt: "2026-09-19",
+    isNewArrival: true,
+    shortDescription:
+      "A champagne bridal silk with rich borders. Statement weaving for wedding ceremonies.",
+    about:
+      "A new bridal weave in pure silk, this champagne saree pairs soft gold tones with rich border work. Designed for ceremonial presence. Chosen for weddings and receptions, with substantial texture and lasting lustre.",
+  }),
+  createProduct({
+    slug: "lavender-meadow-silk",
+    productId: "JS-N08",
+    name: "Lavender Meadow Silk",
+    category: "Soft Silk",
+    fabric: "Soft Silk",
+    colour: "Rose",
+    occasion: "Everyday / Festive",
+    weave: "Soft silk with tonal accents",
+    design: "Lavender-rose field with meadow-light border",
+    price: 7200,
+    priceLabel: "₹7,200",
+    createdAt: "2026-09-18",
+    isNewArrival: true,
+    shortDescription:
+      "A lavender soft silk with a light meadow border. Soft colour for festive days and elevated everyday wear.",
+    about:
+      "Crafted in soft silk for easy wear, this lavender saree uses a gentle rose-lavender tone and a restrained border. Fresh seasonal colouring. Suited to festive days and polished daily looks.",
+  }),
+  createProduct({
+    slug: "copper-banarasi-glow",
+    productId: "JS-N09",
+    name: "Copper Banarasi Glow",
+    category: "Banarasi",
+    fabric: "Silk Brocade",
+    colour: "Gold",
+    occasion: "Festive / Wedding",
+    weave: "Banarasi brocade with copper zari",
+    design: "Warm copper floral with glowing zari",
+    price: 17400,
+    priceLabel: "₹17,400",
+    createdAt: "2026-09-17",
+    isNewArrival: true,
+    shortDescription:
+      "A copper-toned Banarasi with glowing zari florals. Warm elegance for festive and wedding evenings.",
+    about:
+      "A newly arrived Banarasi brocade in warm copper-gold tones, with glowing floral zari. The design feels rich yet wearable. Ideal for festive and wedding evenings, with a fine sheen and graceful fall.",
+  }),
+  createProduct({
+    slug: "pearl-kanjivaram",
+    productId: "JS-N10",
+    name: "Pearl Kanjivaram",
+    category: "Kanchipuram",
+    fabric: "Pure Silk",
+    colour: "Ivory",
+    occasion: "Wedding / Formal",
+    weave: "Traditional Kanchipuram handloom",
+    design: "Pearl ivory body with contrast temple borders",
+    price: 22500,
+    priceLabel: "₹22,500",
+    createdAt: "2026-09-16",
+    isNewArrival: true,
+    shortDescription:
+      "A pearl ivory Kanjivaram with contrast temple borders. Fresh classic weaving for formal celebrations.",
+    about:
+      "Handloom-woven in pure silk, this pearl Kanjivaram pairs an ivory body with structured temple borders. Newly added for the wedding season. Best for formal celebrations, with a clean colour story and lasting drape.",
+  }),
+  createProduct({
+    slug: "berry-soft-silk",
+    productId: "JS-N11",
+    name: "Berry Soft Silk",
+    category: "Soft Silk",
+    fabric: "Soft Silk",
+    colour: "Crimson",
+    occasion: "Festive / Everyday",
+    weave: "Soft silk weave",
+    design: "Deep berry field with slim contrast border",
+    price: 6450,
+    priceLabel: "₹6,450",
+    createdAt: "2026-09-15",
+    isNewArrival: true,
+    shortDescription:
+      "A berry soft silk with a slim contrast border. Deep colour, light fall, easy festive wear.",
+    about:
+      "Made in soft silk for comfort, this berry saree offers deep colour with a slim border. A fresh everyday-festive addition. Ideal for gatherings and elevated daily looks, with a soft hand and smooth finish.",
+  }),
+  createProduct({
+    slug: "sky-festive-organza",
+    productId: "JS-N12",
+    name: "Sky Festive Organza",
+    category: "Festive",
+    fabric: "Organza",
+    colour: "Teal",
+    occasion: "Festive / Party",
+    weave: "Light festive organza",
+    design: "Sky-teal organza with airy festive accents",
+    price: 9800,
+    priceLabel: "₹9,800",
+    createdAt: "2026-09-14",
+    isNewArrival: true,
+    shortDescription:
+      "A sky-teal festive organza with airy accents. Light, bright and ready for celebrations.",
+    about:
+      "A new festive organza in sky-teal tones with light accents. The craft stays airy and celebratory. Perfect for festivals and parties, with translucent movement and fresh colour.",
+  }),
 ];
+
+/** Main Sarees catalogue — excludes New Arrivals exclusives. */
+export const catalogueProducts: Product[] = products.filter(
+  (product) => !product.isNewArrival,
+);
 
 const CATEGORY_NAV_ORDER = [
   "All Sarees",
@@ -449,24 +757,104 @@ export function getProductBySlug(slug: string) {
   return products.find((product) => product.slug === slug);
 }
 
-/** Canonical product detail route used across Home, catalogue, and related cards. */
-export function productHref(slug: string) {
-  return `/sarees/${slug}`;
+export function getCatalogueProductBySlug(slug: string) {
+  return catalogueProducts.find((product) => product.slug === slug);
 }
 
-/** Latest catalogue items, newest first. */
+export function getNewArrivalProductBySlug(slug: string) {
+  return products.find(
+    (product) => product.isNewArrival && product.slug === slug,
+  );
+}
+
+export function getColourOption(
+  product: Product,
+  colourSlug?: string | null,
+): ProductColourOption {
+  if (colourSlug) {
+    const match = product.colourOptions.find(
+      (option) => option.id === colourSlug,
+    );
+    if (match) return match;
+  }
+  return (
+    product.colourOptions.find((option) => option.label === product.colour) ??
+    product.colourOptions[0] ?? {
+      id: slugify(product.colour),
+      label: product.colour,
+      hex: "#6b7280",
+    }
+  );
+}
+
+/** Catalogue-aware product URL. Optional colour slug for shareable variants. */
+export function productHref(
+  productOrSlug: Product | string,
+  colour?: string | ProductColourOption | null,
+): string {
+  const product =
+    typeof productOrSlug === "string"
+      ? getProductBySlug(productOrSlug)
+      : productOrSlug;
+
+  if (!product) {
+    const slug =
+      typeof productOrSlug === "string" ? productOrSlug : productOrSlug.slug;
+    return `/sarees/${slug}`;
+  }
+
+  const base = product.isNewArrival
+    ? `/new-arrivals/${product.slug}`
+    : `/sarees/${product.slug}`;
+
+  const colourId =
+    typeof colour === "string"
+      ? colour
+      : colour && typeof colour === "object"
+        ? colour.id
+        : null;
+
+  if (colourId) return `${base}/${colourId}`;
+  return base;
+}
+
+export function productCatalogueHref(product: Product) {
+  return product.isNewArrival ? "/new-arrivals" : "/sarees";
+}
+
+/** Stable cart line URL (uses stored catalogue flag — safe for stale basket rows). */
+export function cartItemHref(item: {
+  slug: string;
+  colourId?: string;
+  isNewArrival?: boolean;
+}) {
+  const base = item.isNewArrival
+    ? `/new-arrivals/${item.slug}`
+    : `/sarees/${item.slug}`;
+  return item.colourId ? `${base}/${item.colourId}` : base;
+}
+
+/** New Arrivals exclusives — distinct styles, names and pricing. */
 export function getNewArrivals(limit = 8): Product[] {
-  return [...products]
+  return products
+    .filter((product) => product.isNewArrival)
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .slice(0, limit);
 }
 
 export function getRelatedProducts(product: Product, limit = 4): Product[] {
   return products
-    .filter((item) => item.slug !== product.slug)
+    .filter(
+      (item) =>
+        item.slug !== product.slug &&
+        item.isNewArrival === product.isNewArrival,
+    )
     .map((item) => {
       let score = 0;
-      if (item.collection === product.collection || item.category === product.category) {
+      if (
+        item.collection === product.collection ||
+        item.category === product.category
+      ) {
         score += 5;
       }
       if (item.fabric === product.fabric) score += 3;
@@ -480,6 +868,14 @@ export function getRelatedProducts(product: Product, limit = 4): Product[] {
     })
     .slice(0, limit)
     .map(({ item }) => item);
+}
+
+/**
+ * Colourways for a product design — fixed order from product data.
+ * Selecting a colour never reorders this list.
+ */
+export function getProductColourOptions(product: Product): ProductColourOption[] {
+  return product.colourOptions;
 }
 
 export function whatsappEnquiryUrl(
@@ -502,6 +898,7 @@ export function whatsappOrderUrl(
     quantity: number;
     price: number;
     priceLabel: string;
+    colour?: string;
   }[],
   storeName: string,
 ) {
@@ -510,10 +907,10 @@ export function whatsappOrderUrl(
     0,
   );
   const itemBlock = lines
-    .map(
-      (line, index) =>
-        `${index + 1}. ${line.name}\n   SKU: ${line.productId}\n   Qty: ${line.quantity}\n   Price: ${line.priceLabel}`,
-    )
+    .map((line, index) => {
+      const colourLine = line.colour ? `\n   Colour: ${line.colour}` : "";
+      return `${index + 1}. ${line.name}\n   SKU: ${line.productId}${colourLine}\n   Qty: ${line.quantity}\n   Price: ${line.priceLabel}`;
+    })
     .join("\n\n");
 
   const text = [

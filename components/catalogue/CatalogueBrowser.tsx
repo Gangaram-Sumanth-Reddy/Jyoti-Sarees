@@ -24,9 +24,14 @@ import {
 
 type CatalogueBrowserProps = {
   products: Product[];
+  /** Optional badge on every card (e.g. "New" on New Arrivals). */
+  cardBadge?: string;
 };
 
-export function CatalogueBrowser({ products }: CatalogueBrowserProps) {
+export function CatalogueBrowser({
+  products,
+  cardBadge,
+}: CatalogueBrowserProps) {
   const [filters, setFilters] = useState<CatalogueFilters>(defaultCatalogueFilters);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -225,8 +230,9 @@ export function CatalogueBrowser({ products }: CatalogueBrowserProps) {
                   <ProductCard
                     key={product.slug}
                     product={product}
-                    href={productHref(product.slug)}
+                    href={productHref(product)}
                     showAddToCart
+                    badge={cardBadge}
                     className="h-full"
                   />
                 ))}

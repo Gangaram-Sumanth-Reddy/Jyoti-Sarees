@@ -7,7 +7,14 @@ import { catalogueBanners } from "@/lib/catalogue-banners";
 
 const AUTO_MS = 2500;
 
-export function CatalogueBanner() {
+type CatalogueBannerProps = {
+  /** Screen-reader title for the carousel (defaults to Sarees). */
+  label?: string;
+};
+
+export function CatalogueBanner({
+  label = "Sarees — promotional highlights",
+}: CatalogueBannerProps) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const labelId = useId();
@@ -40,7 +47,7 @@ export function CatalogueBanner() {
       }}
     >
       <h1 id={labelId} className="sr-only">
-        Sarees — promotional highlights
+        {label}
       </h1>
 
       <div className="catalogue-banner relative w-full overflow-hidden">

@@ -93,7 +93,7 @@ export function CollectionBrowser({
                     category={product.category}
                     fabric={product.fabric}
                     price={product.priceLabel}
-                    href={productHref(product.slug)}
+                    href={productHref(product)}
                     productId={product.productId}
                     showWhatsApp
                   />

@@ -20,17 +20,26 @@ export function CollectionCard({
   return (
     <Card
       as="li"
-      className={cn("flex flex-col overflow-hidden p-0 shadow-soft", className)}
+      className={cn(
+        "flex h-full min-w-0 flex-col overflow-hidden p-0 shadow-soft",
+        className,
+      )}
     >
-      <Link href={href} className="group block min-w-0">
-        <ImageFrame aspect="card" radius="none" className="rounded-t-md">
+      <Link href={href} className="group flex h-full min-w-0 flex-col">
+        <ImageFrame
+          aspect="card"
+          radius="none"
+          className="shrink-0 rounded-t-md"
+        >
           <ImagePlaceholder label={name} />
         </ImageFrame>
-        <div className="flex flex-col justify-center gap-1.5 px-4 py-3.5 sm:px-5 sm:py-4">
-          <h3 className="text-h3 leading-snug transition-colors group-hover:text-accent">
+        <div className="flex flex-1 flex-col items-center justify-center gap-1.5 px-3.5 py-4 text-center sm:px-4 sm:py-4">
+          <h3 className="min-h-[1.6em] text-balance text-[1.05rem] font-semibold leading-snug text-rich-black transition-colors group-hover:text-accent sm:text-h3">
             {name}
           </h3>
-          <p className="text-small leading-snug text-muted">{description}</p>
+          <p className="line-clamp-2 min-h-[2.5em] text-small leading-snug text-muted">
+            {description}
+          </p>
         </div>
       </Link>
     </Card>

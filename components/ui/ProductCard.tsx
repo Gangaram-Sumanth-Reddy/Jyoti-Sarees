@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { AddToCartControl } from "@/components/cart/AddToCartControl";
 import { Badge } from "@/components/ui/Badge";
-import { Button, ButtonLink, ExternalButtonLink } from "@/components/ui/Button";
+import { ButtonLink, ExternalButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ImageFrame } from "@/components/ui/ImageFrame";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { cn } from "@/lib/cn";
-import { addToEnquiryCart } from "@/lib/enquiry-cart";
-import { whatsappEnquiryUrl, type Product } from "@/lib/products";
+import { productHref, whatsappEnquiryUrl, type Product } from "@/lib/products";
 import { site } from "@/lib/site";
 
 type ProductCardProps = {
@@ -18,7 +18,7 @@ type ProductCardProps = {
   fabric?: string;
   colour?: string;
   price?: string;
-  href: string;
+  href?: string;
   productId?: string;
   className?: string;
   showWhatsApp?: boolean;
@@ -34,7 +34,7 @@ export function ProductCard({
   fabric: fabricProp,
   colour: colourProp,
   price: priceProp,
-  href,
+  href: hrefProp,
   productId: productIdProp,
   className,
   showWhatsApp = false,
@@ -49,6 +49,7 @@ export function ProductCard({
   const price = product?.priceLabel ?? priceProp ?? "";
   const productId = product?.productId ?? productIdProp;
   const available = product?.available ?? availableProp ?? true;
+  const href = hrefProp ?? (product ? productHref(product) : "#");
 
   const meta = [category, fabric].filter(Boolean).join(" · ");
   const detail = colour || undefined;
@@ -111,18 +112,8 @@ export function ProductCard({
           >
             View Saree
           </ButtonLink>
-          {showAddToCart ? (
-            <Button
-              type="button"
-              size="sm"
-              disabled={!available}
-              className="min-h-9 min-w-0 flex-1 whitespace-nowrap px-2.5 text-[0.7rem] tracking-[0.02em]"
-              onClick={() => {
-                if (product) addToEnquiryCart(product);
-              }}
-            >
-              Add to Cart
-            </Button>
+          {showAddToCart && product ? (
+            <AddToCartControl product={product} size="sm" />
           ) : null}
           {showWhatsApp && !showAddToCart ? (
             <ExternalButtonLink
