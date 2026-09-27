@@ -27,7 +27,7 @@ function CartItemCard({ item }: { item: EnquiryCartItem }) {
 
   return (
     <Card className="overflow-hidden p-0 shadow-soft">
-      <div className="grid gap-4 p-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-5 sm:p-5">
+      <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3.5 p-3.5 min-[400px]:grid-cols-[6.5rem_minmax(0,1fr)] sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-5 sm:p-5">
         <Link href={href} className="block min-w-0">
           <ImageFrame aspect="card" radius="md" className="shadow-none">
             <ImagePlaceholder label={item.name} />
@@ -39,7 +39,7 @@ function CartItemCard({ item }: { item: EnquiryCartItem }) {
             <div className="min-w-0">
               <Link
                 href={href}
-                className="text-[1.05rem] font-semibold text-rich-black transition-colors hover:text-accent"
+                className="text-[0.975rem] font-semibold leading-snug text-rich-black transition-colors hover:text-accent sm:text-[1.05rem]"
               >
                 {item.name}
               </Link>
@@ -55,19 +55,19 @@ function CartItemCard({ item }: { item: EnquiryCartItem }) {
             </div>
             <button
               type="button"
-              className="shrink-0 text-small font-semibold text-muted transition-colors hover:text-navy"
+              className="-mr-1 -mt-1 inline-flex min-h-9 shrink-0 items-center px-1 text-small font-semibold text-muted transition-colors hover:text-navy sm:m-0 sm:min-h-0 sm:p-0"
               onClick={() => removeFromEnquiryCart(item.slug, item.colour)}
             >
               Remove
             </button>
           </div>
 
-          <div className="mt-4 flex items-center gap-2">
+          <div className="mt-auto flex items-center gap-2 pt-3 sm:mt-4 sm:pt-0">
             <span className="text-small text-muted">Qty</span>
             <div className="inline-flex items-center overflow-hidden rounded-pill border border-navy bg-navy text-white">
               <button
                 type="button"
-                className="inline-flex min-h-9 min-w-9 items-center justify-center text-lg font-semibold transition-colors hover:bg-navy-mid"
+                className="inline-flex min-h-10 min-w-10 items-center justify-center text-lg font-semibold transition-colors hover:bg-navy-mid sm:min-h-9 sm:min-w-9"
                 aria-label={`Decrease quantity of ${item.name}`}
                 onClick={() =>
                   setEnquiryQuantity(item.slug, item.quantity - 1, item.colour)
@@ -80,7 +80,7 @@ function CartItemCard({ item }: { item: EnquiryCartItem }) {
               </span>
               <button
                 type="button"
-                className="inline-flex min-h-9 min-w-9 items-center justify-center text-lg font-semibold transition-colors hover:bg-navy-mid disabled:opacity-40"
+                className="inline-flex min-h-10 min-w-10 items-center justify-center text-lg font-semibold transition-colors hover:bg-navy-mid disabled:opacity-40 sm:min-h-9 sm:min-w-9"
                 aria-label={`Increase quantity of ${item.name}`}
                 disabled={item.quantity >= 99}
                 onClick={() =>
@@ -169,7 +169,7 @@ export function CartPageContent() {
           </p>
         </div>
 
-        <div className="mt-10 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,20rem)] lg:gap-10">
+        <div className="mt-8 grid items-start gap-6 sm:mt-10 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,20rem)] lg:gap-10">
           <ul className="flex list-none flex-col gap-4 p-0">
             {items.map((item) => (
               <li key={getCartItemKey(item)}>

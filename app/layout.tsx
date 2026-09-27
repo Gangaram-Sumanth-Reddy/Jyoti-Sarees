@@ -1,5 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { EnquiryCartHost } from "@/components/cart/EnquiryCartHost";
+import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { RouteScrollReset } from "@/components/layout/RouteScrollReset";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -15,10 +17,14 @@ export const metadata: Metadata = {
   description: site.description,
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0a2472",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full" data-scroll-behavior="smooth">
-      <body className="flex min-h-full flex-col bg-white font-sans text-rich-black antialiased">
+      <body className="flex min-h-full flex-col bg-white font-sans text-rich-black antialiased max-md:pb-[calc(var(--mobile-nav-height)+env(safe-area-inset-bottom))]">
         <RouteScrollReset />
         <SkipLink />
         <SiteHeader />
@@ -26,6 +32,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <SiteFooter />
+        <FloatingWhatsApp />
+        <MobileBottomNav />
         <EnquiryCartHost />
       </body>
     </html>

@@ -87,6 +87,7 @@
   --jyoti-gutter: clamp(1rem, 0.55rem + 2.2vw, 2rem);
   --jyoti-section-space: clamp(3.5rem, 2.4rem + 4vw, 6.5rem);
   --site-header-height: 4.25rem;
+  --mobile-nav-height: 4rem;
 }
 
 @theme inline {
@@ -385,6 +386,14 @@
     }
   }
 
+  /* Slides whose model stands near the top edge get a shorter fade on stacked layouts. */
+  @media (max-width: 1023.98px) {
+    .hero-card-image-soft-top {
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 6%);
+      mask-image: linear-gradient(to bottom, transparent 0, #000 6%);
+    }
+  }
+
   .hero-float-note {
     box-shadow:
       0 1px 2px rgb(2 6 14 / 0.05),
@@ -519,10 +528,127 @@
     animation: cart-empty-accent 3.2s ease-in-out 0.7s infinite;
   }
 
+  /* Instagram reels marquee: the list is rendered twice, so -50% lands exactly on the copy. */
+  .reels-marquee {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 97%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 97%, transparent 100%);
+  }
+
+  .reels-track {
+    animation: reels-scroll var(--reels-duration, 42s) linear infinite;
+    will-change: transform;
+  }
+
+  .reels-marquee:hover .reels-track,
+  .reels-marquee:focus-within .reels-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes reels-scroll {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reels-marquee {
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .reels-marquee::-webkit-scrollbar {
+      display: none;
+    }
+
+    .reels-track {
+      animation: none;
+    }
+
+    .reels-loop-copy {
+      display: none;
+    }
+  }
+
+  /* Touch-scrollable rows (mobile collections) keep swiping but hide the bar. */
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Phones: filters rise as a bottom sheet; tablets keep the side drawer. */
+  @media (max-width: 767.98px) {
+    .filter-sheet[open] > * {
+      animation: filter-sheet-up 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+
+  @keyframes filter-sheet-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  .testimonial-dialog[open] {
+    animation: testimonial-dialog-in 220ms ease-out;
+  }
+
+  @keyframes testimonial-dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .testimonial-dialog[open],
+    .filter-sheet[open] > * {
+      animation: none;
+    }
+  }
+
+  /* Floating WhatsApp button: a soft ring that fades out every few seconds. */
+  .whatsapp-float::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--jyoti-navy) 35%, transparent);
+    animation: whatsapp-float-pulse 3.2s ease-out infinite;
+    pointer-events: none;
+  }
+
+  .whatsapp-float:hover::before {
+    animation: none;
+  }
+
+  @keyframes whatsapp-float-pulse {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--jyoti-navy) 35%, transparent);
+    }
+    45%,
+    100% {
+      box-shadow: 0 0 0 12px color-mix(in srgb, var(--jyoti-navy) 0%, transparent);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .cart-empty-float,
     .cart-empty-accent,
-    .cart-empty-accent-delay {
+    .cart-empty-accent-delay,
+    .whatsapp-float::before {
       animation: none !important;
     }
   }

@@ -4,7 +4,7 @@ import { cn } from "@/lib/cn";
 
 
 
-function SocialIcon({ id }: { id: string }) {
+export function SocialIcon({ id }: { id: string }) {
 
   if (id === "instagram") {
 

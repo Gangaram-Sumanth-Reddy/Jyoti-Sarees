@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
+import { cn } from "@/lib/cn";
 import {
   getFilterOptions,
   priceRangeOptions,
@@ -25,6 +26,9 @@ type ProductFiltersBarProps = {
   hideCategory?: boolean;
   resultCount?: number;
   resultLabel?: string;
+  /** Keeps select ids unique when the bar renders twice (inline + mobile sheet). */
+  idPrefix?: string;
+  className?: string;
 };
 
 export function ProductFiltersBar({
@@ -37,11 +41,18 @@ export function ProductFiltersBar({
   hideCategory = false,
   resultCount,
   resultLabel = "Sarees",
+  idPrefix,
+  className,
 }: ProductFiltersBarProps) {
   const options = getFilterOptions(products);
 
   return (
-    <div className="rounded-lg border border-border bg-white p-4 shadow-soft sm:p-5 lg:p-6">
+    <div
+      className={cn(
+        "rounded-lg border border-border bg-white p-4 shadow-soft sm:p-5 lg:p-6",
+        className,
+      )}
+    >
       {typeof resultCount === "number" ? (
         <div className="mb-5 flex flex-col gap-1 border-b border-border pb-4 sm:flex-row sm:items-end sm:justify-between">
           <p className="text-body font-semibold text-rich-black" aria-live="polite">
@@ -62,6 +73,7 @@ export function ProductFiltersBar({
           {hideCategory ? null : (
             <Select
               label={categoryLabel}
+              id={idPrefix ? `${idPrefix}-category` : undefined}
               name="category"
               value={filters.category}
               onChange={(event) => onChange("category", event.target.value)}
@@ -77,7 +89,8 @@ export function ProductFiltersBar({
 
           <Select
             label="Colour"
-            name="colour"
+            id={idPrefix ? `${idPrefix}-colour` : undefined}
+              name="colour"
             value={filters.colour}
             onChange={(event) => onChange("colour", event.target.value)}
           >
@@ -91,7 +104,8 @@ export function ProductFiltersBar({
 
           <Select
             label="Fabric"
-            name="fabric"
+            id={idPrefix ? `${idPrefix}-fabric` : undefined}
+              name="fabric"
             value={filters.fabric}
             onChange={(event) => onChange("fabric", event.target.value)}
           >
@@ -105,7 +119,8 @@ export function ProductFiltersBar({
 
           <Select
             label="Price"
-            name="price"
+            id={idPrefix ? `${idPrefix}-price` : undefined}
+              name="price"
             value={filters.priceRange}
             onChange={(event) =>
               onChange("priceRange", event.target.value as PriceRangeId)
@@ -122,7 +137,8 @@ export function ProductFiltersBar({
         <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end lg:w-auto lg:min-w-[14rem]">
           <Select
             label="Sort"
-            name="sort"
+            id={idPrefix ? `${idPrefix}-sort` : undefined}
+              name="sort"
             value={filters.sort}
             onChange={(event) => onChange("sort", event.target.value as SortId)}
             className="lg:min-w-[14rem]"

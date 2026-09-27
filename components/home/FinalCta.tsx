@@ -17,11 +17,11 @@ export function FinalCta() {
             tone="inverse"
             className="mb-8 sm:mb-10"
           />
-          <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
+          <div className="flex flex-row flex-wrap items-center justify-center gap-3 max-sm:mx-auto max-sm:grid max-sm:max-w-sm max-sm:grid-cols-2 max-sm:gap-[clamp(0.5rem,0.2rem+1.2vw,0.75rem)]">
             <ExternalButtonLink
               href={site.whatsappUrl}
               size="lg"
-              className="border-transparent bg-white text-rich-black hover:bg-cream"
+              className="border-transparent bg-white text-rich-black hover:bg-cream max-sm:min-w-0 max-sm:px-[clamp(0.5rem,0.1rem+1.6vw,1rem)] max-sm:text-[clamp(0.78rem,0.62rem+0.8vw,0.9375rem)] max-sm:tracking-[0.02em]"
             >
               WhatsApp Us
             </ExternalButtonLink>
@@ -29,7 +29,7 @@ export function FinalCta() {
               href="/contact"
               variant="secondary"
               size="lg"
-              className="border-white text-white hover:!border-white hover:!bg-white hover:!text-navy"
+              className="border-white text-white hover:!border-white hover:!bg-white hover:!text-navy max-sm:min-w-0 max-sm:px-[clamp(0.5rem,0.1rem+1.6vw,1rem)] max-sm:text-[clamp(0.78rem,0.62rem+0.8vw,0.9375rem)] max-sm:tracking-[0.02em]"
             >
               Visit Our Store
             </ButtonLink>

@@ -13,7 +13,7 @@ export function NavLogo({ className }: NavLogoProps) {
       href="/"
       aria-label={`${site.name} — Home`}
       className={cn(
-        "-my-1 inline-flex shrink-0 items-center gap-2.5 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:gap-3",
+        "-my-1 inline-flex min-w-0 shrink-0 items-center gap-2 rounded-md min-[360px]:gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:gap-3",
         className,
       )}
     >
@@ -23,8 +23,8 @@ export function NavLogo({ className }: NavLogoProps) {
         width={1098}
         height={1098}
         preload
-        sizes="(min-width: 640px) 44px, 40px"
-        className="size-10 shrink-0 rounded-full sm:size-11"
+        sizes="44px"
+        className="size-10 shrink-0 rounded-full min-[360px]:size-11"
       />
       {/* Served at full resolution so the script stays crisp at any zoom level. */}
       <Image
@@ -34,7 +34,7 @@ export function NavLogo({ className }: NavLogoProps) {
         height={899}
         unoptimized
         preload
-        className="h-11 w-auto sm:h-12"
+        className="h-10 w-auto min-[360px]:h-11 md:h-12"
       />
     </Link>
   );

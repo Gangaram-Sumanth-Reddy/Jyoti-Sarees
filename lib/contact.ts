@@ -107,18 +107,24 @@ export function contactEnquiryWhatsAppUrl(
     quantity: string;
   },
 ) {
+  const details = [
+    ["Name", payload.name],
+    ["Mobile", payload.mobile],
+    ["Email", payload.email],
+    ["Address", payload.address],
+    ["PIN code", payload.pincode],
+    ["State", payload.state],
+    ["City", payload.city],
+    ["Saree / Requirement", payload.requirement],
+    ["Quantity", payload.quantity],
+  ]
+    .filter(([, value]) => value.trim())
+    .map(([label, value]) => `${label}: ${value.trim()}`);
+
   const text = [
     `*${site.name} — Contact Enquiry*`,
     "",
-    `Name: ${payload.name}`,
-    `Mobile: ${payload.mobile}`,
-    `Email: ${payload.email}`,
-    `Address: ${payload.address}`,
-    `PIN code: ${payload.pincode}`,
-    `State: ${payload.state}`,
-    `City: ${payload.city}`,
-    `Saree / Requirement: ${payload.requirement}`,
-    `Quantity: ${payload.quantity}`,
+    ...details,
     "",
     "Please share availability and details. Thank you.",
   ].join("\n");

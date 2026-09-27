@@ -181,7 +181,7 @@ export function ProductInfo({
         </div>
       ) : null}
 
-      <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+      <div className="mt-7 flex flex-col gap-3 max-sm:grid max-sm:grid-cols-2 max-sm:gap-[clamp(0.5rem,0.2rem+1.2vw,0.75rem)] sm:flex-row sm:flex-wrap sm:items-center">
         <ExternalButtonLink
           href={whatsappEnquiryUrl(
             `${product.name} (${selectedColour.label})`,
@@ -189,7 +189,7 @@ export function ProductInfo({
             product.productId,
           )}
           size="lg"
-          className="w-full bg-navy text-white hover:bg-navy-mid sm:w-auto sm:min-w-[14rem]"
+          className="w-full bg-navy text-white hover:bg-navy-mid max-sm:min-w-0 max-sm:px-2 max-sm:text-[clamp(0.78rem,0.62rem+0.8vw,0.9375rem)] max-sm:tracking-[0.02em] sm:w-auto sm:min-w-[14rem]"
         >
           Enquire on WhatsApp
         </ExternalButtonLink>
@@ -199,6 +199,7 @@ export function ProductInfo({
           colour={selectedColour.label}
           colourId={selectedColour.id}
           size="lg"
+          className="max-sm:min-w-0 max-sm:px-2 max-sm:text-[clamp(0.78rem,0.62rem+0.8vw,0.9375rem)] max-sm:tracking-[0.02em]"
         />
       </div>
 

@@ -2,19 +2,29 @@
 
 import { useMemo, useState, type FormEvent } from "react";
 import { SocialIcons } from "@/components/layout/SocialIcons";
+import {
+  FormPrivacyNotice,
+  HoneypotField,
+} from "@/components/privacy/FormPrivacyBits";
 import { Button, ExternalButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Checkbox } from "@/components/ui/Checkbox";
 import { CountryCodeSelect } from "@/components/ui/CountryCodeSelect";
 import { Input } from "@/components/ui/Input";
 import { SearchableField } from "@/components/ui/SearchableField";
 import { cn } from "@/lib/cn";
 import {
-  contactAddresses,
   contactEnquiryWhatsAppUrl,
   getPhoneCountry,
   getSareeRequirementSuggestions,
-  isValidMobileForCountry,
 } from "@/lib/contact";
+import {
+  emptyEnquiry,
+  validateEnquiry,
+  type EnquiryErrors,
+  type EnquiryInput,
+} from "@/lib/enquiry";
+import { submitForm } from "@/lib/form-submission";
 import {
   getCitiesForState,
   getStateNames,
@@ -23,70 +33,25 @@ import {
 import {
   findPincodeEntry,
   getPincodeSuggestions,
-  isValidIndianPincode,
 } from "@/lib/india-pincodes";
+import { privacyConfig } from "@/lib/privacy-config";
 import { site } from "@/lib/site";
 
-type FormState = {
-  fullName: string;
-  countryIso: string;
-  mobile: string;
-  email: string;
-  address: string;
-  pincode: string;
-  state: string;
-  city: string;
-  requirement: string;
-  quantity: string;
-};
+type FormState = EnquiryInput;
+type FormErrors = EnquiryErrors;
 
-type FormErrors = Partial<Record<keyof FormState, string>>;
+const initialForm = emptyEnquiry;
 
-const initialForm: FormState = {
-  fullName: "",
-  countryIso: "IN",
-  mobile: "",
-  email: "",
-  address: "",
-  pincode: "",
-  state: "",
-  city: "",
-  requirement: "",
-  quantity: "1",
-};
-
-function validate(form: FormState): FormErrors {
-  const errors: FormErrors = {};
-  const country = getPhoneCountry(form.countryIso);
-
-  if (!form.fullName.trim()) errors.fullName = "Please enter your full name.";
-  if (!isValidMobileForCountry(form.countryIso, form.mobile)) {
-    errors.mobile = `Enter a valid ${country.digits}-digit number for ${country.code}.`;
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-    errors.email = "Enter a valid email address.";
-  }
-  if (!form.address.trim()) errors.address = "Please enter your address.";
-  if (!isValidIndianPincode(form.pincode)) {
-    errors.pincode = "Enter a valid 6-digit PIN code.";
-  }
-  if (!form.state.trim()) errors.state = "Please select or enter your state.";
-  if (!form.city.trim()) errors.city = "Please select or enter your city.";
-  if (!form.requirement.trim()) {
-    errors.requirement = "Tell us the saree type or requirement.";
-  }
-  const qty = Number(form.quantity);
-  if (!Number.isFinite(qty) || qty < 1 || qty > 999) {
-    errors.quantity = "Enter a quantity between 1 and 999.";
-  }
-
-  return errors;
-}
+type SubmitState =
+  | { status: "idle" | "submitting"; message?: string }
+  | { status: "sent"; stored: boolean };
 
 export function ContactEnquiryPanel() {
   const [form, setForm] = useState<FormState>(initialForm);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
+  const [honeypot, setHoneypot] = useState("");
+  const submitted = submitState.status === "sent";
 
   const stateOptions = useMemo(() => getStateNames(), []);
   const cityOptions = useMemo(() => {
@@ -154,12 +119,20 @@ export function ContactEnquiryPanel() {
     });
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const nextErrors = validate(form);
+    const nextErrors = validateEnquiry(form);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
-    setSubmitted(true);
+
+    setSubmitState({ status: "submitting" });
+    const result = await submitForm("/api/enquiries", form, honeypot);
+    if (result.ok) {
+      setSubmitState({ status: "sent", stored: result.stored });
+      return;
+    }
+    if (result.errors) setErrors(result.errors as FormErrors);
+    setSubmitState({ status: "idle", message: result.message });
   }
 
   const fullMobile = `${phoneCountry.code} ${form.mobile}`.trim();
@@ -178,79 +151,60 @@ export function ContactEnquiryPanel() {
           send an enquiry and our team will help you.
         </p>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
-          <a
-            href={site.phoneHref}
-            aria-label="Call Jyoti Sarees"
-            className="inline-flex size-11 shrink-0 items-center justify-center overflow-visible rounded-full border border-border bg-white text-navy shadow-soft transition-colors hover:border-navy hover:bg-cream"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-              className="shrink-0 overflow-visible"
+        <div className="mx-auto mt-8 flex w-fit max-w-full flex-col items-center gap-6 lg:mx-0">
+          <div className="flex max-w-full flex-wrap items-center justify-center gap-3">
+            <a
+              href={site.phoneHref}
+              aria-label="Call Jyoti Sarees"
+              className="inline-flex size-11 shrink-0 items-center justify-center overflow-visible rounded-full border border-border bg-white text-navy shadow-soft transition-colors hover:border-navy hover:bg-cream"
             >
-              <path
-                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
-          <a
-            href={`mailto:${site.email}`}
-            className="inline-flex min-h-11 max-w-full items-center gap-2.5 truncate rounded-full border border-border bg-white px-3.5 text-small font-semibold text-rich-black shadow-soft transition-colors hover:border-navy hover:bg-cream sm:text-body"
-          >
-            <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-navy text-white">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <rect
-                  x="3.5"
-                  y="5.5"
-                  width="17"
-                  height="13"
-                  rx="2"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                />
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+                className="shrink-0 overflow-visible"
+              >
                 <path
-                  d="m5.5 8 6.5 4.5L18.5 8"
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"
                   stroke="currentColor"
-                  strokeWidth="1.8"
+                  strokeWidth="1.75"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
               </svg>
-            </span>
-            <span className="truncate">{site.email}</span>
-          </a>
-        </div>
-
-        <div className="mt-8">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-navy/70">
-            Address
-          </p>
-          <div className="mt-3 grid grid-cols-1 gap-3 text-left min-[420px]:grid-cols-2 sm:gap-3">
-            {contactAddresses.map((store) => (
-              <div
-                key={store.id}
-                className="rounded-md border border-border bg-white px-3.5 py-3 shadow-soft"
-              >
-                <p className="text-small font-semibold text-navy">{store.label}</p>
-                {store.lines.map((line) => (
-                  <p key={line} className="mt-0.5 text-small leading-snug text-muted">
-                    {line}
-                  </p>
-                ))}
-              </div>
-            ))}
+            </a>
+            <a
+              href={`mailto:${site.email}`}
+              className="inline-flex min-h-11 max-w-full items-center gap-2.5 truncate rounded-full border border-border bg-white px-3.5 text-small font-semibold text-rich-black shadow-soft transition-colors hover:border-navy hover:bg-cream sm:text-body"
+            >
+              <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-navy text-white">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect
+                    x="3.5"
+                    y="5.5"
+                    width="17"
+                    height="13"
+                    rx="2"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
+                  <path
+                    d="m5.5 8 6.5 4.5L18.5 8"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <span className="truncate">{site.email}</span>
+            </a>
           </div>
-        </div>
 
-        <SocialIcons className="mt-8" align="center" />
+          <SocialIcons align="center" />
+        </div>
       </aside>
 
       <Card className="min-w-0 overflow-hidden p-4 shadow-soft sm:p-6 lg:p-7">
@@ -270,12 +224,24 @@ export function ContactEnquiryPanel() {
                 />
               </svg>
             </div>
-            <h2 className="text-h3 text-rich-black">Enquiry received</h2>
-            <p className="mx-auto mt-3 max-w-md text-body leading-relaxed text-muted">
-              Thank you. Our team will review your request and get back to you
-              shortly. For a quicker response, you can also message us on
-              WhatsApp.
-            </p>
+            {submitState.stored ? (
+              <>
+                <h2 className="text-h3 text-rich-black">Enquiry received</h2>
+                <p className="mx-auto mt-3 max-w-md text-body leading-relaxed text-muted">
+                  Thank you. Our team will review your request and get back to
+                  you shortly. For a quicker response, you can also message us
+                  on WhatsApp.
+                </p>
+              </>
+            ) : (
+              <>
+                <h2 className="text-h3 text-rich-black">Almost done</h2>
+                <p className="mx-auto mt-3 max-w-md text-body leading-relaxed text-muted">
+                  Your details are ready. Tap below to send your enquiry to our
+                  team on WhatsApp.
+                </p>
+              </>
+            )}
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <ExternalButtonLink
                 href={contactEnquiryWhatsAppUrl(site.whatsappUrl, {
@@ -296,7 +262,7 @@ export function ContactEnquiryPanel() {
                 type="button"
                 variant="secondary"
                 onClick={() => {
-                  setSubmitted(false);
+                  setSubmitState({ status: "idle" });
                   setForm(initialForm);
                   setErrors({});
                 }}
@@ -304,6 +270,10 @@ export function ContactEnquiryPanel() {
                 Send another enquiry
               </Button>
             </div>
+            <p className="mx-auto mt-5 max-w-sm text-small leading-relaxed text-muted">
+              WhatsApp opens with your details pre-filled. Nothing is sent until
+              you tap send in WhatsApp.
+            </p>
           </div>
         ) : (
           <>
@@ -312,7 +282,7 @@ export function ContactEnquiryPanel() {
             </div>
 
             <form
-              className="mt-6 grid min-w-0 gap-4 sm:grid-cols-2"
+              className="relative mt-6 grid min-w-0 gap-4 sm:grid-cols-2"
               onSubmit={handleSubmit}
               noValidate
             >
@@ -321,6 +291,7 @@ export function ContactEnquiryPanel() {
                 label="Full Name"
                 placeholder="Enter your full name"
                 value={form.fullName}
+                autoComplete="name"
                 onChange={(event) => updateField("fullName", event.target.value)}
                 error={errors.fullName}
                 required
@@ -375,10 +346,11 @@ export function ContactEnquiryPanel() {
                   label="Email Address"
                   type="email"
                   placeholder="Enter your email"
+                  autoComplete="email"
                   value={form.email}
                   onChange={(event) => updateField("email", event.target.value)}
                   error={errors.email}
-                  required
+                  optional
                 />
               </div>
 
@@ -388,9 +360,10 @@ export function ContactEnquiryPanel() {
                   label="Address"
                   placeholder="Street, area, landmark"
                   value={form.address}
+                  autoComplete="street-address"
                   onChange={(event) => updateField("address", event.target.value)}
                   error={errors.address}
-                  required
+                  optional
                 />
               </div>
               <SearchableField
@@ -401,7 +374,7 @@ export function ContactEnquiryPanel() {
                 onChange={(value) => updateField("pincode", value)}
                 options={pincodeOptions}
                 error={errors.pincode}
-                required
+                optional
                 minChars={1}
               />
 
@@ -413,7 +386,7 @@ export function ContactEnquiryPanel() {
                 onChange={(value) => updateField("state", value)}
                 options={stateOptions}
                 error={errors.state}
-                required
+                optional
                 minChars={1}
               />
               <SearchableField
@@ -426,7 +399,7 @@ export function ContactEnquiryPanel() {
                 onChange={(value) => updateField("city", value)}
                 options={cityOptions}
                 error={errors.city}
-                required
+                optional
                 minChars={1}
               />
 
@@ -459,13 +432,43 @@ export function ContactEnquiryPanel() {
                 required
               />
 
-              <div className="sm:col-span-2">
+              <HoneypotField value={honeypot} onChange={setHoneypot} />
+
+              <div className="grid gap-4 sm:col-span-2">
+                <Checkbox
+                  id="contact-marketing-consent"
+                  name="marketingConsent"
+                  checked={form.marketingConsent}
+                  onChange={(event) =>
+                    updateField("marketingConsent", event.target.checked)
+                  }
+                >
+                  {privacyConfig.consentText.marketing}{" "}
+                  <span className="text-muted">
+                    Optional — you can opt out at any time.
+                  </span>
+                </Checkbox>
+
+                {submitState.status === "idle" && submitState.message ? (
+                  <p role="alert" className="text-small font-semibold text-navy-deep">
+                    {submitState.message}
+                  </p>
+                ) : null}
+
                 <Button
                   type="submit"
+                  disabled={submitState.status === "submitting"}
                   className="min-h-11 w-full bg-navy text-white hover:bg-navy-mid"
                 >
-                  Send Enquiry
+                  {submitState.status === "submitting" ? "Sending…" : "Send Enquiry"}
                 </Button>
+
+                <FormPrivacyNotice>
+                  We use your name, contact number and enquiry details only to
+                  respond to this enquiry and help with any order that follows.
+                  Email and location details are optional and help us check
+                  availability and delivery. See our
+                </FormPrivacyNotice>
               </div>
             </form>
           </>

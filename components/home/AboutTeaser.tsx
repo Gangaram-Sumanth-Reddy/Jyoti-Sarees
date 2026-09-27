@@ -20,7 +20,27 @@ export function AboutTeaser() {
               description={copy.about.description}
               className="mb-6 sm:mb-8 lg:mb-8"
             />
-            <ButtonLink href="/about">Our Story</ButtonLink>
+            <div className="max-sm:flex max-sm:justify-center">
+              <ButtonLink href="/about" className="max-sm:gap-2.5 max-sm:pr-5">
+                <span className="leading-none">Our Story</span>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                  className="shrink-0 sm:hidden"
+                >
+                  <path
+                    d="M5 12h14M13 6l6 6-6 6"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </ButtonLink>
+            </div>
           </div>
         </div>
       </Container>

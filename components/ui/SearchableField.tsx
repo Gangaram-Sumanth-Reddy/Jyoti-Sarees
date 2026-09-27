@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { controlClassName } from "@/components/ui/Input";
+import { controlClassName, FieldMarker } from "@/components/ui/Input";
 import { cn } from "@/lib/cn";
 import { filterSuggestions } from "@/lib/india-locations";
 
@@ -15,6 +15,7 @@ type SearchableFieldProps = {
   placeholder?: string;
   error?: string;
   required?: boolean;
+  optional?: boolean;
   disabled?: boolean;
   minChars?: number;
 };
@@ -29,6 +30,7 @@ export function SearchableField({
   placeholder,
   error,
   required,
+  optional,
   disabled,
   minChars = 1,
 }: SearchableFieldProps) {
@@ -45,14 +47,14 @@ export function SearchableField({
   }, [options, value, minChars]);
 
   useEffect(() => {
-    function onPointerDown(event: MouseEvent) {
+    function onPointerDown(event: PointerEvent) {
       if (!rootRef.current?.contains(event.target as Node)) {
         setOpen(false);
         setActiveIndex(-1);
       }
     }
-    document.addEventListener("mousedown", onPointerDown);
-    return () => document.removeEventListener("mousedown", onPointerDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
   }, []);
 
   function selectOption(option: string) {
@@ -68,7 +70,7 @@ export function SearchableField({
         className="text-small font-semibold tracking-[0.04em] text-navy"
       >
         {label}
-        {required ? <span className="text-accent"> *</span> : null}
+        <FieldMarker required={required} optional={optional} />
       </label>
       <input
         id={fieldId}
@@ -130,7 +132,7 @@ export function SearchableField({
               <button
                 type="button"
                 className={cn(
-                  "flex w-full px-3 py-2 text-left text-small text-rich-black transition-colors",
+                  "flex w-full px-3 py-2 text-left text-small text-rich-black transition-colors max-md:py-2.5",
                   index === activeIndex
                     ? "bg-cream text-navy"
                     : "hover:bg-cream/80",

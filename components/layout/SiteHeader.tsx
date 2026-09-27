@@ -40,9 +40,9 @@ export function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-50 border-b border-transparent bg-navy/95 shadow-soft backdrop-blur-sm"
+      className="sticky top-0 z-50 border-b border-transparent bg-navy/95 shadow-soft backdrop-blur-sm max-md:border-b-0 max-md:bg-navy max-md:shadow-[0_-2px_0_var(--jyoti-navy),0_2px_12px_rgb(2_6_14/0.08)] max-md:backdrop-blur-none"
     >
-      <Container className="flex items-center justify-between gap-4 py-2.5 lg:py-3">
+      <Container className="flex items-center justify-between gap-4 py-2.5 max-md:h-16 max-md:gap-3 max-md:px-4 max-md:py-0 lg:py-3">
         <NavLogo />
         <nav className="hidden items-center gap-0.5 xl:flex" aria-label="Primary">
           {navigation.map((item) => {
@@ -73,7 +73,7 @@ export function SiteHeader() {
           </div>
           <button
             type="button"
-            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-pill text-white transition-colors duration-300 hover:bg-white/15 xl:hidden"
+            className="hidden min-h-11 min-w-11 items-center justify-center rounded-pill text-white transition-colors duration-300 hover:bg-white/15 md:inline-flex xl:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls={menuId}

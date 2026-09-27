@@ -2,7 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { CollectionEmptyState } from "@/components/collections/CollectionEmptyState";
+import { FilterSheet, FilterTriggerIcon } from "@/components/catalogue/FilterSheet";
 import { ProductFiltersBar } from "@/components/catalogue/ProductFiltersBar";
+import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { Section } from "@/components/ui/Section";
@@ -26,6 +28,7 @@ export function CollectionBrowser({
   products,
 }: CollectionBrowserProps) {
   const [filters, setFilters] = useState<CatalogueFilters>(defaultCatalogueFilters);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const visible = useMemo(
     () => filterAndSortProducts(products, filters),
@@ -75,6 +78,8 @@ export function CollectionBrowser({
               onClear={clearFilters}
               showClear={filtersActive}
               categoryLabel="Saree Type"
+              idPrefix="inline"
+              className="hidden md:block"
             />
 
             <div className="mt-6 flex items-center justify-between gap-4">
@@ -82,10 +87,61 @@ export function CollectionBrowser({
                 Showing {visible.length}{" "}
                 {visible.length === 1 ? "saree" : "sarees"}
               </p>
+              <Button
+                type="button"
+                variant={filtersActive ? "primary" : "secondary"}
+                size="sm"
+                className="min-h-11 px-5 md:hidden"
+                aria-haspopup="dialog"
+                onClick={() => setSheetOpen(true)}
+              >
+                <FilterTriggerIcon />
+                Filters &amp; Sort
+                {filtersActive ? " · On" : ""}
+              </Button>
             </div>
 
+            <FilterSheet
+              open={sheetOpen}
+              onClose={() => setSheetOpen(false)}
+              title="Filters & Sort"
+              footer={
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="lg"
+                    className="flex-1 px-4"
+                    disabled={!filtersActive}
+                    onClick={clearFilters}
+                  >
+                    Clear All
+                  </Button>
+                  <Button
+                    type="button"
+                    size="lg"
+                    className="flex-[1.4] px-4"
+                    onClick={() => setSheetOpen(false)}
+                  >
+                    Show {visible.length} {visible.length === 1 ? "saree" : "sarees"}
+                  </Button>
+                </div>
+              }
+            >
+              <ProductFiltersBar
+                products={products}
+                filters={filters}
+                onChange={updateFilter}
+                onClear={clearFilters}
+                showClear={false}
+                categoryLabel="Saree Type"
+                idPrefix="sheet"
+                className="!border-0 !p-0 !shadow-none"
+              />
+            </FilterSheet>
+
             {visible.length > 0 ? (
-              <ul className="mt-6 grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+              <ul className="mt-5 grid list-none grid-cols-2 gap-3 p-0 sm:mt-6 sm:gap-4 lg:grid-cols-3 lg:gap-5 xl:grid-cols-4">
                 {visible.map((product) => (
                   <ProductCard
                     key={product.slug}

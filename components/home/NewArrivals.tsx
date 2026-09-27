@@ -18,7 +18,7 @@ export function NewArrivals() {
           align="center"
           className="max-w-2xl"
         />
-        <ul className="mt-2 grid list-none grid-cols-1 items-stretch gap-4 p-0 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-5">
+        <ul className="mt-2 grid list-none grid-cols-2 items-stretch gap-3 p-0 sm:gap-5 lg:grid-cols-3 lg:gap-5">
           {arrivals.map((product) => (
             <ProductCard
               key={product.slug}

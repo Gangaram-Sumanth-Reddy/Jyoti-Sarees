@@ -20,14 +20,17 @@ export function FeaturedCollections() {
           align="center"
           className="max-w-2xl"
         />
-        <ul className="mt-2 grid list-none grid-cols-1 items-stretch gap-4 p-0 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-5">
+        <ul
+          data-scroll-row
+          className="scrollbar-none -mx-gutter mt-2 flex list-none snap-x snap-mandatory scroll-px-gutter items-stretch gap-3 overflow-x-auto px-gutter pb-3 pt-1 sm:gap-4 lg:mx-0 lg:grid lg:snap-none lg:grid-cols-4 lg:gap-5 lg:overflow-visible lg:p-0"
+        >
           {featured.map((collection) => (
             <CollectionCard
               key={collection.slug}
               name={collection.name}
               description={collection.shortDescription}
               href={`/collections/${collection.slug}`}
-              className="h-full"
+              className="h-full w-[62%] shrink-0 snap-start max-lg:!h-auto min-[480px]:w-[44%] sm:w-[36%] md:w-[29%] lg:w-auto"
             />
           ))}
         </ul>

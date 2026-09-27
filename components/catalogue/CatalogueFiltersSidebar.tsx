@@ -26,6 +26,8 @@ type CatalogueFiltersSidebarProps = {
   canClear: boolean;
   /** Radio group names must be unique when the sidebar renders twice (desktop + drawer). */
   idPrefix: string;
+  /** The drawer supplies its own visible title. */
+  hideTitle?: boolean;
   className?: string;
 };
 
@@ -65,7 +67,7 @@ function FilterPill({
       aria-pressed={selected}
       onClick={onClick}
       className={cn(
-        "inline-flex min-h-7 items-center rounded-pill border px-2.5 text-[0.7rem] font-semibold tracking-[0.02em] transition-colors duration-200",
+        "inline-flex min-h-7 items-center rounded-pill border px-2.5 text-[0.7rem] font-semibold tracking-[0.02em] transition-colors duration-200 max-lg:min-h-9 max-lg:px-3.5 max-lg:text-[0.8125rem]",
         selected
           ? "border-navy bg-navy text-white"
           : "border-border bg-white text-rich-black hover:border-navy/45 hover:text-navy",
@@ -92,7 +94,7 @@ function FilterRadio({
   return (
     <label
       className={cn(
-        "flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 text-[0.8rem] transition-colors",
+        "flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 text-[0.8rem] transition-colors max-lg:min-h-10 max-lg:gap-2.5 max-lg:px-2 max-lg:text-small",
         checked
           ? "bg-navy/8 font-semibold text-navy"
           : "text-rich-black hover:bg-cream",
@@ -139,6 +141,7 @@ export function CatalogueFiltersSidebar({
   onClear,
   canClear,
   idPrefix,
+  hideTitle = false,
   className,
 }: CatalogueFiltersSidebarProps) {
   const options = getFilterOptions(products);
@@ -153,14 +156,26 @@ export function CatalogueFiltersSidebar({
       )}
       aria-label="Product filters"
     >
-      <div className="mb-3 flex items-center justify-between gap-2 border-b border-border pb-2.5">
-        <h2 className="text-body font-semibold text-rich-black">Filters</h2>
+      <div
+        className={cn(
+          "mb-3 flex items-center justify-between gap-2 border-b border-border pb-2.5",
+          hideTitle && "justify-end",
+        )}
+      >
+        <h2
+          className={cn(
+            "text-body font-semibold text-rich-black",
+            hideTitle && "sr-only",
+          )}
+        >
+          Filters
+        </h2>
         <button
           type="button"
           onClick={onClear}
           disabled={!canClear}
           className={cn(
-            "inline-flex h-8 shrink-0 items-center justify-center whitespace-nowrap rounded-pill border border-navy bg-white px-3.5",
+            "inline-flex h-8 shrink-0 items-center justify-center whitespace-nowrap rounded-pill border border-navy bg-white px-3.5 max-lg:h-10 max-lg:px-4",
             "text-[0.72rem] font-semibold tracking-[0.02em] text-navy transition-colors duration-200",
             "hover:bg-navy hover:text-white",
             "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
@@ -199,7 +214,7 @@ export function CatalogueFiltersSidebar({
           />
 
           <div
-            className="flex flex-wrap gap-1.5"
+            className="flex flex-wrap gap-1.5 max-lg:gap-2"
             role="listbox"
             aria-label="Colour"
           >
@@ -218,7 +233,7 @@ export function CatalogueFiltersSidebar({
                   title={colour}
                   onClick={() => onChange("colour", colour)}
                   className={cn(
-                    "relative inline-flex h-[1.375rem] w-7 items-center justify-center rounded-md border transition-all duration-200",
+                    "relative inline-flex h-[1.375rem] w-7 items-center justify-center rounded-md border transition-all duration-200 max-lg:h-8 max-lg:w-10",
                     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
                     selected
                       ? "border-navy ring-2 ring-navy/40 ring-offset-1 ring-offset-white"

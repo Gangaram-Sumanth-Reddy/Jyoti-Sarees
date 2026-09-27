@@ -6,9 +6,33 @@ type FieldProps = {
   hint?: string;
   error?: string;
   hideLabel?: boolean;
+  optional?: boolean;
 };
 
 type InputProps = ComponentProps<"input"> & FieldProps;
+
+export function FieldMarker({
+  required,
+  optional,
+}: {
+  required?: boolean;
+  optional?: boolean;
+}) {
+  if (required) {
+    return (
+      <span className="text-accent" aria-hidden="true">
+        {" "}
+        *
+      </span>
+    );
+  }
+  if (optional) {
+    return (
+      <span className="font-normal tracking-normal text-muted"> (optional)</span>
+    );
+  }
+  return null;
+}
 
 function FieldShell({
   id,
@@ -16,8 +40,10 @@ function FieldShell({
   hint,
   error,
   hideLabel,
+  optional,
+  required,
   children,
-}: FieldProps & { id: string; children: ReactNode }) {
+}: FieldProps & { id: string; required?: boolean; children: ReactNode }) {
   const hintId = hint ? `${id}-hint` : undefined;
   const errorId = error ? `${id}-error` : undefined;
 
@@ -31,6 +57,7 @@ function FieldShell({
         )}
       >
         {label}
+        <FieldMarker required={required} optional={optional} />
       </label>
       {children}
       {hint ? (
@@ -64,6 +91,7 @@ export function Input({
   hint,
   error,
   hideLabel,
+  optional,
   className,
   ...props
 }: InputProps) {
@@ -76,6 +104,8 @@ export function Input({
       hint={hint}
       error={error}
       hideLabel={hideLabel}
+      optional={optional}
+      required={props.required}
     >
       <input
         id={inputId}
@@ -96,6 +126,7 @@ export function Textarea({
   hint,
   error,
   hideLabel,
+  optional,
   className,
   rows = 4,
   ...props
@@ -109,6 +140,8 @@ export function Textarea({
       hint={hint}
       error={error}
       hideLabel={hideLabel}
+      optional={optional}
+      required={props.required}
     >
       <textarea
         id={inputId}

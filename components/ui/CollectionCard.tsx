@@ -21,7 +21,7 @@ export function CollectionCard({
     <Card
       as="li"
       className={cn(
-        "flex h-full min-w-0 flex-col overflow-hidden p-0 shadow-soft",
+        "flex h-full min-w-0 flex-col overflow-hidden p-0 shadow-soft max-sm:!p-2",
         className,
       )}
     >
@@ -29,11 +29,11 @@ export function CollectionCard({
         <ImageFrame
           aspect="card"
           radius="none"
-          className="shrink-0 rounded-t-md"
+          className="shrink-0 rounded-t-md max-sm:rounded-md max-sm:[&>div]:rounded-md"
         >
           <ImagePlaceholder label={name} />
         </ImageFrame>
-        <div className="flex flex-1 flex-col items-center justify-center gap-1.5 px-3.5 py-4 text-center sm:px-4 sm:py-4">
+        <div className="flex flex-1 flex-col items-center justify-center gap-1.5 px-1.5 pb-2 pt-3.5 text-center sm:px-4 sm:py-4">
           <h3 className="min-h-[1.6em] text-balance text-[1.05rem] font-semibold leading-snug text-rich-black transition-colors group-hover:text-accent sm:text-h3">
             {name}
           </h3>
