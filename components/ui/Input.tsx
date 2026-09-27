@@ -48,7 +48,7 @@ function FieldShell({
 }
 
 const controlClassName =
-  "min-h-11 w-full rounded-md border border-border bg-surface px-4 text-body text-navy transition-colors duration-200 placeholder:text-subtle hover:border-border-strong focus-visible:border-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent aria-invalid:border-navy-deep";
+  "min-h-11 w-full rounded-md border border-border bg-surface px-4 text-body text-navy transition-colors duration-200 placeholder:text-subtle hover:border-border-strong focus-visible:border-navy focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-navy/10 aria-invalid:border-navy-deep";
 
 export { controlClassName };
 

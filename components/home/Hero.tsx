@@ -1,186 +1,137 @@
-"use client";
-
-import { useEffect, useId, useState } from "react";
+import type { ReactNode } from "react";
 import Image from "next/image";
 import { ButtonLink, ExternalButtonLink } from "@/components/ui/Button";
-import { cn } from "@/lib/cn";
-import { heroSlides } from "@/lib/hero";
-import { setHeroNavTone } from "@/lib/hero-nav-tone";
-import { site } from "@/lib/site";
+import { Container } from "@/components/ui/Container";
+import { copy, site } from "@/lib/site";
 
-const AUTO_MS = 3000;
+function SilkIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M4 6c2.7 0 2.7 2 5.3 2S12 6 14.7 6 17.3 8 20 8M4 12c2.7 0 2.7 2 5.3 2S12 12 14.7 12s2.6 2 5.3 2M4 18c2.7 0 2.7 2 5.3 2S12 18 14.7 18s2.6 2 5.3 2"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function ChatIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M20 11.5a7.5 7.5 0 0 1-11.1 6.6L4.5 19.5l1.4-4.2A7.5 7.5 0 1 1 20 11.5Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path d="M9 11.5h.01M12.5 11.5h.01M16 11.5h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function FloatingNote({
+  icon,
+  title,
+  detail,
+  className,
+}: {
+  icon: ReactNode;
+  title: string;
+  detail: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`hero-float-note flex items-center gap-3 rounded-2xl border border-white/80 bg-white/95 py-2.5 pl-2.5 pr-4 ${className ?? ""}`}
+    >
+      <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-navy text-white">
+        {icon}
+      </span>
+      <span className="min-w-0">
+        <span className="block text-small font-semibold leading-tight text-rich-black">
+          {title}
+        </span>
+        <span className="mt-0.5 block text-[0.75rem] leading-tight text-navy/75">
+          {detail}
+        </span>
+      </span>
+    </div>
+  );
+}
 
 export function Hero() {
-  const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const labelId = useId();
-  const slide = heroSlides[index] ?? heroSlides[0];
-
-  useEffect(() => {
-    if (paused) return;
-    const id = window.setInterval(() => {
-      setIndex((current) => (current + 1) % heroSlides.length);
-    }, AUTO_MS);
-    return () => window.clearInterval(id);
-  }, [paused, index]);
-
-  useEffect(() => {
-    if (!slide) return;
-    setHeroNavTone(slide.tone);
-    return () => setHeroNavTone("light");
-  }, [slide]);
-
-  if (!slide) return null;
-
-  const dark = slide.tone === "dark";
-
   return (
-    <section
-      className="relative -mt-[var(--site-header-height)] w-full max-w-full overflow-x-clip bg-cream"
-      aria-roledescription="carousel"
-      aria-labelledby={labelId}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          setPaused(false);
-        }
-      }}
-    >
-      <h2 id={labelId} className="sr-only">
-        Featured sarees
-      </h2>
+    <section className="bg-white pb-10 pt-5 sm:pb-14 sm:pt-7 lg:pb-16 lg:pt-8">
+      <Container>
+        <div className="relative">
+          {/* Stacked sheet behind the card gives the floating, layered depth. */}
+          <div
+            className="hero-card-sheet absolute inset-x-6 -bottom-3 top-6 rounded-[2rem] sm:inset-x-10 sm:-bottom-4 lg:rounded-[2.5rem]"
+            aria-hidden="true"
+          />
 
-      <div className="hero-stage hero-stage--viewport relative w-full max-w-full overflow-hidden">
-        {heroSlides.map((item, slideIndex) => {
-          const active = slideIndex === index;
-          return (
-            <div
-              key={item.id}
-              data-slide={item.id}
-              data-tone={item.tone}
-              className={cn(
-                "hero-slide absolute inset-0 transition-opacity duration-700 ease-in-out",
-                active ? "opacity-100" : "pointer-events-none opacity-0",
-              )}
-              aria-hidden={!active}
-            >
-              <Image
-                src={item.src}
-                alt={item.alt}
-                fill
-                priority={slideIndex === 0}
-                sizes="100vw"
-                className="hero-slide-image"
-              />
-            </div>
-          );
-        })}
-
-        <div
-          className={cn(
-            "pointer-events-none absolute inset-0 transition-opacity duration-700",
-            dark
-              ? "bg-gradient-to-r from-navy-deep/55 via-navy-deep/15 to-transparent sm:from-navy-deep/40 sm:via-navy-deep/8"
-              : "bg-gradient-to-r from-white/75 via-white/25 to-transparent sm:from-white/35 sm:via-white/6",
-          )}
-          aria-hidden="true"
-        />
-
-        <div className="hero-copy relative z-10 flex h-full items-center px-gutter pb-12 pt-[calc(var(--site-header-height)+1.25rem)] sm:pb-14 sm:pt-[calc(var(--site-header-height)+1.5rem)]">
-          <div className="mx-auto flex w-full max-w-content justify-start">
-            <div
-              key={slide.id}
-              className="hero-copy-in max-w-[18rem] text-left sm:max-w-md lg:max-w-lg"
-            >
-              <p
-                className={cn(
-                  "text-[0.7rem] font-semibold uppercase tracking-[0.22em] sm:text-small sm:tracking-[0.2em]",
-                  dark ? "text-white/85" : "text-navy",
-                )}
-              >
-                {slide.eyebrow}
+          <div className="hero-card relative grid overflow-hidden rounded-[1.75rem] lg:min-h-[36rem] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:rounded-[2.5rem] xl:min-h-[38rem]">
+            <div className="relative z-10 flex flex-col justify-center px-6 pb-4 pt-9 sm:px-10 sm:pt-12 lg:py-16 lg:pl-14 lg:pr-4 xl:pl-16">
+              <p className="text-small font-semibold uppercase tracking-[0.2em] text-navy">
+                New Collection 2026
               </p>
-
-              <h1
-                className={cn(
-                  "mt-3 text-balance font-semibold leading-[1.1] tracking-[-0.02em]",
-                  "text-[clamp(2rem,1.15rem+2.85vw,3.45rem)]",
-                  dark ? "text-white" : "text-rich-black",
-                )}
-              >
-                {slide.headline}{" "}
-                <span className="hero-accent-word">{slide.accent}</span>
+              <h1 className="mt-4 max-w-[15ch] text-balance text-[clamp(2.1rem,1.3rem+2.6vw,3.6rem)] font-semibold leading-[1.08] tracking-[-0.02em] text-rich-black">
+                {copy.hero.title}
               </h1>
-
-              <p
-                className={cn(
-                  "mt-3 max-w-[28ch] text-[0.95rem] leading-relaxed sm:mt-4 sm:max-w-sm sm:text-body",
-                  dark ? "text-white/90" : "text-muted",
-                )}
-              >
-                {slide.subtext}
+              <p className="mt-5 max-w-[42ch] text-body leading-relaxed text-rich-black/75">
+                Handpicked silks and heritage weaves, from everyday drapes to
+                wedding grandeur.
               </p>
-
-              <div className="mt-6 flex flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap">
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <ButtonLink
-                  href={slide.primaryCta.href}
+                  href="/sarees"
                   size="lg"
-                  className={
-                    dark
-                      ? "border-transparent bg-white text-rich-black hover:bg-white/90"
-                      : "bg-navy hover:bg-navy-mid"
-                  }
+                  className="bg-navy hover:bg-navy-mid"
                 >
-                  {slide.primaryCta.label}
+                  Explore Sarees
                 </ButtonLink>
-                {slide.showWhatsApp ? (
-                  <ExternalButtonLink
-                    href={site.whatsappUrl}
-                    variant="secondary"
-                    size="lg"
-                    className={
-                      dark
-                        ? "border-white text-white hover:border-white hover:bg-white hover:text-rich-black"
-                        : "border-navy text-navy hover:bg-navy hover:text-white"
-                    }
-                  >
-                    WhatsApp Us
-                  </ExternalButtonLink>
-                ) : null}
+                <ExternalButtonLink
+                  href={site.whatsappUrl}
+                  variant="secondary"
+                  size="lg"
+                  className="bg-white/60"
+                >
+                  WhatsApp Us
+                </ExternalButtonLink>
               </div>
+            </div>
+
+            <div className="relative min-h-[22rem] sm:min-h-[28rem] lg:min-h-0">
+              <div className="hero-card-image absolute inset-0">
+                <Image
+                  src="/assets/H1.png"
+                  alt="Model in an ivory silk saree with a royal blue and gold zari border"
+                  fill
+                  priority
+                  quality={90}
+                  sizes="(min-width: 1024px) 55vw, 100vw"
+                  className="object-cover object-[100%_70%]"
+                />
+              </div>
+
+              <FloatingNote
+                icon={<SilkIcon />}
+                title="Pure silk & zari weaves"
+                detail="Kanchipuram · Banarasi · Soft Silk"
+                className="absolute bottom-5 left-4 z-10 sm:bottom-8 sm:left-8 lg:-left-8 lg:bottom-12"
+              />
+              <FloatingNote
+                icon={<ChatIcon />}
+                title="Personal assistance"
+                detail="Reserve your saree on WhatsApp"
+                className="absolute left-[8%] top-[12%] z-10 hidden md:flex"
+              />
             </div>
           </div>
         </div>
-
-        <div className="absolute inset-x-0 bottom-4 z-10 flex justify-center gap-2 sm:bottom-5">
-          {heroSlides.map((item, slideIndex) => {
-            const active = slideIndex === index;
-            const slideDark = item.tone === "dark";
-            return (
-              <button
-                key={item.id}
-                type="button"
-                aria-label={`Show slide ${slideIndex + 1} of ${heroSlides.length}`}
-                aria-current={active ? "true" : undefined}
-                onClick={() => setIndex(slideIndex)}
-                className={cn(
-                  "h-1.5 rounded-pill transition-all duration-300",
-                  active ? "w-7" : "w-1.5",
-                  slideDark
-                    ? active
-                      ? "bg-white"
-                      : "bg-white/45 hover:bg-white/70"
-                    : active
-                      ? "bg-navy"
-                      : "bg-navy/25 hover:bg-navy/45",
-                )}
-              />
-            );
-          })}
-        </div>
-      </div>
+      </Container>
     </section>
   );
 }

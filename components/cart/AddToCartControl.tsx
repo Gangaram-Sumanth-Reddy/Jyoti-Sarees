@@ -39,7 +39,7 @@ export function AddToCartControl({
           "inline-flex items-center justify-between overflow-hidden rounded-pill border border-navy bg-navy text-white",
           large
             ? "h-12 w-full sm:w-auto sm:min-w-[11rem]"
-            : "h-9 min-w-0 flex-1",
+            : "h-10 min-w-0 flex-1",
           className,
         )}
         role="group"
@@ -61,7 +61,7 @@ export function AddToCartControl({
         <span
           className={cn(
             "min-w-8 px-1 text-center font-semibold tabular-nums",
-            large ? "text-body" : "text-[0.75rem]",
+            large ? "text-body" : "text-[0.8rem] font-bold",
           )}
         >
           {quantity}
@@ -92,7 +92,7 @@ export function AddToCartControl({
       className={cn(
         large
           ? "w-full bg-navy text-white hover:bg-navy-mid sm:w-auto sm:min-w-[14rem]"
-          : "min-h-9 min-w-0 flex-1 whitespace-nowrap px-2.5 text-[0.7rem] tracking-[0.02em]",
+          : "h-10 min-h-10 min-w-0 flex-1 whitespace-nowrap px-2.5 text-[0.8rem] !font-bold tracking-[0.02em]",
         className,
       )}
       onClick={() =>

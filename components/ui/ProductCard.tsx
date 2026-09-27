@@ -106,7 +106,7 @@ export function ProductCard({
             variant={showAddToCart ? "secondary" : "primary"}
             size="sm"
             className={cn(
-              "min-h-9 whitespace-nowrap px-2.5 text-[0.7rem] tracking-[0.02em]",
+              "h-10 min-h-10 whitespace-nowrap px-2.5 text-[0.8rem] !font-bold tracking-[0.02em]",
               dualCta ? "min-w-0 flex-1" : "w-fit max-w-full",
             )}
           >
@@ -120,7 +120,7 @@ export function ProductCard({
               href={whatsappEnquiryUrl(name, site.whatsappUrl, productId)}
               variant="secondary"
               size="sm"
-              className="min-h-9 min-w-0 flex-1 whitespace-nowrap border-accent/40 px-2.5 text-[0.7rem] tracking-[0.02em] text-accent hover:border-accent hover:bg-accent hover:text-white"
+              className="h-10 min-h-10 min-w-0 flex-1 whitespace-nowrap border-accent/40 px-2.5 text-[0.8rem] !font-bold tracking-[0.02em] text-accent hover:border-accent hover:bg-accent hover:text-white"
             >
               WhatsApp
             </ExternalButtonLink>

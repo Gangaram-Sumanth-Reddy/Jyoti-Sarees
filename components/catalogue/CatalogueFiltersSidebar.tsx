@@ -1,15 +1,15 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Button } from "@/components/ui/Button";
+import { PriceRangeSlider } from "@/components/catalogue/PriceRangeSlider";
 import { cn } from "@/lib/cn";
 import {
-  availabilityOptions,
   getFilterOptions,
-  priceRangeOptions,
+  getPriceBounds,
+  sortOptions,
   type CatalogueFilters,
-  type PriceRangeId,
   type Product,
+  type SortId,
 } from "@/lib/products";
 import { isLightSwatch, swatchFor } from "@/lib/colours";
 
@@ -22,9 +22,10 @@ type CatalogueFiltersSidebarProps = {
     key: K,
     value: CatalogueFilters[K],
   ) => void;
-  onClear?: () => void;
-  showClear?: boolean;
-  showClearButton?: boolean;
+  onClear: () => void;
+  canClear: boolean;
+  /** Radio group names must be unique when the sidebar renders twice (desktop + drawer). */
+  idPrefix: string;
   className?: string;
 };
 
@@ -136,43 +137,38 @@ export function CatalogueFiltersSidebar({
   filters,
   onChange,
   onClear,
-  showClear = false,
-  showClearButton = false,
+  canClear,
+  idPrefix,
   className,
 }: CatalogueFiltersSidebarProps) {
   const options = getFilterOptions(products);
+  const priceBounds = getPriceBounds(products);
   const selectedColour = filters.colour === "all" ? null : filters.colour;
 
   return (
     <aside
       className={cn(
-        "rounded-lg border border-border bg-white p-3.5 sm:p-4",
+        "rounded-lg border border-border bg-white p-3.5 shadow-soft sm:p-4",
         className,
       )}
       aria-label="Product filters"
     >
-      <div
-        className={cn(
-          "mb-3 flex items-center border-b border-border pb-2.5",
-          showClearButton ? "justify-between gap-2" : "justify-start",
-        )}
-      >
-        <h2 className="text-small font-semibold text-rich-black">Filters</h2>
-        {showClearButton && onClear ? (
-          <Button
-            type="button"
-            variant={showClear ? "primary" : "secondary"}
-            size="sm"
-            className={cn(
-              "min-h-8 px-3 text-[0.7rem]",
-              !showClear && "opacity-70",
-            )}
-            onClick={onClear}
-            disabled={!showClear}
-          >
-            Clear All Filters
-          </Button>
-        ) : null}
+      <div className="mb-3 flex items-center justify-between gap-2 border-b border-border pb-2.5">
+        <h2 className="text-body font-semibold text-rich-black">Filters</h2>
+        <button
+          type="button"
+          onClick={onClear}
+          disabled={!canClear}
+          className={cn(
+            "inline-flex h-8 shrink-0 items-center justify-center whitespace-nowrap rounded-pill border border-navy bg-white px-3.5",
+            "text-[0.72rem] font-semibold tracking-[0.02em] text-navy transition-colors duration-200",
+            "hover:bg-navy hover:text-white",
+            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+            "disabled:pointer-events-none disabled:border-border-strong disabled:text-navy/45",
+          )}
+        >
+          Clear All Filters
+        </button>
       </div>
 
       <div className="flex flex-col gap-3.5">
@@ -262,20 +258,34 @@ export function CatalogueFiltersSidebar({
           ))}
         </FilterGroup>
 
-        <FilterGroup title="Price Range">
-          {priceRangeOptions.map((option) => (
-            <FilterRadio
-              key={option.id}
-              name="price-range"
-              value={option.id}
-              checked={filters.priceRange === option.id}
-              label={option.label}
-              onChange={() =>
-                onChange("priceRange", option.id as PriceRangeId)
-              }
-            />
-          ))}
+        <FilterGroup title="Price">
+          <PriceRangeSlider
+            min={priceBounds.min}
+            max={priceBounds.max}
+            valueMin={filters.priceMin}
+            valueMax={filters.priceMax}
+            idPrefix={idPrefix}
+            onChange={({ min, max }) => {
+              onChange("priceMin", min);
+              onChange("priceMax", max);
+            }}
+          />
         </FilterGroup>
+
+        <div className="border-t border-border pt-3.5">
+          <FilterGroup title="Sort By">
+            {sortOptions.map((option) => (
+              <FilterRadio
+                key={option.id}
+                name={`${idPrefix}-sort`}
+                value={option.id}
+                checked={filters.sort === option.id}
+                label={option.label}
+                onChange={() => onChange("sort", option.id as SortId)}
+              />
+            ))}
+          </FilterGroup>
+        </div>
       </div>
     </aside>
   );

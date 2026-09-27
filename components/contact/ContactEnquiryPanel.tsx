@@ -335,7 +335,7 @@ export function ContactEnquiryPanel() {
                 </label>
                 <div
                   className={cn(
-                    "flex min-h-11 min-w-0 overflow-visible rounded-md border border-border bg-surface transition-colors focus-within:border-navy focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent",
+                    "flex min-h-11 min-w-0 overflow-visible rounded-md border border-border bg-surface transition-[border-color,box-shadow] duration-200 hover:border-border-strong focus-within:border-navy focus-within:ring-4 focus-within:ring-navy/10",
                     errors.mobile && "border-navy-deep",
                   )}
                 >

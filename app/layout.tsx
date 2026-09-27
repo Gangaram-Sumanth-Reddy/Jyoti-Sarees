@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { EnquiryCartHost } from "@/components/cart/EnquiryCartHost";
+import { RouteScrollReset } from "@/components/layout/RouteScrollReset";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SkipLink } from "@/components/layout/SkipLink";
@@ -16,8 +17,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" data-scroll-behavior="smooth">
       <body className="flex min-h-full flex-col bg-white font-sans text-rich-black antialiased">
+        <RouteScrollReset />
         <SkipLink />
         <SiteHeader />
         <main id="main-content" className="flex min-w-0 flex-1 flex-col">

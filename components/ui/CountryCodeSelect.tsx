@@ -70,7 +70,7 @@ export function CountryCodeSelect({
         aria-expanded={open}
         aria-controls={listId}
         onClick={() => setOpen((current) => !current)}
-        className="inline-flex h-full min-w-[5.75rem] items-center justify-between gap-1 border-0 border-r border-border bg-cream px-2.5 text-left text-small font-semibold text-navy outline-none transition-colors hover:bg-cream/80"
+        className="inline-flex h-full min-w-[5.75rem] items-center justify-between gap-1 rounded-l-[calc(var(--radius-md)-1px)] border-0 border-r border-border bg-cream px-2.5 text-left text-small font-semibold text-navy outline-none transition-colors hover:bg-cream/80"
       >
         <span className="truncate">
           {selected.iso} {selected.code}

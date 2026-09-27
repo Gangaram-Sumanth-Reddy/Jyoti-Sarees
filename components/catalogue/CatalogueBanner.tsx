@@ -2,10 +2,12 @@
 
 import { useEffect, useId, useState } from "react";
 import Image from "next/image";
+import { ButtonLink, ExternalButtonLink } from "@/components/ui/Button";
+import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/cn";
 import { catalogueBanners } from "@/lib/catalogue-banners";
 
-const AUTO_MS = 2500;
+const AUTO_MS = 4500;
 
 type CatalogueBannerProps = {
   /** Screen-reader title for the carousel (defaults to Sarees). */
@@ -31,10 +33,14 @@ export function CatalogueBanner({
   if (!slide) return null;
 
   const dark = slide.tone === "dark";
+  const ctaClass = dark
+    ? "border-transparent bg-white text-navy hover:bg-cream"
+    : "bg-navy text-white hover:bg-navy-mid";
 
   return (
     <section
-      className="w-full overflow-x-clip bg-cream"
+      className="w-full overflow-x-clip transition-colors duration-700 ease-in-out"
+      style={{ backgroundColor: slide.panel }}
       aria-roledescription="carousel"
       aria-labelledby={labelId}
       onMouseEnter={() => setPaused(true)}
@@ -51,72 +57,88 @@ export function CatalogueBanner({
       </h1>
 
       <div className="catalogue-banner relative w-full overflow-hidden">
-        {catalogueBanners.map((item, slideIndex) => {
-          const active = slideIndex === index;
-          const itemDark = item.tone === "dark";
-          return (
-            <div
-              key={item.id}
-              className={cn(
-                "absolute inset-0 transition-opacity duration-700 ease-in-out",
-                active ? "opacity-100" : "pointer-events-none opacity-0",
-              )}
-              aria-hidden={!active}
-            >
-              {item.src ? (
+        <div className="catalogue-banner-media overflow-hidden">
+          {catalogueBanners.map((item, slideIndex) => {
+            const active = slideIndex === index;
+            const itemDark = item.tone === "dark";
+            return (
+              <div
+                key={item.id}
+                className={cn(
+                  "absolute inset-0 transition-opacity duration-700 ease-in-out",
+                  active ? "opacity-100" : "pointer-events-none opacity-0",
+                )}
+                style={{ backgroundColor: item.panel }}
+                aria-hidden={!active}
+              >
                 <Image
                   src={item.src}
-                  alt=""
+                  alt={item.alt}
                   fill
+                  unoptimized
                   priority={slideIndex === 0}
                   sizes="100vw"
                   className="object-cover"
-                  style={{ objectPosition: item.objectPosition ?? "50% 40%" }}
+                  style={{ objectPosition: item.objectPosition }}
                 />
-              ) : (
+                {/* Readability: soft fade into the copy panel on phones, left-side scrim from sm up. */}
+                <div
+                  className="absolute inset-x-0 bottom-0 h-1/4 sm:hidden"
+                  style={{
+                    backgroundImage: `linear-gradient(to top, ${item.panel}, transparent)`,
+                  }}
+                  aria-hidden="true"
+                />
                 <div
                   className={cn(
-                    "absolute inset-0",
+                    "absolute inset-y-0 left-0 hidden w-3/5 sm:block lg:w-1/2",
                     itemDark
-                      ? "bg-midnight-gradient"
-                      : "catalogue-banner-gradient-light",
+                      ? "bg-gradient-to-r from-navy-deep/55 via-navy-deep/20 to-transparent"
+                      : "bg-gradient-to-r from-[#f4efe7]/75 via-[#f4efe7]/30 to-transparent",
                   )}
+                  aria-hidden="true"
                 />
-              )}
-              <div
-                className={cn(
-                  "absolute inset-0",
-                  item.src
-                    ? itemDark
-                      ? "bg-gradient-to-r from-navy-deep/75 via-navy-deep/45 to-navy-deep/10"
-                      : "bg-gradient-to-r from-white/88 via-white/55 to-white/10"
-                    : itemDark
-                      ? "bg-navy-deep/20"
-                      : "",
-                )}
-                aria-hidden="true"
-              />
-            </div>
-          );
-        })}
+              </div>
+            );
+          })}
+        </div>
 
-        <div className="relative z-10 flex h-full items-center px-gutter">
-          <div className="mx-auto w-full max-w-content">
+        <div className="relative z-10 flex items-center pb-11 pt-4 sm:absolute sm:inset-0 sm:py-0">
+          <Container>
             <div
               key={slide.id}
-              className="catalogue-banner-copy max-w-xl py-1"
+              className="catalogue-banner-copy max-w-[26rem] sm:max-w-[46%] lg:max-w-[29rem]"
             >
               <p
                 className={cn(
-                  "text-[0.68rem] font-semibold uppercase tracking-[0.2em] sm:text-small",
-                  dark ? "text-white/85" : "text-navy",
+                  "flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.7rem] font-semibold uppercase tracking-[0.24em] sm:text-[0.75rem]",
+                  dark ? "text-[#e3c887]" : "text-navy",
                 )}
               >
-                {slide.eyebrow}
+                <span>{slide.eyebrow}</span>
+                {slide.offer ? (
+                  <>
+                    <span
+                      className={cn(
+                        "h-3 w-px",
+                        dark ? "bg-[#e3c887]/60" : "bg-navy/35",
+                      )}
+                      aria-hidden="true"
+                    />
+                    <span
+                      className={cn(
+                        "font-bold",
+                        dark ? "text-white" : "text-rich-black",
+                      )}
+                    >
+                      {slide.offer}
+                    </span>
+                  </>
+                ) : null}
               </p>
               <p
                 className={cn(
-                  "mt-1.5 text-balance text-[clamp(1.35rem,1rem+1.4vw,2rem)] font-semibold leading-tight tracking-[-0.02em]",
+                  "mt-2.5 text-balance text-[clamp(1.75rem,1.05rem+2.2vw,3rem)] font-semibold leading-[1.08] tracking-[-0.02em] sm:mt-3",
                   dark ? "text-white" : "text-rich-black",
                 )}
               >
@@ -124,17 +146,34 @@ export function CatalogueBanner({
               </p>
               <p
                 className={cn(
-                  "mt-1.5 max-w-md text-[0.9rem] leading-relaxed sm:text-body",
-                  dark ? "text-white/90" : "text-muted",
+                  "mt-2.5 max-w-[34ch] text-[0.95rem] leading-relaxed sm:mt-3 lg:text-[1.05rem]",
+                  dark ? "text-white/85" : "text-rich-black/75",
                 )}
               >
                 {slide.subtitle}
               </p>
+              {slide.cta ? (
+                <div className="mt-4 sm:mt-5 lg:mt-6">
+                  {slide.cta.external ? (
+                    <ExternalButtonLink
+                      href={slide.cta.href}
+                      size="sm"
+                      className={ctaClass}
+                    >
+                      {slide.cta.label}
+                    </ExternalButtonLink>
+                  ) : (
+                    <ButtonLink href={slide.cta.href} size="sm" className={ctaClass}>
+                      {slide.cta.label}
+                    </ButtonLink>
+                  )}
+                </div>
+              ) : null}
             </div>
-          </div>
+          </Container>
         </div>
 
-        <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center gap-1.5 sm:bottom-3.5">
+        <div className="absolute inset-x-0 bottom-4 z-10 flex justify-center gap-1.5 lg:bottom-5">
           {catalogueBanners.map((item, slideIndex) => {
             const active = slideIndex === index;
             return (
@@ -145,15 +184,15 @@ export function CatalogueBanner({
                 aria-current={active ? "true" : undefined}
                 onClick={() => setIndex(slideIndex)}
                 className={cn(
-                  "h-1.5 rounded-pill transition-all duration-300",
-                  active ? "w-6" : "w-1.5",
+                  "h-1 rounded-pill transition-all duration-300",
+                  active ? "w-5" : "w-1.5",
                   dark
                     ? active
-                      ? "bg-white"
-                      : "bg-white/40 hover:bg-white/65"
+                      ? "bg-white/90"
+                      : "bg-white/35 hover:bg-white/60"
                     : active
-                      ? "bg-navy"
-                      : "bg-navy/25 hover:bg-navy/45",
+                      ? "bg-navy/80"
+                      : "bg-navy/20 hover:bg-navy/40",
                 )}
               />
             );

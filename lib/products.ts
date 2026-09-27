@@ -52,6 +52,9 @@ export type CatalogueFilters = {
   colour: string;
   fabric: string;
   priceRange: PriceRangeId;
+  /** `null` means no lower / upper bound (slider handle at the catalogue edge). */
+  priceMin: number | null;
+  priceMax: number | null;
   availability: AvailabilityId;
   sort: SortId;
 };
@@ -63,6 +66,8 @@ export const defaultCatalogueFilters: CatalogueFilters = {
   colour: "all",
   fabric: "all",
   priceRange: "all",
+  priceMin: null,
+  priceMax: null,
   availability: "all",
   sort: "newest",
 };
@@ -652,6 +657,12 @@ export function getFilterOptions(items: Product[] = products) {
   };
 }
 
+export function getPriceBounds(items: Product[] = products) {
+  if (items.length === 0) return { min: 0, max: 0 };
+  const prices = items.map((item) => item.price);
+  return { min: Math.min(...prices), max: Math.max(...prices) };
+}
+
 export const priceRangeOptions: { id: PriceRangeId; label: string }[] = [
   { id: "all", label: "All prices" },
   { id: "under-10k", label: "Under ₹10,000" },
@@ -718,6 +729,12 @@ export function filterAndSortProducts(
       return false;
     }
     if (!matchesPriceRange(product.price, filters.priceRange)) return false;
+    if (filters.priceMin !== null && product.price < filters.priceMin) {
+      return false;
+    }
+    if (filters.priceMax !== null && product.price > filters.priceMax) {
+      return false;
+    }
     if (!matchesAvailability(product, filters.availability)) return false;
     return true;
   });
@@ -737,6 +754,8 @@ export function hasActiveFilters(filters: CatalogueFilters) {
     filters.colour !== "all" ||
     filters.fabric !== "all" ||
     filters.priceRange !== "all" ||
+    filters.priceMin !== null ||
+    filters.priceMax !== null ||
     filters.availability !== "all"
   );
 }

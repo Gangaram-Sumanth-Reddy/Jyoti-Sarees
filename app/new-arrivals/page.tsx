@@ -15,7 +15,7 @@ export default function NewArrivalsPage() {
 
   return (
     <>
-      <NewArrivalsHero />
+      <NewArrivalsHero count={arrivals.length} />
       <CatalogueBrowser products={arrivals} cardBadge="New" />
       <CatalogueCta />
     </>

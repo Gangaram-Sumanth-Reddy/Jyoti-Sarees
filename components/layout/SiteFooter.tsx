@@ -56,11 +56,13 @@ export function SiteFooter() {
           <p className="mb-4 text-small font-semibold uppercase tracking-[0.14em] text-navy">
             {site.name}
           </p>
-          <p className="max-w-xs text-small leading-relaxed text-rich-black">
-            Premium sarees curated with care—for everyday elegance and
-            celebrations that matter.
-          </p>
-          <SocialIcons className="mt-6" />
+          <div className="max-w-xs">
+            <p className="text-small leading-relaxed text-rich-black">
+              Premium sarees curated with care—for everyday elegance and
+              celebrations that matter.
+            </p>
+            <SocialIcons className="mt-6" align="center" />
+          </div>
         </div>
       </Container>
 

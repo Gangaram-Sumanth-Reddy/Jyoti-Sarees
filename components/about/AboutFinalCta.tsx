@@ -29,7 +29,7 @@ export function AboutFinalCta() {
               href={site.whatsappUrl}
               variant="secondary"
               size="lg"
-              className="border-white text-white hover:bg-white hover:text-rich-black"
+              className="border-white text-white hover:!border-white hover:!bg-white hover:!text-navy"
             >
               WhatsApp Us
             </ExternalButtonLink>
