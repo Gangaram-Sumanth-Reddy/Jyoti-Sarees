@@ -1,17 +1,19 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { PrivacyRequestForm } from "@/components/privacy/PrivacyRequestForm";
 import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { privacyConfig, privacyContactEmail, privacyRoutes } from "@/lib/privacy-config";
+import { buildMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: "Privacy Requests",
   description:
     "Ask Jyoti Sarees to access, correct or delete your personal data, withdraw consent, or raise a privacy grievance.",
-};
+  path: "/privacy-requests",
+  noIndex: true,
+});
 
 const steps = [
   {

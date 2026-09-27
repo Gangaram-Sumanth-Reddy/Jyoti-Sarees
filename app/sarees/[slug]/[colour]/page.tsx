@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { ProductDetailView } from "@/components/product/ProductDetailView";
-import {
-  catalogueProducts,
-  getCatalogueProductBySlug,
-  getColourOption,
-  getNewArrivalProductBySlug,
-  productHref,
-} from "@/lib/products";
+import { productMetadata } from "@/lib/product-seo";
+import { catalogueProducts, getCatalogueProductBySlug } from "@/lib/products";
 
 type ProductColourPageProps = {
   params: Promise<{ slug: string; colour: string }>;
 };
+
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return catalogueProducts.flatMap((product) =>
@@ -27,24 +23,16 @@ export async function generateMetadata({
 }: ProductColourPageProps): Promise<Metadata> {
   const { slug, colour } = await params;
   const product = getCatalogueProductBySlug(slug);
-  if (!product) return { title: "Saree not found" };
-  const option = getColourOption(product, colour);
-  return {
-    title: `${product.name} — ${option.label}`,
-    description: product.shortDescription,
-  };
+  const option = product?.colourOptions.find((entry) => entry.id === colour);
+  if (!product || !option) return { title: "Saree not found", robots: { index: false } };
+  return productMetadata(product, option);
 }
 
 export default async function SareeProductColourPage({
   params,
 }: ProductColourPageProps) {
   const { slug, colour } = await params;
-  const product = getCatalogueProductBySlug(slug);
-
-  if (!product) {
-    const arrival = getNewArrivalProductBySlug(slug);
-    if (arrival) redirect(productHref(arrival, colour));
-  }
-
-  return <ProductDetailView product={product} colourSlug={colour} />;
+  return (
+    <ProductDetailView product={getCatalogueProductBySlug(slug)} colourSlug={colour} />
+  );
 }

@@ -1,17 +1,14 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import {
-  getCatalogueProductBySlug,
-  getColourOption,
-  getNewArrivalProductBySlug,
-  getNewArrivals,
-  productHref,
-  products,
-} from "@/lib/products";
+import { ProductDetailView } from "@/components/product/ProductDetailView";
+import { productMetadata } from "@/lib/product-seo";
+import { getNewArrivalProductBySlug, getNewArrivals, products } from "@/lib/products";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
 };
+
+/** Unknown slugs 404 before streaming; catalogue slugs redirect in next.config. */
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return getNewArrivals(products.length).map((product) => ({
@@ -24,28 +21,13 @@ export async function generateMetadata({
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
   const product = getNewArrivalProductBySlug(slug);
-  if (!product) return { title: "Saree not found" };
-  return {
-    title: product.name,
-    description: product.shortDescription,
-  };
+  if (!product) return { title: "Saree not found", robots: { index: false } };
+  return productMetadata(product);
 }
 
-/** Canonical colour URL lives at `/new-arrivals/[slug]/[colour]`. */
-export default async function NewArrivalProductIndexPage({
+export default async function NewArrivalProductPage({
   params,
 }: ProductPageProps) {
   const { slug } = await params;
-  const product = getNewArrivalProductBySlug(slug);
-
-  if (!product) {
-    const catalogue = getCatalogueProductBySlug(slug);
-    if (catalogue) {
-      redirect(productHref(catalogue, getColourOption(catalogue).id));
-    }
-    redirect("/new-arrivals");
-  }
-
-  const colour = getColourOption(product);
-  redirect(productHref(product, colour.id));
+  return <ProductDetailView product={getNewArrivalProductBySlug(slug)} />;
 }

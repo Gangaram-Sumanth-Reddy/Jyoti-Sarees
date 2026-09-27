@@ -1,16 +1,18 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductDetailPanel } from "@/components/product/ProductDetailPanel";
 import { ProductWhatsAppCta } from "@/components/product/ProductWhatsAppCta";
 import { RelatedProducts } from "@/components/product/RelatedProducts";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
+import { productBreadcrumbs } from "@/lib/product-seo";
 import {
   getColourOption,
   getRelatedProducts,
-  productCatalogueHref,
   type Product,
 } from "@/lib/products";
+import { productPageSchemas } from "@/lib/structured-data";
 
 type ProductDetailViewProps = {
   product: Product | undefined;
@@ -32,24 +34,15 @@ export function ProductDetailView({
 
   const selected = getColourOption(product, colourSlug);
   const related = getRelatedProducts(product, 4);
-  const backHref = productCatalogueHref(product);
-  const backLabel = product.isNewArrival
-    ? "Back to New Arrivals"
-    : "Back to Sarees";
 
   return (
     <>
+      <JsonLd data={productPageSchemas(product)} />
       <Section className="overflow-x-clip pt-6 sm:pt-8 lg:pt-10">
         <Container className="max-w-[82.5rem]">
-          <Link
-            href={backHref}
-            className="inline-flex items-center gap-1.5 text-small font-semibold text-navy transition-colors hover:text-accent"
-          >
-            <span aria-hidden="true">←</span>
-            {backLabel}
-          </Link>
+          <Breadcrumbs items={productBreadcrumbs(product)} />
 
-          <ProductDetailPanel product={product} colourSlug={selected.id} />
+          <ProductDetailPanel product={product} colourSlug={colourSlug} />
         </Container>
       </Section>
 

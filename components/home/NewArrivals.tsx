@@ -3,7 +3,7 @@ import { Container } from "@/components/ui/Container";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { getColourOption, getNewArrivals, productHref } from "@/lib/products";
+import { getNewArrivals, productHref } from "@/lib/products";
 import { copy } from "@/lib/site";
 
 export function NewArrivals() {
@@ -23,7 +23,7 @@ export function NewArrivals() {
             <ProductCard
               key={product.slug}
               product={product}
-              href={productHref(product, getColourOption(product).id)}
+              href={productHref(product)}
               showAddToCart
               badge="New"
               className="h-full"

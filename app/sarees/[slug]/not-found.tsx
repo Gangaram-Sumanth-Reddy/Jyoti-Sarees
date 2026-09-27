@@ -12,8 +12,8 @@ export default function SareeNotFound() {
           </p>
           <h1 className="mt-3 text-h1">Saree not found</h1>
           <p className="mt-4 text-body text-muted">
-            This saree does not exist or may have been moved. Browse the
-            catalogue or return to New Arrivals.
+            This saree or collection does not exist or may have been moved.
+            Browse the catalogue or return to New Arrivals.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link

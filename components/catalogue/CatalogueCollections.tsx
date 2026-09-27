@@ -2,7 +2,7 @@ import { CollectionCard } from "@/components/ui/CollectionCard";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { collections } from "@/lib/collections";
+import { collectionHref, collections } from "@/lib/collections";
 
 export function CatalogueCollections() {
   return (
@@ -20,7 +20,7 @@ export function CatalogueCollections() {
               key={collection.slug}
               name={collection.name}
               description={collection.shortDescription}
-              href={`/collections/${collection.slug}`}
+              href={collectionHref(collection.slug)}
             />
           ))}
         </ul>

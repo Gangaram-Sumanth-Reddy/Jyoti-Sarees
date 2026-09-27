@@ -23,6 +23,7 @@ export const navigation = [
 export const footerNav = [
   { href: "/sarees", label: "Sarees" },
   { href: "/new-arrivals", label: "New Arrivals" },
+  { href: "/journal", label: "Saree Guides" },
   { href: "/about", label: "About Us" },
   { href: "/contact", label: "Contact" },
 ] as const;

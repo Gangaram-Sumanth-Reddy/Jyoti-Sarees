@@ -17,23 +17,29 @@ function GalleryVisual({
   item,
   productName,
   compact = false,
-  priority = false,
+  preload = false,
   colourHex,
+  colourLabel,
 }: {
   item: ProductGalleryItem;
   productName: string;
   compact?: boolean;
-  priority?: boolean;
+  preload?: boolean;
   colourHex?: string;
+  colourLabel?: string;
 }) {
   if (item.src) {
     return (
       <>
         <Image
           src={item.src}
-          alt={`${productName} — ${item.label}`}
+          alt={
+            compact
+              ? ""
+              : `${productName} saree${colourLabel ? ` in ${colourLabel}` : ""} — ${item.label.toLowerCase()} view`
+          }
           fill
-          priority={priority}
+          preload={preload}
           sizes={compact ? "56px" : "(max-width: 1024px) 90vw, 280px"}
           className="object-contain p-1.5"
         />
@@ -152,8 +158,9 @@ export function ProductGallery({
               <GalleryVisual
                 item={active}
                 productName={productName}
-                priority
+                preload
                 colourHex={colourHex}
+                colourLabel={colourLabel}
               />
             </div>
             <span className="pointer-events-none absolute bottom-2 right-2 rounded-pill border border-border bg-white/95 px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.08em] text-navy opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">

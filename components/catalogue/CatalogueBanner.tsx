@@ -52,9 +52,9 @@ export function CatalogueBanner({
         }
       }}
     >
-      <h1 id={labelId} className="sr-only">
+      <h2 id={labelId} className="sr-only">
         {label}
-      </h1>
+      </h2>
 
       <div className="catalogue-banner relative w-full overflow-hidden">
         <div className="catalogue-banner-media overflow-hidden">
@@ -76,7 +76,7 @@ export function CatalogueBanner({
                   alt={item.alt}
                   fill
                   unoptimized
-                  priority={slideIndex === 0}
+                  preload={slideIndex === 0}
                   sizes="100vw"
                   className="object-cover"
                   style={{ objectPosition: item.objectPosition }}

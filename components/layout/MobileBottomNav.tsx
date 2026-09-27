@@ -16,7 +16,7 @@ type BottomNavItem = {
 
 const items: readonly BottomNavItem[] = [
   { href: "/", label: "Home", icon: <HomeIcon /> },
-  { href: "/sarees", label: "Sarees", icon: <SareeIcon />, also: ["/collections"] },
+  { href: "/sarees", label: "Sarees", icon: <SareeIcon /> },
   { href: "/new-arrivals", label: "New Arrivals", icon: <SparkleIcon /> },
   { href: "/contact", label: "Contact", icon: <ContactIcon /> },
 ];

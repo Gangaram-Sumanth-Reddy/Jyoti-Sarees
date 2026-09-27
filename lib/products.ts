@@ -25,7 +25,10 @@ export type Product = {
   design: string;
   price: number;
   priceLabel: string;
+  /** ISO date the saree was added — drives New Arrivals order and sitemap dates. */
   createdAt: string;
+  /** ISO date of the last meaningful change to the listing (defaults to createdAt). */
+  updatedAt?: string;
   available: boolean;
   /** Shown on New Arrivals — kept separate from the main Sarees catalogue. */
   isNewArrival: boolean;
