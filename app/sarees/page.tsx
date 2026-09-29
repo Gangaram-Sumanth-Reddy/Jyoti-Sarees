@@ -3,7 +3,6 @@ import { CatalogueBrowser } from "@/components/catalogue/CatalogueBrowser";
 import { CatalogueCta } from "@/components/catalogue/CatalogueCta";
 import { CatalogueIntro } from "@/components/catalogue/CatalogueIntro";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { indexableCollections } from "@/lib/collections";
 import { catalogueProducts } from "@/lib/products";
 import { buildMetadata } from "@/lib/seo";
 import { breadcrumbSchema, collectionPageSchema } from "@/lib/structured-data";
@@ -30,7 +29,7 @@ export default function SareesPage() {
         ]}
       />
       <CatalogueBanner />
-      <CatalogueIntro collections={indexableCollections} />
+      <CatalogueIntro />
       <CatalogueBrowser products={catalogueProducts} />
       <CatalogueCta />
     </>

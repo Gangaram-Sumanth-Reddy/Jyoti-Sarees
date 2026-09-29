@@ -1,9 +1,10 @@
+import Image from "next/image";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { ImageFrame } from "@/components/ui/ImageFrame";
-import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { aboutContent } from "@/lib/about";
 import { copy } from "@/lib/site";
 
 export function AboutTeaser() {
@@ -12,7 +13,14 @@ export function AboutTeaser() {
       <Container>
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
           <ImageFrame aspect="landscape" radius="lg">
-            <ImagePlaceholder label="About Jyoti Sarees" tone="navy" />
+            <Image
+              src={aboutContent.hero.image.src}
+              alt={aboutContent.hero.image.alt}
+              fill
+              sizes="(min-width: 1024px) 46vw, 100vw"
+              className="object-cover"
+              style={{ objectPosition: "50% 25%" }}
+            />
           </ImageFrame>
           <div>
             <SectionHeading
@@ -22,7 +30,7 @@ export function AboutTeaser() {
             />
             <div className="max-sm:flex max-sm:justify-center">
               <ButtonLink href="/about" className="max-sm:gap-2.5 max-sm:pr-5">
-                <span className="leading-none">Our Story</span>
+                <span className="leading-none">Discover Our Story</span>
                 <svg
                   width="16"
                   height="16"

@@ -5,8 +5,9 @@ export const site = {
   description:
     "Premium sarees from Jyoti Sarees — heritage craft with clean, modern elegance.",
   whatsappUrl: "https://wa.me/919999999999",
-  instagramUrl: "https://www.instagram.com/",
-  facebookUrl: "https://www.facebook.com/",
+  instagramUrl:
+    "https://www.instagram.com/jyoti_sarees_?stkn=aGd3dnMyYXl3MWI4&utm_source=qr",
+  facebookUrl: "https://www.facebook.com/share/1Dkntsvdx9/?mibextid=wwXIfr",
   email: "hello@jyotisarees.com",
   phone: "+91 99999 99999",
   phoneHref: "tel:+919999999999",
@@ -56,7 +57,7 @@ export const copy = {
   about: {
     title: "The Story Behind Jyoti Sarees",
     description:
-      "Jyoti Sarees brings together authentic craftsmanship and thoughtful curation. We believe every drape should feel personal—elegant, comfortable, and made to be remembered.",
+      "Behind every saree is a story. Behind Jyoti Sarees is Potnuru Jyoti — a woman who turned courage, sacrifice and determination into a dream built with her family.",
   },
   testimonials: {
     title: "Loved by Our Customers",
