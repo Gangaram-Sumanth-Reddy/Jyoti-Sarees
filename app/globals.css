@@ -381,16 +381,20 @@
     box-shadow: inset 0 -2px 0 rgb(255 255 255 / 0.95);
   }
 
-  .theme-toggle-moon {
+  .theme-toggle-sun {
     display: none;
+  }
+
+  .theme-toggle-moon {
+    display: block;
   }
 
   html[data-theme="dark"] .theme-toggle-sun {
-    display: none;
+    display: block;
   }
 
   html[data-theme="dark"] .theme-toggle-moon {
-    display: block;
+    display: none;
   }
 
   /* Home hero card — background matches the ivory wall in H1.png so the
@@ -1158,6 +1162,21 @@ html[data-theme="dark"] .final-cta-store {
 
 html[data-theme="dark"] .page-pre-cta {
   background-color: #10182b;
+}
+
+html[data-theme="dark"] .whatsapp-float {
+  background-color: #2a62d6 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .whatsapp-float:hover {
+  background-color: #3b78f0 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .whatsapp-float svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
 }
 
 /* Catalogue banners keep the light-mode copy: dark type on light photos, white type on dark photos. */
