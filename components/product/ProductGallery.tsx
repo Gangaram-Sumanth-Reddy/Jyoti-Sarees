@@ -125,6 +125,8 @@ export function ProductGallery({
               <li key={item.id} role="option" aria-selected={selected}>
                 <button
                   type="button"
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onFocus={() => setActiveIndex(index)}
                   onClick={() => setActiveIndex(index)}
                   className={cn(
                     "relative aspect-square w-full overflow-hidden rounded-md border bg-cream transition-colors duration-200",

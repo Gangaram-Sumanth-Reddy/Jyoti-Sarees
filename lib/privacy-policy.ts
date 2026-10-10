@@ -92,7 +92,7 @@ export const privacyPolicy: LegalDocument = {
       id: "enquiries",
       title: "How we handle enquiries",
       paragraphs: [
-        "When you submit the enquiry form, your details are sent to our server, checked, and stored in an access-restricted database. They are not visible to other visitors. Only authorised members of our team review them.",
+        "When you submit the enquiry form, your details are sent to our server and checked. They are then recorded for our team. They are not visible to other visitors. Only authorised members of our team review them.",
         "After submitting, you can also choose to continue on WhatsApp. WhatsApp opens with your enquiry pre-filled, and nothing is sent until you tap send yourself.",
       ],
     },
@@ -155,7 +155,7 @@ export const privacyPolicy: LegalDocument = {
       id: "security",
       title: "How we protect your data",
       paragraphs: [
-        "Website forms are processed on our server, not directly in your browser. Submissions are checked on the server and stored in a database that the public cannot read. Access is limited to authorised members of our team, and database credentials are never exposed to website visitors.",
+        "Website forms are processed on our server, not directly in your browser. Submissions are checked on the server and then recorded where only our team can review them.",
         "No method of storing or sending information online is completely secure. If a personal data breach affects you, we will inform you and the relevant authorities as required by law.",
       ],
     },

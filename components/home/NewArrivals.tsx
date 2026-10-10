@@ -25,6 +25,7 @@ export function NewArrivals() {
               product={product}
               href={productHref(product)}
               showAddToCart
+              listing
               badge="New"
               className="h-full"
             />

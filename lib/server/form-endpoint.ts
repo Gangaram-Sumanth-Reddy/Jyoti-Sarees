@@ -50,8 +50,9 @@ type FormEndpointOptions<T> = {
 
 /**
  * Shared POST handler for public forms: same-origin check, size cap, basic
- * rate limiting, honeypot, server-side validation, then a write-only insert.
- * Personal data is never logged — only the table name and status code.
+ * rate limiting, honeypot, server-side validation, then a write to the
+ * configured Google Apps Script web app. Personal data is never logged —
+ * only the form name and status code.
  */
 export async function handleFormSubmission<T>(
   request: Request,
@@ -107,10 +108,20 @@ export async function handleFormSubmission<T>(
 
   try {
     const outcome = await insertPrivateRecord(table, toRow(parsed.data, reference));
-    if (outcome === "not_configured" && process.env.NODE_ENV === "production") {
-      console.warn(`[forms] ${table}: storage is not configured; submission was not saved.`);
+    if (outcome === "not_configured") {
+      console.warn(
+        `[forms] ${table}: NEXT_PUBLIC_GOOGLE_APPS_SCRIPT_URL is not configured.`,
+      );
+      return json(
+        {
+          ok: false,
+          message:
+            "We cannot receive form submissions right now. Please reach us on WhatsApp or by email.",
+        },
+        503,
+      );
     }
-    return json({ ok: true, stored: outcome === "stored", reference });
+    return json({ ok: true, stored: true, reference });
   } catch (error) {
     const status = error instanceof DataStoreError ? error.status : "network";
     console.error(`[forms] ${table}: insert failed (status ${status}).`);

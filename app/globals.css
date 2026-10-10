@@ -553,6 +553,42 @@
     }
   }
 
+  /* About testimonials: row one drifts right, row two drifts left. Each track is rendered twice. */
+  .testimonial-marquee:hover .testimonial-track-right,
+  .testimonial-marquee:hover .testimonial-track-left,
+  .testimonial-marquee:focus-within .testimonial-track-right,
+  .testimonial-marquee:focus-within .testimonial-track-left {
+    animation-play-state: paused;
+  }
+
+  .testimonial-track-right {
+    animation: testimonial-scroll-right 42s linear infinite;
+    will-change: transform;
+  }
+
+  .testimonial-track-left {
+    animation: testimonial-scroll-left 42s linear infinite;
+    will-change: transform;
+  }
+
+  @keyframes testimonial-scroll-right {
+    from {
+      transform: translate3d(-50%, 0, 0);
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes testimonial-scroll-left {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .reels-marquee {
       overflow-x: auto;
@@ -563,8 +599,14 @@
       display: none;
     }
 
-    .reels-track {
+    .reels-track,
+    .testimonial-track-right,
+    .testimonial-track-left {
       animation: none;
+    }
+
+    .testimonial-loop-copy {
+      display: none;
     }
 
     .reels-loop-copy {
@@ -612,8 +654,13 @@
     }
   }
 
+  .story-dialog[open] {
+    animation: testimonial-dialog-in 220ms ease-out;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .testimonial-dialog[open],
+    .story-dialog[open],
     .filter-sheet[open] > * {
       animation: none;
     }

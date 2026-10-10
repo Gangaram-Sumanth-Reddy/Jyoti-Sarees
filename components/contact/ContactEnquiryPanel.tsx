@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, useRef, useState, type FormEvent } from "react";
 import { SocialIcons } from "@/components/layout/SocialIcons";
 import {
   FormPrivacyNotice,
@@ -51,6 +51,7 @@ export function ContactEnquiryPanel() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
   const [honeypot, setHoneypot] = useState("");
+  const pending = useRef(false);
   const submitted = submitState.status === "sent";
 
   const stateOptions = useMemo(() => getStateNames(), []);
@@ -121,16 +122,19 @@ export function ContactEnquiryPanel() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (pending.current) return;
     const nextErrors = validateEnquiry(form);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
+    pending.current = true;
     setSubmitState({ status: "submitting" });
     const result = await submitForm("/api/enquiries", form, honeypot);
     if (result.ok) {
       setSubmitState({ status: "sent", stored: result.stored });
       return;
     }
+    pending.current = false;
     if (result.errors) setErrors(result.errors as FormErrors);
     setSubmitState({ status: "idle", message: result.message });
   }
@@ -152,29 +156,31 @@ export function ContactEnquiryPanel() {
         </p>
 
         <div className="mx-auto mt-8 flex w-fit max-w-full flex-col items-center gap-6 lg:mx-0">
-          <div className="flex max-w-full flex-wrap items-center justify-center gap-3">
-            <a
-              href={site.phoneHref}
-              aria-label="Call Jyoti Sarees"
-              className="inline-flex size-11 shrink-0 items-center justify-center overflow-visible rounded-full border border-border bg-white text-navy shadow-soft transition-colors hover:border-navy hover:bg-cream"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-                className="shrink-0 overflow-visible"
+          <div className="flex max-w-full flex-wrap items-center justify-center gap-3 lg:justify-start">
+            {site.phones.map((phone) => (
+              <a
+                key={phone.href}
+                href={phone.href}
+                aria-label={`Call Jyoti Sarees, ${phone.display}`}
+                className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-white text-navy shadow-soft transition-colors hover:border-navy hover:bg-cream"
               >
-                <path
-                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </a>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </a>
+            ))}
             <a
               href={`mailto:${site.email}`}
               className="inline-flex min-h-11 max-w-full items-center gap-2.5 truncate rounded-full border border-border bg-white px-3.5 text-small font-semibold text-rich-black shadow-soft transition-colors hover:border-navy hover:bg-cream sm:text-body"
@@ -202,6 +208,10 @@ export function ContactEnquiryPanel() {
               <span className="truncate">{site.email}</span>
             </a>
           </div>
+
+          <p className="text-small text-muted">
+            {site.hours.opens} – {site.hours.closes}
+          </p>
 
           <SocialIcons align="center" />
         </div>
@@ -421,7 +431,7 @@ export function ContactEnquiryPanel() {
                 label="Quantity"
                 type="number"
                 min={1}
-                max={999}
+                max={99999}
                 inputMode="numeric"
                 placeholder="1"
                 value={form.quantity}

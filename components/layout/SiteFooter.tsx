@@ -32,26 +32,15 @@ export function SiteFooter() {
               className="block h-12 aspect-[1749/899] bg-navy [mask-image:url(/assets/Logo-text.png)] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
             />
           </Link>
-          <p className="mt-4 text-small text-rich-black">{site.tagline}</p>
-          <address className="mt-6 space-y-2 text-small not-italic text-rich-black">
-            <p>{site.address}</p>
-            <p>
-              <a
-                href={site.phoneHref}
-                className="font-medium text-navy transition-colors hover:text-accent"
-              >
-                {site.phone}
-              </a>
-            </p>
-            <p>
-              <a
-                href={`mailto:${site.email}`}
-                className="font-medium text-navy transition-colors hover:text-accent"
-              >
-                {site.email}
-              </a>
-            </p>
-          </address>
+          <p className="mt-4 max-w-[16rem] whitespace-pre-line text-small leading-relaxed text-rich-black">
+            {site.tagline}
+          </p>
+          <a
+            href={`mailto:${site.email}`}
+            className="mt-4 inline-block text-small font-medium text-navy transition-colors hover:text-accent"
+          >
+            {site.email}
+          </a>
         </div>
 
         <nav aria-label="Footer">

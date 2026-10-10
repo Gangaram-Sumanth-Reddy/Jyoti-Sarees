@@ -1,17 +1,61 @@
 export const site = {
   name: "Jyoti Sarees",
   shortName: "Jyoti",
-  tagline: "Draped in elegance",
+  tagline: "Heritage weaves, chosen with care.\nFor celebrations and every day.",
   description:
     "Premium sarees from Jyoti Sarees — heritage craft with clean, modern elegance.",
-  whatsappUrl: "https://wa.me/919999999999",
+  whatsapp: "9556820010",
+  whatsappUrl: "https://wa.me/919556820010",
   instagramUrl:
     "https://www.instagram.com/jyoti_sarees_?stkn=aGd3dnMyYXl3MWI4&utm_source=qr",
   facebookUrl: "https://www.facebook.com/share/1Dkntsvdx9/?mibextid=wwXIfr",
   email: "hello@jyotisarees.com",
-  phone: "+91 99999 99999",
-  phoneHref: "tel:+919999999999",
-  address: "Jyoti Sarees, Main Road, Your City, India",
+  phones: [
+    { display: "0556820010", href: "tel:0556820010" },
+    { display: "05556677477", href: "tel:05556677477" },
+  ],
+  phone: "0556820010, 05556677477",
+  phoneHref: "tel:0556820010",
+  cities: "Nabrangpur, Jeypore",
+  hours: {
+    opens: "10:00 AM",
+    closes: "8:30 PM",
+  },
+  stores: [
+    {
+      id: "nabrangpur",
+      name: "Jyoti Sarees",
+      city: "Nabrangpur",
+      lines: [
+        "Nabrangpur – ICICI Bank backside,",
+        "P. Bhaskar Rao Residency,",
+        "Second Floor,",
+        "Nabrangpur – 764059",
+      ],
+      mapLines: [
+        "Nabrangpur – ICICI Bank backside,",
+        "P. Bhaskar Rao Residency,",
+        "Second Floor, Nabrangpur – 764059",
+      ],
+    },
+    {
+      id: "jeypore",
+      name: "Jyoti Sarees",
+      city: "Jeypore",
+      lines: [
+        "Mahantye Street,",
+        "Opposite of Maharaja Bakery,",
+        "Jeypore – 764001",
+      ],
+      mapLines: [
+        "Mahantye Street,",
+        "Opposite of Maharaja Bakery,",
+        "Jeypore – 764001",
+      ],
+    },
+  ],
+  address:
+    "Nabrangpur – ICICI Bank backside, P. Bhaskar Rao Residency, Second Floor, Nabrangpur – 764059. Mahantye Street, Opposite of Maharaja Bakery, Jeypore – 764001",
 } as const;
 
 export const navigation = [
@@ -24,7 +68,6 @@ export const navigation = [
 export const footerNav = [
   { href: "/sarees", label: "Sarees" },
   { href: "/new-arrivals", label: "New Arrivals" },
-  { href: "/journal", label: "Saree Guides" },
   { href: "/about", label: "About Us" },
   { href: "/contact", label: "Contact" },
 ] as const;

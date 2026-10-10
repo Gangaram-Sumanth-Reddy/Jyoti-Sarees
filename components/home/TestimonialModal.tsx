@@ -34,6 +34,7 @@ export function TestimonialModal({ open, onClose }: TestimonialModalProps) {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [honeypot, setHoneypot] = useState("");
+  const pending = useRef(false);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -73,16 +74,19 @@ export function TestimonialModal({ open, onClose }: TestimonialModalProps) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (pending.current) return;
     const nextErrors = validateTestimonial(form);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
+    pending.current = true;
     setStatus("submitting");
     const result = await submitForm("/api/testimonials", form, honeypot);
     if (result.ok) {
       setStatus("success");
       return;
     }
+    pending.current = false;
     if (result.errors) setErrors(result.errors as TestimonialErrors);
     setErrorMessage(result.message);
     setStatus("error");

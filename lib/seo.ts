@@ -107,7 +107,7 @@ export const businessProfile = {
   legalName: fromEnv("BUSINESS_LEGAL_NAME"),
   logo: { url: "/assets/logo-512.png", width: 512, height: 512 },
   email: fromEnv("BUSINESS_EMAIL"),
-  phone: fromEnv("BUSINESS_PHONE"),
+  phone: fromEnv("BUSINESS_PHONE") ?? site.phone,
   address: null as PostalAddress | null,
   geo: null as { latitude: number; longitude: number } | null,
   /** Schema.org openingHours strings, e.g. "Mo-Sa 10:00-20:00". */

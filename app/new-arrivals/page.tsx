@@ -36,7 +36,7 @@ export default function NewArrivalsPage() {
         ]}
       />
       <NewArrivalsHero count={arrivals.length} />
-      <CatalogueBrowser products={arrivals} cardBadge="New" />
+      <CatalogueBrowser products={arrivals} cardBadge="New" mobileListing />
       <CatalogueCta />
     </>
   );

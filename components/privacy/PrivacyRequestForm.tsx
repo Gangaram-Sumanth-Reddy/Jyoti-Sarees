@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, type FormEvent } from "react";
+import { useId, useRef, useState, type FormEvent } from "react";
 import {
   FormPrivacyNotice,
   HoneypotField,
@@ -55,6 +55,7 @@ export function PrivacyRequestForm({
   const [errors, setErrors] = useState<PrivacyRequestErrors>({});
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
   const [honeypot, setHoneypot] = useState("");
+  const pending = useRef(false);
 
   function updateField<K extends keyof PrivacyRequestInput>(
     key: K,
@@ -71,16 +72,19 @@ export function PrivacyRequestForm({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (pending.current) return;
     const nextErrors = validatePrivacyRequest(form);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
+    pending.current = true;
     setSubmitState({ status: "submitting" });
     const result = await submitForm("/api/privacy-requests", form, honeypot);
     if (result.ok) {
       setSubmitState({ status: "sent", stored: result.stored, reference: result.reference });
       return;
     }
+    pending.current = false;
     if (result.errors) setErrors(result.errors as PrivacyRequestErrors);
     setSubmitState({ status: "idle", message: result.message });
   }

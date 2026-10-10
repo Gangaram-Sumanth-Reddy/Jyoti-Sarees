@@ -2,6 +2,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { contactAddresses } from "@/lib/contact";
+import { site } from "@/lib/site";
 
 export function ContactAddresses() {
   return (
@@ -10,6 +11,7 @@ export function ContactAddresses() {
         <SectionHeading
           eyebrow="Address"
           title="Visit Our Stores"
+          description={`${site.cities}. Open ${site.hours.opens} – ${site.hours.closes}.`}
           align="center"
           className="max-w-2xl"
         />
@@ -40,6 +42,12 @@ export function ContactAddresses() {
                     {line}
                   </p>
                 ))}
+                <a
+                  href={store.mapsHref}
+                  className="mt-3 inline-flex text-small font-semibold text-navy underline decoration-navy/30 underline-offset-4 transition-colors hover:text-accent"
+                >
+                  Open in Google Maps
+                </a>
               </div>
             </li>
           ))}

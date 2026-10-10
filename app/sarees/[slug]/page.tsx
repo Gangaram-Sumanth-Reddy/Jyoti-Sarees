@@ -87,7 +87,7 @@ export default async function SareeSlugPage({ params }: SareeSlugPageProps) {
           productCount={items.length}
           breadcrumbs={crumbs}
         />
-        <CollectionBrowser collection={collection} products={items} />
+        <CollectionBrowser products={items} />
         <CollectionGuide
           collection={collection}
           related={getRelatedCollections(collection)}

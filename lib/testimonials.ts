@@ -6,6 +6,8 @@ export type Testimonial = {
   rating: number;
   quote: string;
   image: string;
+  /** Focal point when the photo is wider than a round avatar. */
+  imagePosition?: string;
   featured?: boolean;
 };
 
@@ -60,5 +62,16 @@ export const testimonials: readonly Testimonial[] = [
     quote:
       "My go-to for everyday office sarees now. Breathable cotton, lovely border, and quick responses on WhatsApp.",
     image: "/assets/testimonials/kavya.jpg",
+  },
+  {
+    id: "harini",
+    name: "Harini Das",
+    city: "Madurai",
+    saree: "Navy Silk",
+    rating: 5,
+    quote:
+      "The navy silk held its shape through a long evening. Soft in the hand, and the gold border is exactly what I was hoping for.",
+    image: "/assets/H3.png",
+    imagePosition: "16% 22%",
   },
 ];

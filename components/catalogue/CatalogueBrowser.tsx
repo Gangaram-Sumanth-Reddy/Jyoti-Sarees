@@ -22,11 +22,14 @@ type CatalogueBrowserProps = {
   products: Product[];
   /** Optional badge on every card (e.g. "New" on New Arrivals). */
   cardBadge?: string;
+  /** Phone card layout used on the Sarees catalogue only. */
+  mobileListing?: boolean;
 };
 
 export function CatalogueBrowser({
   products,
   cardBadge,
+  mobileListing = false,
 }: CatalogueBrowserProps) {
   const [filters, setFilters] = useState<CatalogueFilters>(defaultCatalogueFilters);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -96,6 +99,7 @@ export function CatalogueBrowser({
                     product={product}
                     href={productHref(product)}
                     showAddToCart
+                    listing={mobileListing}
                     badge={cardBadge}
                     className="h-full"
                   />

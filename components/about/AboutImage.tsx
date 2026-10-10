@@ -10,6 +10,7 @@ type AboutImageProps = {
   objectPosition?: string;
   preload?: boolean;
   className?: string;
+  fit?: "cover" | "contain";
 };
 
 export function AboutImage({
@@ -20,11 +21,12 @@ export function AboutImage({
   objectPosition = "50% 50%",
   preload = false,
   className,
+  fit = "cover",
 }: AboutImageProps) {
   return (
     <div
       className={cn(
-        "relative w-full overflow-hidden rounded-lg bg-cream shadow-soft",
+        "relative min-w-0 max-w-full overflow-hidden rounded-lg bg-cream shadow-soft",
         aspectClassName,
         className,
       )}
@@ -35,7 +37,7 @@ export function AboutImage({
         fill
         preload={preload}
         sizes={sizes}
-        className="object-cover"
+        className={fit === "contain" ? "object-contain" : "object-cover"}
         style={{ objectPosition }}
       />
     </div>

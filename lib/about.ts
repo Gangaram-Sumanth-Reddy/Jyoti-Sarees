@@ -5,6 +5,10 @@ export const aboutContent = {
     description:
       "Every beautiful saree has a story. Ours began with a dream, courage and an unwavering belief in building something of our own.",
     founder: "Potnuru Jyoti",
+    portrait: {
+      src: "/assets/Jyoti.png",
+      alt: "Potnuru Jyoti, founder of Jyoti Sarees, in a cream silk saree with a pink and gold border",
+    },
     image: {
       src: "/assets/about/hero.jpg",
       alt: "Woman in a navy Kanchipuram silk saree with a gold zari border beside shelves of folded silk sarees in the Jyoti Sarees boutique",
@@ -52,8 +56,12 @@ export const aboutContent = {
       description: "A brand built through dedication and genuine relationships.",
     },
     {
-      title: "Love",
-      description: "A family-supported journey carried forward with heart.",
+      title: "Tradition",
+      description: "Heritage weaves, carried forward with respect.",
+    },
+    {
+      title: "Family",
+      description: "A journey held by the people beside her.",
     },
   ],
   finalCta: {

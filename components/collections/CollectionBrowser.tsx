@@ -1,14 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { CatalogueFiltersSidebar } from "@/components/catalogue/CatalogueFiltersSidebar";
 import { CollectionEmptyState } from "@/components/collections/CollectionEmptyState";
 import { FilterSheet, FilterTriggerIcon } from "@/components/catalogue/FilterSheet";
-import { ProductFiltersBar } from "@/components/catalogue/ProductFiltersBar";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { Section } from "@/components/ui/Section";
-import type { Collection } from "@/lib/collections";
+import { cn } from "@/lib/cn";
 import {
   defaultCatalogueFilters,
   filterAndSortProducts,
@@ -19,14 +19,10 @@ import {
 } from "@/lib/products";
 
 type CollectionBrowserProps = {
-  collection: Collection;
   products: Product[];
 };
 
-export function CollectionBrowser({
-  collection,
-  products,
-}: CollectionBrowserProps) {
+export function CollectionBrowser({ products }: CollectionBrowserProps) {
   const [filters, setFilters] = useState<CatalogueFilters>(defaultCatalogueFilters);
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -47,51 +43,23 @@ export function CollectionBrowser({
   }
 
   const filtersActive = hasActiveFilters(filters);
+  const canClear = filtersActive || filters.sort !== defaultCatalogueFilters.sort;
   const hasSourceProducts = products.length > 0;
 
   return (
-    <Section tone="muted" className="pt-0">
+    <Section tone="muted" className="pt-6 sm:pt-8">
       <Container>
-        <div className="mb-8 rounded-lg border border-border bg-white px-5 py-5 shadow-soft sm:px-6 sm:py-6">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
-            <div className="max-w-2xl">
-              <p className="text-small font-semibold uppercase tracking-[0.12em] text-accent">
-                {collection.name}
-              </p>
-              <p className="mt-2 text-body text-muted">
-                {collection.shortDescription}
-              </p>
-            </div>
-            <p className="shrink-0 text-small font-semibold text-rich-black">
-              {products.length}{" "}
-              {products.length === 1 ? "product available" : "products available"}
-            </p>
-          </div>
-        </div>
-
         {hasSourceProducts ? (
           <>
-            <ProductFiltersBar
-              products={products}
-              filters={filters}
-              onChange={updateFilter}
-              onClear={clearFilters}
-              showClear={filtersActive}
-              categoryLabel="Saree Type"
-              idPrefix="inline"
-              className="hidden md:block"
-            />
-
-            <div className="mt-6 flex items-center justify-between gap-4">
-              <p className="text-small text-muted" aria-live="polite">
-                Showing {visible.length}{" "}
-                {visible.length === 1 ? "saree" : "sarees"}
+            <div className="flex items-center justify-between gap-3 lg:hidden">
+              <p className="text-small font-semibold text-rich-black" aria-live="polite">
+                {visible.length} {visible.length === 1 ? "saree" : "sarees"}
               </p>
               <Button
                 type="button"
                 variant={filtersActive ? "primary" : "secondary"}
                 size="sm"
-                className="min-h-11 px-5 md:hidden"
+                className="min-h-11 px-5"
                 aria-haspopup="dialog"
                 onClick={() => setSheetOpen(true)}
               >
@@ -101,65 +69,68 @@ export function CollectionBrowser({
               </Button>
             </div>
 
+            <div className="mt-4 lg:mt-0 lg:grid lg:grid-cols-[minmax(17.5rem,18.75rem)_minmax(0,1fr)] lg:items-start lg:gap-4 xl:gap-5">
+              <CatalogueFiltersSidebar
+                products={products}
+                filters={filters}
+                onChange={updateFilter}
+                onClear={clearFilters}
+                canClear={canClear}
+                idPrefix="collection-desktop"
+                className={cn(
+                  "sticky z-20 hidden w-full self-start lg:block",
+                  "top-[calc(var(--site-header-height)+1rem)]",
+                  "max-h-[calc(100dvh-var(--site-header-height)-2rem)]",
+                  "overflow-y-auto overscroll-contain",
+                )}
+              />
+
+              <div className="min-w-0">
+                {visible.length > 0 ? (
+                  <ul className="grid list-none grid-cols-2 items-stretch gap-3 p-0 sm:gap-4 lg:gap-4 xl:grid-cols-3 xl:gap-5">
+                    {visible.map((product) => (
+                      <ProductCard
+                        key={product.slug}
+                        product={product}
+                        href={productHref(product)}
+                        showWhatsApp
+                        listing
+                        className="h-full"
+                      />
+                    ))}
+                  </ul>
+                ) : (
+                  <CollectionEmptyState filtered onClear={clearFilters} />
+                )}
+              </div>
+            </div>
+
             <FilterSheet
               open={sheetOpen}
               onClose={() => setSheetOpen(false)}
               title="Filters & Sort"
               footer={
-                <div className="flex gap-3">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="lg"
-                    className="flex-1 px-4"
-                    disabled={!filtersActive}
-                    onClick={clearFilters}
-                  >
-                    Clear All
-                  </Button>
-                  <Button
-                    type="button"
-                    size="lg"
-                    className="flex-[1.4] px-4"
-                    onClick={() => setSheetOpen(false)}
-                  >
-                    Show {visible.length} {visible.length === 1 ? "saree" : "sarees"}
-                  </Button>
-                </div>
+                <Button
+                  type="button"
+                  size="lg"
+                  className="w-full"
+                  onClick={() => setSheetOpen(false)}
+                >
+                  Show {visible.length} {visible.length === 1 ? "saree" : "sarees"}
+                </Button>
               }
             >
-              <ProductFiltersBar
+              <CatalogueFiltersSidebar
                 products={products}
                 filters={filters}
                 onChange={updateFilter}
                 onClear={clearFilters}
-                showClear={false}
-                categoryLabel="Saree Type"
-                idPrefix="sheet"
+                canClear={canClear}
+                idPrefix="collection-drawer"
+                hideTitle
                 className="!border-0 !p-0 !shadow-none"
               />
             </FilterSheet>
-
-            {visible.length > 0 ? (
-              <ul className="mt-5 grid list-none grid-cols-2 gap-3 p-0 sm:mt-6 sm:gap-4 lg:grid-cols-3 lg:gap-5 xl:grid-cols-4">
-                {visible.map((product) => (
-                  <ProductCard
-                    key={product.slug}
-                    name={product.name}
-                    category={product.category}
-                    fabric={product.fabric}
-                    price={product.priceLabel}
-                    href={productHref(product)}
-                    productId={product.productId}
-                    showWhatsApp
-                  />
-                ))}
-              </ul>
-            ) : (
-              <div className="mt-6">
-                <CollectionEmptyState filtered onClear={clearFilters} />
-              </div>
-            )}
           </>
         ) : (
           <CollectionEmptyState />

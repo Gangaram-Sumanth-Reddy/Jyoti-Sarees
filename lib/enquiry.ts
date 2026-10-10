@@ -54,7 +54,7 @@ const limits = {
   state: 60,
   city: 80,
   requirement: 500,
-  quantity: 3,
+  quantity: 5,
 } as const;
 
 export function validateEnquiry(form: EnquiryInput): EnquiryErrors {
@@ -75,8 +75,8 @@ export function validateEnquiry(form: EnquiryInput): EnquiryErrors {
     errors.requirement = "Tell us the saree type or requirement.";
   }
   const qty = Number(form.quantity);
-  if (!Number.isInteger(qty) || qty < 1 || qty > 999) {
-    errors.quantity = "Enter a quantity between 1 and 999.";
+  if (!Number.isInteger(qty) || qty < 1 || qty > 99999) {
+    errors.quantity = "Enter a quantity of 1 or more.";
   }
 
   return errors;

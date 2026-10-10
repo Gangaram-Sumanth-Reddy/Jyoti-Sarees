@@ -102,7 +102,7 @@ function FeaturedTestimonial({ testimonial }: { testimonial: Testimonial }) {
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <figure className="relative flex flex-col rounded-lg border border-border bg-white p-6 shadow-soft transition-shadow duration-200 hover:shadow-card">
+    <figure className="relative flex h-full flex-col rounded-lg border border-border bg-white p-6 shadow-soft transition-shadow duration-200 hover:shadow-card">
       <QuoteMark className="absolute right-6 top-6 text-navy/10" />
       <StarRating rating={testimonial.rating} />
       <blockquote className="mt-4 flex-1 text-body leading-relaxed text-rich-black">
@@ -116,6 +116,11 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           height={48}
           sizes="48px"
           className="size-12 shrink-0 rounded-full object-cover ring-2 ring-cream"
+          style={
+            testimonial.imagePosition
+              ? { objectPosition: testimonial.imagePosition }
+              : undefined
+          }
         />
         <div className="min-w-0">
           <Attribution testimonial={testimonial} />
@@ -125,9 +130,53 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   );
 }
 
-export function Testimonials() {
+const marqueeCardClass =
+  "w-[calc(100cqw/1.2)] shrink-0 pr-4 sm:w-[calc(100cqw/2.15)] sm:pr-5 lg:w-[calc(100cqw/3)] lg:pr-6";
+
+function TestimonialRow({
+  items,
+  direction,
+}: {
+  items: Testimonial[];
+  direction: "left" | "right";
+}) {
+  return (
+    <div className="testimonial-marquee @container overflow-hidden">
+      <ul
+        className={
+          direction === "right"
+            ? "testimonial-track-right flex w-max list-none py-2"
+            : "testimonial-track-left flex w-max list-none py-2"
+        }
+      >
+        {items.map((testimonial) => (
+          <li key={testimonial.id} className={marqueeCardClass}>
+            <TestimonialCard testimonial={testimonial} />
+          </li>
+        ))}
+        {items.map((testimonial) => (
+          <li
+            key={`${testimonial.id}-loop`}
+            className={`${marqueeCardClass} testimonial-loop-copy`}
+            aria-hidden="true"
+          >
+            <TestimonialCard testimonial={testimonial} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+type TestimonialsProps = {
+  /** About page: six small cards in two rows that scroll in opposite directions. */
+  uniform?: boolean;
+};
+
+export function Testimonials({ uniform = false }: TestimonialsProps) {
   const featured = testimonials.find((item) => item.featured) ?? testimonials[0];
   const others = testimonials.filter((item) => item.id !== featured.id);
+  const cards = others.filter((item) => item.id !== "harini");
   const average =
     testimonials.reduce((sum, item) => sum + item.rating, 0) / testimonials.length;
 
@@ -149,12 +198,19 @@ export function Testimonials() {
           </div>
         </SectionHeading>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-          <FeaturedTestimonial testimonial={featured} />
-          {others.map((testimonial) => (
-            <TestimonialCard key={testimonial.id} testimonial={testimonial} />
-          ))}
-        </div>
+        {uniform ? (
+          <div className="flex flex-col gap-5 sm:gap-6">
+            <TestimonialRow items={testimonials.slice(0, 3)} direction="right" />
+            <TestimonialRow items={testimonials.slice(3, 6)} direction="left" />
+          </div>
+        ) : (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+            <FeaturedTestimonial testimonial={featured} />
+            {cards.map((testimonial) => (
+              <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+            ))}
+          </div>
+        )}
         <DropTestimonial />
       </Container>
     </Section>

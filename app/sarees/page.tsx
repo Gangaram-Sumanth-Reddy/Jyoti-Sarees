@@ -30,7 +30,7 @@ export default function SareesPage() {
       />
       <CatalogueBanner />
       <CatalogueIntro />
-      <CatalogueBrowser products={catalogueProducts} />
+      <CatalogueBrowser products={catalogueProducts} mobileListing />
       <CatalogueCta />
     </>
   );

@@ -9,21 +9,31 @@ import { site } from "@/lib/site";
 export type ContactAddress = {
   id: string;
   label: string;
-  lines: string[];
+  lines: readonly string[];
+  mapsHref: string;
 };
 
-export const contactAddresses: ContactAddress[] = [
-  {
-    id: "flagship",
-    label: "Flagship store",
-    lines: ["123 Main Road, Market Area", "Your City, India 000000"],
-  },
-  {
-    id: "branch",
-    label: "Branch",
-    lines: ["45 Silk Street, Textile Lane", "Your City, India 000000"],
-  },
-];
+function mapsSearchUrl(lines: readonly string[]) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lines.join(" "))}`;
+}
+
+export const contactAddresses: ContactAddress[] = site.stores.map((store) => ({
+  id: store.id,
+  label: store.city,
+  lines: store.lines,
+  mapsHref: mapsSearchUrl(store.mapLines),
+}));
+
+export const bulkOrders = {
+  minimum: "50–500 pieces and above, if available",
+  types: [
+    "Uniforms for traditional functions",
+    "Parties",
+    "School uniforms",
+    "Office uniforms",
+    "Gifting purposes",
+  ],
+} as const;
 
 export const contactSocials = [
   {
@@ -90,7 +100,7 @@ export function getSareeRequirementSuggestions(): string[] {
     if (product.design) values.add(product.design);
   }
 
-  return [...values].sort((a, b) => a.localeCompare(b, "en"));
+  return [...bulkOrders.types, ...values].sort((a, b) => a.localeCompare(b, "en"));
 }
 
 export function contactEnquiryWhatsAppUrl(

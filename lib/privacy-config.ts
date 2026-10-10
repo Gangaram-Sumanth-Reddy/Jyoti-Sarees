@@ -41,7 +41,7 @@ export const privacyConfig = {
   },
 
   policyVersion: "1.0",
-  lastUpdated: "27 September 2026",
+  lastUpdated: "10 October 2026",
 
   retention: {
     enquiries: pending("Enquiry data retention period"),
@@ -63,8 +63,9 @@ export const privacyConfig = {
       dataShared: "Form submissions in transit and standard technical request logs.",
     },
     {
-      name: pending("Database provider (e.g. Supabase)"),
-      purpose: "Stores enquiries, testimonial submissions and privacy requests.",
+      name: pending("Google Sheets"),
+      purpose:
+        "Records enquiries, testimonial submissions and privacy requests after our server has checked them.",
       dataShared: "The details you submit through our forms.",
     },
     {

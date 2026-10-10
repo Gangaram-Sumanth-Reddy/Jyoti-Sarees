@@ -2,8 +2,9 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { bulkOrders } from "@/lib/contact";
 import { deliveryConfig, isShippingPageEnabled } from "@/lib/seo";
+import { site } from "@/lib/site";
 
 type Faq = { question: string; answer: ReactNode };
 
@@ -34,7 +35,10 @@ function buildFaqs(): Faq[] {
       answer: (
         <>
           {parts.join(" ")} See our{" "}
-          <Link href="/shipping" className="font-semibold text-navy underline underline-offset-2">
+          <Link
+            href="/shipping"
+            className="font-semibold text-navy underline underline-offset-2"
+          >
             shipping information
           </Link>{" "}
           for details.
@@ -43,19 +47,32 @@ function buildFaqs(): Faq[] {
     });
   }
 
-  faqs.push({
-    question: "How is my personal information used?",
-    answer: (
-      <>
-        Only to respond to your enquiry, unless you separately opt in to
-        updates. Read our{" "}
-        <Link href="/privacy-policy" className="font-semibold text-navy underline underline-offset-2">
-          Privacy Policy
-        </Link>{" "}
-        for details.
-      </>
-    ),
-  });
+  faqs.push(
+    {
+      question: "Where are the stores, and when are they open?",
+      answer: `We are in ${site.cities}, open ${site.hours.opens} – ${site.hours.closes}. The store addresses are listed on this page.`,
+    },
+    {
+      question: "Do you take bulk orders?",
+      answer: `Yes, when stock allows. The minimum is ${bulkOrders.minimum}. This includes ${bulkOrders.types.join(", ").replace(/, ([^,]*)$/, ", and $1").toLowerCase()}.`,
+    },
+    {
+      question: "How is my personal information used?",
+      answer: (
+        <>
+          Only to respond to your enquiry, unless you separately opt in to
+          updates. Read our{" "}
+          <Link
+            href="/privacy-policy"
+            className="font-semibold text-navy underline underline-offset-2"
+          >
+            Privacy Policy
+          </Link>{" "}
+          for details.
+        </>
+      ),
+    },
+  );
 
   return faqs;
 }
@@ -66,25 +83,48 @@ export function ContactFaq() {
   return (
     <Section>
       <Container className="max-w-3xl">
-        <SectionHeading
-          eyebrow="Help"
-          title="Frequently asked questions"
-          align="center"
-          className="max-w-2xl"
-        />
-        <div className="divide-y divide-border rounded-lg border border-border bg-white">
+        <div className="mb-8 flex flex-col items-center text-center sm:mb-10">
+          <p className="inline-flex items-center gap-2 text-small font-semibold uppercase tracking-[0.16em] text-navy">
+            <span className="size-1.5 rounded-full bg-navy" aria-hidden="true" />
+            FAQ
+          </p>
+          <h2 className="mt-3 text-h2 text-rich-black">Frequently Asked Questions</h2>
+          <p className="mt-3 max-w-xl text-body leading-relaxed text-rich-black">
+            Buying, store visits, bulk orders, and how we use your details.
+          </p>
+        </div>
+        <div className="grid gap-3">
           {faqs.map((faq) => (
-            <details key={faq.question} className="group px-5 py-4">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-body font-semibold text-rich-black [&::-webkit-details-marker]:hidden">
+            <details
+              key={faq.question}
+              className="group rounded-lg border border-border bg-white px-5 py-4 shadow-soft"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-body font-semibold text-rich-black [&::-webkit-details-marker]:hidden">
                 {faq.question}
                 <span
                   aria-hidden="true"
-                  className="mt-0.5 shrink-0 text-navy transition-transform group-open:rotate-45"
+                  className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-cream text-navy"
                 >
-                  +
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="transition-transform duration-200 group-open:rotate-180"
+                  >
+                    <path
+                      d="M6 9.5 12 15.5 18 9.5"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
                 </span>
               </summary>
-              <p className="mt-3 text-body text-muted">{faq.answer}</p>
+              <p className="mt-3 pr-12 text-body leading-relaxed text-rich-black">
+                {faq.answer}
+              </p>
             </details>
           ))}
         </div>

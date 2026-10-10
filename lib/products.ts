@@ -79,8 +79,6 @@ export const defaultGallery: ProductGalleryItem[] = [
   { id: "full", label: "Full saree view" },
   { id: "model", label: "Model / styled view" },
   { id: "fabric", label: "Fabric / detail close-up" },
-  { id: "pallu", label: "Pallu / border" },
-  { id: "extra", label: "Additional view" },
 ];
 
 /** Fixed colourways per design family — order never changes on select. */

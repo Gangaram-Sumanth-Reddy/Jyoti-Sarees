@@ -1,6 +1,9 @@
 import "server-only";
 
-export type PrivateTable = "enquiries" | "testimonial_submissions" | "privacy_requests";
+export type PrivateTable =
+  | "enquiries"
+  | "testimonial_submissions"
+  | "privacy_requests";
 
 export type InsertOutcome = "stored" | "not_configured";
 
@@ -9,38 +12,57 @@ export class DataStoreError extends Error {
     readonly table: PrivateTable,
     readonly status: number,
   ) {
-    super(`Insert into ${table} failed with status ${status}`);
+    super(`Sheet append for ${table} failed with status ${status}`);
   }
 }
 
 /**
- * Write-only access to the private Supabase tables through the REST API.
+ * Server-only writer for the Google Apps Script web app.
  *
- * The service-role key is read from a non-public env var, so it never reaches
- * the browser bundle. RLS is enabled on every table with no anon/authenticated
- * policies (see supabase/migrations), so public keys cannot read or write them.
- * Only inserts are exposed here — nothing in the app reads submissions back.
+ * Set NEXT_PUBLIC_GOOGLE_APPS_SCRIPT_URL when the script is deployed. This
+ * module is server-only, so the site posts from the route handler after
+ * validation — the browser never calls the script itself.
+ *
+ * The script should accept a POST body:
+ * `{ form, submittedAt, ...fields }`
+ * where `form` is `enquiries`, `testimonial_submissions`, or `privacy_requests`.
+ * A 2xx response, or the 302 redirect Apps Script returns after `doPost`,
+ * counts as saved.
  */
+function appsScriptUrl() {
+  const raw = process.env.NEXT_PUBLIC_GOOGLE_APPS_SCRIPT_URL?.trim();
+  if (!raw) return null;
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== "https:") return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
 export async function insertPrivateRecord(
   table: PrivateTable,
   row: Record<string, unknown>,
 ): Promise<InsertOutcome> {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) return "not_configured";
+  const url = appsScriptUrl();
+  if (!url) return "not_configured";
 
-  const response = await fetch(`${url.replace(/\/$/, "")}/rest/v1/${table}`, {
+  const response = await fetch(url, {
     method: "POST",
-    headers: {
-      apikey: key,
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal",
-    },
-    body: JSON.stringify(row),
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({
+      form: table,
+      submittedAt: new Date().toISOString(),
+      ...row,
+    }),
+    redirect: "manual",
     cache: "no-store",
+    signal: AbortSignal.timeout(15_000),
   });
 
-  if (!response.ok) throw new DataStoreError(table, response.status);
+  const accepted =
+    response.ok || response.status === 302 || response.status === 303;
+  if (!accepted) throw new DataStoreError(table, response.status);
   return "stored";
 }

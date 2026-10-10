@@ -1,4 +1,5 @@
 import { ContactAddresses } from "@/components/contact/ContactAddresses";
+import { ContactBulkOrders } from "@/components/contact/ContactBulkOrders";
 import { ContactEnquiryPanel } from "@/components/contact/ContactEnquiryPanel";
 import { ContactFaq } from "@/components/contact/ContactFaq";
 import { Container } from "@/components/ui/Container";
@@ -20,6 +21,7 @@ export default function ContactPage() {
           <ContactEnquiryPanel />
         </Container>
       </Section>
+      <ContactBulkOrders />
       <ContactAddresses />
       <ContactFaq />
     </>
