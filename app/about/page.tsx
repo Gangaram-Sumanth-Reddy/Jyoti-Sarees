@@ -1,5 +1,4 @@
 import { AboutValues } from "@/components/about/AboutCraftsmanship";
-import { AboutFinalCta } from "@/components/about/AboutFinalCta";
 import { AboutHero } from "@/components/about/AboutHero";
 import { Testimonials } from "@/components/home/Testimonials";
 import { aboutContent } from "@/lib/about";
@@ -18,7 +17,6 @@ export default function AboutPage() {
       <AboutHero />
       <AboutValues />
       <Testimonials uniform />
-      <AboutFinalCta />
     </>
   );
 }

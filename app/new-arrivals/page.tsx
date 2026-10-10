@@ -1,5 +1,4 @@
 import { CatalogueBrowser } from "@/components/catalogue/CatalogueBrowser";
-import { CatalogueCta } from "@/components/catalogue/CatalogueCta";
 import { NewArrivalsHero } from "@/components/new-arrivals/NewArrivalsHero";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getNewArrivals, products } from "@/lib/products";
@@ -37,7 +36,6 @@ export default function NewArrivalsPage() {
       />
       <NewArrivalsHero count={arrivals.length} />
       <CatalogueBrowser products={arrivals} cardBadge="New" mobileListing />
-      <CatalogueCta />
     </>
   );
 }

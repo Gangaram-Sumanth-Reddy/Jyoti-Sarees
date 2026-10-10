@@ -32,7 +32,7 @@ export function NewArrivals() {
           ))}
         </ul>
         <div className="mt-10 flex justify-center sm:mt-12">
-          <ButtonLink href="/new-arrivals" variant="secondary">
+          <ButtonLink href="/new-arrivals">
             View All New Arrivals
           </ButtonLink>
         </div>

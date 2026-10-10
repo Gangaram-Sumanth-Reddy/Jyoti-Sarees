@@ -9,7 +9,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-border bg-cream">
+    <footer className="mt-auto border-t border-border bg-page">
       <Container className="grid grid-cols-2 gap-x-5 gap-y-9 py-10 sm:gap-x-8 sm:py-12 lg:grid-cols-[1.1fr_1fr_1fr] lg:gap-12 lg:py-14">
         <div className="col-span-2 max-w-sm max-lg:mx-auto max-lg:flex max-lg:flex-col max-lg:items-center max-lg:text-center lg:col-span-1">
           <BrandMark className="max-lg:hidden" />
@@ -29,7 +29,7 @@ export function SiteFooter() {
             {/* The wordmark asset is white; masking it lets the footer show it in navy. */}
             <span
               aria-hidden="true"
-              className="block h-12 aspect-[1749/899] bg-navy [mask-image:url(/assets/Logo-text.png)] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
+              className="block h-12 aspect-[1749/899] bg-[var(--jyoti-wordmark)] [mask-image:url(/assets/Logo-text.png)] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
             />
           </Link>
           <p className="mt-4 max-w-[16rem] whitespace-pre-line text-small leading-relaxed text-rich-black">

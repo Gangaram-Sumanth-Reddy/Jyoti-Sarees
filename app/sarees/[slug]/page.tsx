@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CollectionBrowser } from "@/components/collections/CollectionBrowser";
-import { CollectionCta } from "@/components/collections/CollectionCta";
 import { CollectionGuide } from "@/components/collections/CollectionGuide";
 import { CollectionHero } from "@/components/collections/CollectionHero";
 import { ProductDetailView } from "@/components/product/ProductDetailView";
@@ -92,7 +91,6 @@ export default async function SareeSlugPage({ params }: SareeSlugPageProps) {
           collection={collection}
           related={getRelatedCollections(collection)}
         />
-        <CollectionCta />
       </>
     );
   }

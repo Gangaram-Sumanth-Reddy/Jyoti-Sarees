@@ -26,8 +26,8 @@ export function CartNavButton({ inverse = false, className }: CartNavButtonProps
         "relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-pill transition-colors duration-300",
         inverse
           ? active
-            ? "bg-white/20 text-white ring-1 ring-white/55"
-            : "text-white hover:bg-white/15"
+            ? "bg-[rgb(255_255_255/0.2)] text-[var(--jyoti-header-text)] ring-1 ring-white/55"
+            : "text-[var(--jyoti-header-text)] hover:bg-[rgb(255_255_255/0.15)]"
           : active
             ? "bg-cream text-navy ring-1 ring-navy/25"
             : "text-navy hover:bg-cream",
@@ -45,8 +45,8 @@ export function CartNavButton({ inverse = false, className }: CartNavButtonProps
       {count > 0 ? (
         <span
           className={cn(
-            "absolute right-1 top-1 inline-flex min-h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full px-1 text-[0.65rem] font-semibold leading-none",
-            inverse ? "bg-white text-navy" : "bg-navy text-white",
+            "cart-count absolute right-1 top-1 inline-flex min-h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full px-1 text-[0.65rem] font-semibold leading-none",
+            inverse ? "bg-[#ffffff] text-[#0a2472]" : "bg-navy text-white",
           )}
         >
           {count > 99 ? "99+" : count}

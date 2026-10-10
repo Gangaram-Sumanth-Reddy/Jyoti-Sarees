@@ -1,6 +1,5 @@
 import { CatalogueBanner } from "@/components/catalogue/CatalogueBanner";
 import { CatalogueBrowser } from "@/components/catalogue/CatalogueBrowser";
-import { CatalogueCta } from "@/components/catalogue/CatalogueCta";
 import { CatalogueIntro } from "@/components/catalogue/CatalogueIntro";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { catalogueProducts } from "@/lib/products";
@@ -31,7 +30,6 @@ export default function SareesPage() {
       <CatalogueBanner />
       <CatalogueIntro />
       <CatalogueBrowser products={catalogueProducts} mobileListing />
-      <CatalogueCta />
     </>
   );
 }

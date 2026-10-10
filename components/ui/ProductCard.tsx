@@ -172,7 +172,7 @@ export function ProductCard({
             variant={showAddToCart ? "secondary" : "primary"}
             size="sm"
             className={cn(
-              "h-10 min-h-10 whitespace-nowrap px-2.5 text-[0.8rem] !font-bold tracking-[0.02em]",
+              "view-saree-cta h-10 min-h-10 whitespace-nowrap px-2.5 text-[0.8rem] !font-bold tracking-[0.02em]",
               dualCta ? "min-w-0 flex-1" : "w-fit max-w-full",
               listing && "max-sm:hidden",
             )}

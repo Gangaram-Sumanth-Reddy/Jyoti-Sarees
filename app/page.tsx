@@ -1,6 +1,5 @@
 import { AboutTeaser } from "@/components/home/AboutTeaser";
 import { FeaturedCollections } from "@/components/home/FeaturedCollections";
-import { FinalCta } from "@/components/home/FinalCta";
 import { Hero } from "@/components/home/Hero";
 import { InstagramReels } from "@/components/home/InstagramReels";
 import { NewArrivals } from "@/components/home/NewArrivals";
@@ -34,7 +33,6 @@ export default function Page() {
       <AboutTeaser />
       <Testimonials />
       <InstagramReels />
-      <FinalCta />
     </>
   );
 }

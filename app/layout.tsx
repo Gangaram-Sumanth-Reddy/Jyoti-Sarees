@@ -3,10 +3,12 @@ import { EnquiryCartHost } from "@/components/cart/EnquiryCartHost";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { RouteScrollReset } from "@/components/layout/RouteScrollReset";
+import { PagePreCta } from "@/components/layout/PagePreCta";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SkipLink } from "@/components/layout/SkipLink";
 import { SplashScreen, splashBootScript } from "@/components/layout/SplashScreen";
+import { themeBootScript } from "@/components/layout/ThemeToggle";
 import { buildMetadata, seoConfig } from "@/lib/seo";
 import "./globals.css";
 
@@ -44,9 +46,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <script dangerouslySetInnerHTML={{ __html: splashBootScript }} />
       </head>
-      <body className="flex min-h-full flex-col bg-white font-sans text-rich-black antialiased max-md:pb-[calc(var(--mobile-nav-height)+env(safe-area-inset-bottom))]">
+      <body className="flex min-h-full flex-col bg-page font-sans text-rich-black antialiased max-md:pb-[calc(var(--mobile-nav-height)+env(safe-area-inset-bottom))]">
         <SplashScreen />
         <RouteScrollReset />
         <SkipLink />
@@ -54,6 +57,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main id="main-content" className="flex min-w-0 flex-1 flex-col">
           {children}
         </main>
+        <PagePreCta />
         <SiteFooter />
         <FloatingWhatsApp />
         <MobileBottomNav />

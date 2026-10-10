@@ -238,7 +238,7 @@ export function Hero() {
     <section
       aria-roledescription="carousel"
       aria-label="Featured sarees"
-      className="bg-white pb-10 pt-5 sm:pb-14 sm:pt-7 lg:pb-16 lg:pt-8"
+      className="pb-10 pt-5 sm:pb-14 sm:pt-7 lg:pb-16 lg:pt-8"
     >
       <Container>
         <div

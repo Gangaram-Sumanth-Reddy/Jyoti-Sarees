@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { CartNavButton } from "@/components/cart/CartNavButton";
 import { MobileMenu } from "@/components/layout/MobileMenu";
 import { NavLogo } from "@/components/layout/NavLogo";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Container } from "@/components/ui/Container";
 import { ExternalButtonLink } from "@/components/ui/Button";
 import { isNavActive } from "@/lib/nav";
@@ -40,7 +41,7 @@ export function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-50 border-b border-transparent bg-navy/95 shadow-soft backdrop-blur-sm max-md:border-b-0 max-md:bg-navy max-md:shadow-[0_-2px_0_var(--jyoti-navy),0_2px_12px_rgb(2_6_14/0.08)] max-md:backdrop-blur-none"
+      className="site-header sticky top-0 z-50 border-b border-transparent bg-navy/95 shadow-soft backdrop-blur-sm max-md:border-b-0 max-md:bg-navy max-md:shadow-[0_-2px_0_#0a2472,0_2px_12px_rgb(2_6_14/0.08)] max-md:backdrop-blur-none"
     >
       <Container className="flex items-center justify-between gap-4 py-2.5 max-md:h-16 max-md:gap-3 max-md:px-4 max-md:py-0 lg:py-3">
         <NavLogo />
@@ -60,20 +61,21 @@ export function SiteHeader() {
           })}
         </nav>
         <div className="flex items-center gap-1 sm:gap-2">
+          <ThemeToggle />
           <CartNavButton inverse />
           <div className="hidden xl:block">
             <ExternalButtonLink
               href={site.whatsappUrl}
               variant="secondary"
               size="sm"
-              className="border-white text-white hover:!border-white hover:!bg-white hover:!text-navy"
+              className="!border-[#ffffff] !bg-[#ffffff] !text-[#0a2472] hover:!border-[#e7eefc] hover:!bg-[#e7eefc] hover:!text-[#0a2472]"
             >
               WhatsApp Us
             </ExternalButtonLink>
           </div>
           <button
             type="button"
-            className="hidden min-h-11 min-w-11 items-center justify-center rounded-pill text-white transition-colors duration-300 hover:bg-white/15 md:inline-flex xl:hidden"
+            className="hidden min-h-11 min-w-11 items-center justify-center rounded-pill text-[var(--jyoti-header-text)] transition-colors duration-300 hover:bg-[rgb(255_255_255/0.15)] md:inline-flex xl:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls={menuId}

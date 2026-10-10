@@ -35,7 +35,7 @@ export function FeaturedCollections() {
           ))}
         </ul>
         <div className="mt-10 flex justify-center sm:mt-12">
-          <ButtonLink href="/sarees" variant="secondary">
+          <ButtonLink href="/sarees">
             Explore All Collections
           </ButtonLink>
         </div>
