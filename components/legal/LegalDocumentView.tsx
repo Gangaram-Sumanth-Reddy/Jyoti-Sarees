@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { LegalContents } from "@/components/legal/LegalContents";
 import type { LegalDocument, LegalSection } from "@/lib/legal";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -51,25 +52,12 @@ function Paragraphs({ items }: { items: string[] }) {
   );
 }
 
-function ContentsList({ document }: LegalDocumentViewProps) {
-  return (
-    <ol className="grid gap-1 text-small">
-      {document.sections.map((section, index) => (
-        <li key={section.title}>
-          <a
-            href={`#${sectionAnchor(section, index)}`}
-            className="block rounded-md px-2.5 py-1.5 font-medium text-muted transition-colors hover:bg-cream hover:text-navy"
-          >
-            {sectionTitle(section, index)}
-          </a>
-        </li>
-      ))}
-    </ol>
-  );
-}
-
 export function LegalDocumentView({ document }: LegalDocumentViewProps) {
   const withContents = Boolean(document.summary);
+  const contents = document.sections.map((section, index) => ({
+    id: sectionAnchor(section, index),
+    title: sectionTitle(section, index),
+  }));
 
   return (
     <Section className="pt-8 sm:pt-10 lg:pt-12">
@@ -125,7 +113,7 @@ export function LegalDocumentView({ document }: LegalDocumentViewProps) {
                   </svg>
                 </summary>
                 <div className="border-t border-border p-2">
-                  <ContentsList document={document} />
+                  <LegalContents items={contents} />
                 </div>
               </details>
             ) : null}
@@ -207,7 +195,10 @@ export function LegalDocumentView({ document }: LegalDocumentViewProps) {
                 <p className="mb-2 px-2.5 text-small font-semibold uppercase tracking-[0.14em] text-navy">
                   On this page
                 </p>
-                <ContentsList document={document} />
+                <LegalContents
+                  items={contents}
+                  className="max-h-[calc(100dvh-12rem)] overflow-y-auto overscroll-contain pr-1"
+                />
               </div>
             </nav>
           ) : null}

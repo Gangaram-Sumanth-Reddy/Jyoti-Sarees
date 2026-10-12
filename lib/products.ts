@@ -1,3 +1,6 @@
+import { catalogueEntries } from "./catalogue-products";
+import { swatchFor } from "./colours";
+
 export type ProductGalleryItem = {
   id: string;
   label: string;
@@ -23,8 +26,17 @@ export type Product = {
   occasion: string;
   weave: string;
   design: string;
+  /** Current selling price in INR. Same value as `sellingPrice`. */
   price: number;
+  /** Current selling price in INR. */
+  sellingPrice: number;
   priceLabel: string;
+  /** Confirmed price before the selling price. Omit until the client provides it. */
+  originalPrice?: number;
+  /** Coupon or UPI price. Omit unless it is configured for this saree. */
+  offerPrice?: number;
+  /** Shown with `offerPrice`, for example "with coupon". */
+  offerNote?: string;
   /** ISO date the saree was added — drives New Arrivals order and sitemap dates. */
   createdAt: string;
   /** ISO date of the last meaningful change to the listing (defaults to createdAt). */
@@ -161,455 +173,50 @@ function createProduct(input: ProductInput): Product {
   };
 }
 
-/** Placeholder catalogue data — replace with live inventory later. */
-export const products: Product[] = [
-  createProduct({
-    slug: "ruby-kanjivaram",
-    productId: "JS-001",
-    name: "Ruby Kanjivaram",
-    category: "Kanchipuram",
-    fabric: "Pure Silk",
-    colour: "Ruby Red",
-    occasion: "Wedding",
-    weave: "Traditional Kanchipuram handloom",
-    design: "Temple border with classic zari motifs",
-    price: 18500,
-    priceLabel: "₹18,500",
-    createdAt: "2026-09-18",
-    shortDescription:
-      "A rich ruby Kanjivaram silk with temple borders and luminous zari. Ideal for weddings and ceremonial occasions.",
-    about:
-      "Woven in pure silk with a traditional Kanchipuram handloom technique, this saree pairs a deep ruby body with structured temple borders. The design balances heritage motifs with a clean, modern drape. Best suited for weddings and formal celebrations, with a substantial fall and lasting lustre.",
-  }),
-  createProduct({
-    slug: "ivory-banarasi",
-    productId: "JS-002",
-    name: "Ivory Banarasi",
-    category: "Banarasi",
-    fabric: "Silk Brocade",
-    colour: "Ivory",
-    occasion: "Wedding",
-    weave: "Banarasi brocade",
-    design: "Delicate floral jaal with soft zari",
-    price: 14200,
-    priceLabel: "₹14,200",
-    createdAt: "2026-09-16",
-    shortDescription:
-      "An ivory Banarasi brocade with soft floral jaal work. Elegant for weddings, receptions and festive gatherings.",
-    about:
-      "Crafted in silk brocade using classic Banarasi weaving, this ivory saree features a refined floral jaal and gentle zari highlights. The design feels light yet ceremonial. Perfect for weddings and festive evenings, with a graceful drape and understated sheen.",
-  }),
-  createProduct({
-    slug: "jade-soft-silk",
-    productId: "JS-003",
-    name: "Jade Soft Silk",
-    category: "Soft Silk",
-    fabric: "Soft Silk",
-    colour: "Jade",
-    occasion: "Everyday / Festive",
-    weave: "Soft silk weave",
-    design: "Minimal border with tonal accents",
-    price: 6900,
-    priceLabel: "₹6,900",
-    createdAt: "2026-09-14",
-    shortDescription:
-      "A lightweight jade soft silk with a smooth fall. Easy to wear for festive days and elevated everyday looks.",
-    about:
-      "Made in soft silk for comfort and fluid movement, this jade saree uses a clean tonal border and quiet detailing. The craft prioritises ease without losing polish. Suited to festive gatherings and refined daily wear, with a light hand and soft lustre.",
-  }),
-  createProduct({
-    slug: "midnight-designer",
-    productId: "JS-004",
-    name: "Midnight Designer",
-    category: "Designer",
-    fabric: "Georgette",
-    colour: "Midnight Blue",
-    occasion: "Party / Evening",
-    weave: "Contemporary designer finish",
-    design: "Modern silhouette with subtle shimmer",
-    price: 12800,
-    priceLabel: "₹12,800",
-    createdAt: "2026-09-12",
-    shortDescription:
-      "A midnight blue designer georgette with contemporary detailing. Made for evening events and modern celebrations.",
-    about:
-      "Finished in fluid georgette with a contemporary designer approach, this midnight saree offers soft movement and subtle shimmer. The design keeps ornament restrained for a sleek evening look. Ideal for parties and modern gatherings, with an easy drape and polished finish.",
-  }),
-  createProduct({
-    slug: "marigold-festive",
-    productId: "JS-005",
-    name: "Marigold Festive",
-    category: "Festive",
-    fabric: "Tissue Silk",
-    colour: "Marigold",
-    occasion: "Festive",
-    weave: "Tissue silk weave",
-    design: "Bright festive motifs with light shimmer",
-    price: 9450,
-    priceLabel: "₹9,450",
-    createdAt: "2026-09-10",
-    shortDescription:
-      "A marigold tissue silk with festive shimmer. Bright, celebratory and ready for seasonal gatherings.",
-    about:
-      "Woven in tissue silk for a light festive glow, this marigold saree brings cheerful colour with delicate shimmer. Motifs stay lively without feeling heavy. Best for festive occasions and celebrations, with an airy drape and luminous surface.",
-  }),
-  createProduct({
-    slug: "golden-wedding-weave",
-    productId: "JS-006",
-    name: "Golden Wedding Weave",
-    category: "Wedding",
-    fabric: "Pure Silk",
-    colour: "Gold",
-    occasion: "Wedding",
-    weave: "Rich wedding silk weave",
-    design: "Opulent borders with traditional motifs",
-    price: 24000,
-    priceLabel: "₹24,000",
-    createdAt: "2026-09-08",
-    shortDescription:
-      "A golden wedding silk with opulent borders. Designed for bridal and ceremonial moments that deserve presence.",
-    about:
-      "Crafted in pure silk with a rich wedding weave, this golden saree features opulent borders and traditional motifs. The design is ceremonial yet carefully balanced. Chosen for bridal and wedding events, with substantial texture and lasting brilliance.",
-  }),
-  createProduct({
-    slug: "peacock-kanchipuram",
-    productId: "JS-007",
-    name: "Peacock Kanchipuram",
-    category: "Kanchipuram",
-    fabric: "Pure Silk",
-    colour: "Peacock Green",
-    occasion: "Wedding / Formal",
-    weave: "Traditional Kanchipuram handloom",
-    design: "Peacock-inspired borders and contrast pallu",
-    price: 21000,
-    priceLabel: "₹21,000",
-    createdAt: "2026-09-06",
-    shortDescription:
-      "A peacock-green Kanchipuram with contrast pallu and heritage borders. Statement elegance for formal celebrations.",
-    about:
-      "Handloom-woven in pure silk, this peacock-green Kanchipuram highlights contrast pallu work and heritage border language. The craftsmanship is classic and precise. Ideal for weddings and formal occasions, with a strong colour story and structured drape.",
-  }),
-  createProduct({
-    slug: "rose-banarasi",
-    productId: "JS-008",
-    name: "Rose Banarasi",
-    category: "Banarasi",
-    fabric: "Silk Brocade",
-    colour: "Rose",
-    occasion: "Festive / Wedding",
-    weave: "Banarasi brocade",
-    design: "Romantic floral sprays with soft zari",
-    price: 16800,
-    priceLabel: "₹16,800",
-    createdAt: "2026-09-04",
-    shortDescription:
-      "A rose Banarasi brocade with romantic florals. Soft colour, fine zari and festive-ready presence.",
-    about:
-      "Woven as a Banarasi silk brocade, this rose saree features romantic floral sprays and soft zari accents. The design feels feminine and celebratory. Suited to festive and wedding occasions, with a refined sheen and graceful fall.",
-  }),
-  createProduct({
-    slug: "silver-designer",
-    productId: "JS-009",
-    name: "Silver Designer Drape",
-    category: "Designer",
-    fabric: "Organza",
-    colour: "Silver",
-    occasion: "Party / Reception",
-    weave: "Designer organza finish",
-    design: "Light metallic accents on airy organza",
-    price: 11200,
-    priceLabel: "₹11,200",
-    createdAt: "2026-09-02",
-    available: false,
-    shortDescription:
-      "A silver designer organza with light metallic accents. Airy, modern and suited to evening receptions.",
-    about:
-      "Finished in airy organza with a contemporary designer touch, this silver saree uses light metallic accents for quiet glamour. The craft keeps the look modern and wearable. Perfect for parties and receptions, with translucent movement and soft shimmer.",
-  }),
-  createProduct({
-    slug: "crimson-wedding",
-    productId: "JS-010",
-    name: "Crimson Wedding Silk",
-    category: "Wedding",
-    fabric: "Pure Silk",
-    colour: "Crimson",
-    occasion: "Wedding",
-    weave: "Rich wedding silk weave",
-    design: "Bold crimson body with heavy border work",
-    price: 27500,
-    priceLabel: "₹27,500",
-    createdAt: "2026-08-28",
-    shortDescription:
-      "A deep crimson wedding silk with bold border work. Made for bridal ceremonies and grand celebrations.",
-    about:
-      "Woven in pure silk for wedding grandeur, this crimson saree pairs a deep body with bold border detailing. Traditional craft meets a strong colour statement. Intended for bridal and ceremonial events, with rich texture and lasting presence.",
-  }),
-  createProduct({
-    slug: "sunset-festive",
-    productId: "JS-011",
-    name: "Sunset Festive Silk",
-    category: "Festive",
-    fabric: "Soft Silk",
-    colour: "Orange",
-    occasion: "Festive",
-    weave: "Soft silk festive weave",
-    design: "Warm sunset tones with light border accents",
-    price: 8200,
-    priceLabel: "₹8,200",
-    createdAt: "2026-08-22",
-    shortDescription:
-      "A warm orange festive soft silk with light accents. Bright colour for celebrations and seasonal gatherings.",
-    about:
-      "Crafted in soft silk for comfortable festive wear, this sunset-orange saree uses warm tones and light border accents. The design stays cheerful and easy. Ideal for festive occasions, with a soft hand and lively colour.",
-  }),
-  createProduct({
-    slug: "teal-soft-silk",
-    productId: "JS-012",
-    name: "Teal Soft Silk",
-    category: "Soft Silk",
-    fabric: "Soft Silk",
-    colour: "Teal",
-    occasion: "Everyday / Festive",
-    weave: "Soft silk weave",
-    design: "Clean teal field with restrained border",
-    price: 7500,
-    priceLabel: "₹7,500",
-    createdAt: "2026-08-18",
-    shortDescription:
-      "A teal soft silk with a clean field and restrained border. Fresh colour for festive days and polished everyday wear.",
-    about:
-      "Made in soft silk for everyday ease, this teal saree keeps the field clean and the border restrained. Craft and design favour wearability with quiet elegance. Suited to festive days and elevated daily looks, with a light drape and smooth finish.",
-  }),
-  // —— New Arrivals (distinct styles, names and pricing from the main catalogue) ——
-  createProduct({
-    slug: "coral-temple-silk",
-    productId: "JS-N01",
-    name: "Coral Temple Silk",
-    category: "Kanchipuram",
-    fabric: "Pure Silk",
-    colour: "Orange",
-    occasion: "Wedding / Festive",
-    weave: "Temple-border Kanchipuram handloom",
-    design: "Coral body with temple zari borders",
-    price: 19800,
-    priceLabel: "₹19,800",
-    createdAt: "2026-09-25",
-    isNewArrival: true,
-    shortDescription:
-      "A coral Kanchipuram with temple borders and warm zari. Fresh from the loom for festive weddings.",
-    about:
-      "Newly woven in pure silk, this coral temple silk pairs a warm body with classic Kanchipuram borders. The design feels celebratory and contemporary. Ideal for festive weddings, with a luminous fall and structured pallu.",
-  }),
-  createProduct({
-    slug: "mist-grey-banarasi",
-    productId: "JS-N02",
-    name: "Mist Grey Banarasi",
-    category: "Banarasi",
-    fabric: "Silk Brocade",
-    colour: "Silver",
-    occasion: "Reception / Evening",
-    weave: "Fine Banarasi brocade",
-    design: "Soft mist jaal with silver zari",
-    price: 15600,
-    priceLabel: "₹15,600",
-    createdAt: "2026-09-24",
-    isNewArrival: true,
-    shortDescription:
-      "A mist-grey Banarasi with silver jaal work. Quiet luxury for receptions and evening gatherings.",
-    about:
-      "Crafted in silk brocade with a soft mist ground, this Banarasi uses silver zari in a light floral jaal. The look is understated and modern. Suited to receptions and evening events, with a refined sheen and easy drape.",
-  }),
-  createProduct({
-    slug: "saffron-soft-silk",
-    productId: "JS-N03",
-    name: "Saffron Soft Silk",
-    category: "Soft Silk",
-    fabric: "Soft Silk",
-    colour: "Marigold",
-    occasion: "Festive / Everyday",
-    weave: "Lightweight soft silk",
-    design: "Saffron field with slim tonal border",
-    price: 8400,
-    priceLabel: "₹8,400",
-    createdAt: "2026-09-23",
-    isNewArrival: true,
-    shortDescription:
-      "A saffron soft silk with a slim border. Bright, light and easy for festive days.",
-    about:
-      "Woven in soft silk for comfort, this saffron saree keeps ornament minimal and colour bold. Fresh seasonal colouring with a wearable fall. Perfect for festive days and polished everyday looks.",
-  }),
-  createProduct({
-    slug: "indigo-evening-georgette",
-    productId: "JS-N04",
-    name: "Indigo Evening Georgette",
-    category: "Designer",
-    fabric: "Georgette",
-    colour: "Midnight Blue",
-    occasion: "Party / Evening",
-    weave: "Fluid designer georgette",
-    design: "Deep indigo with scattered shimmer motifs",
-    price: 13900,
-    priceLabel: "₹13,900",
-    createdAt: "2026-09-22",
-    isNewArrival: true,
-    shortDescription:
-      "A deep indigo designer georgette with soft shimmer. Made for evening parties and modern celebrations.",
-    about:
-      "A new designer drape in fluid georgette, this indigo saree uses scattered shimmer for evening light. The silhouette stays contemporary and light. Ideal for parties and cocktails, with soft movement and a sleek finish.",
-  }),
-  createProduct({
-    slug: "blush-organza-bloom",
-    productId: "JS-N05",
-    name: "Blush Organza Bloom",
-    category: "Designer",
-    fabric: "Organza",
-    colour: "Rose",
-    occasion: "Reception / Party",
-    weave: "Airy organza with floral accents",
-    design: "Blush organza with delicate bloom motifs",
-    price: 10500,
-    priceLabel: "₹10,500",
-    createdAt: "2026-09-21",
-    isNewArrival: true,
-    shortDescription:
-      "A blush organza with delicate floral accents. Light, romantic and reception-ready.",
-    about:
-      "Finished in airy organza, this blush saree features soft bloom motifs and a romantic palette. Newly added for the season’s evening calendar. Best for receptions and parties, with translucent movement and gentle colour.",
-  }),
-  createProduct({
-    slug: "emerald-festive-tissue",
-    productId: "JS-N06",
-    name: "Emerald Festive Tissue",
-    category: "Festive",
-    fabric: "Tissue Silk",
-    colour: "Peacock Green",
-    occasion: "Festive",
-    weave: "Festive tissue silk",
-    design: "Emerald tissue with light festive shimmer",
-    price: 11200,
-    priceLabel: "₹11,200",
-    createdAt: "2026-09-20",
-    isNewArrival: true,
-    shortDescription:
-      "An emerald tissue silk with festive shimmer. Bright colour for celebrations and seasonal gatherings.",
-    about:
-      "Newly stocked in tissue silk, this emerald saree brings festive glow without heaviness. Motifs stay light and celebratory. Ideal for festivals and family functions, with an airy drape and luminous surface.",
-  }),
-  createProduct({
-    slug: "champagne-bridal-silk",
-    productId: "JS-N07",
-    name: "Champagne Bridal Silk",
-    category: "Wedding",
-    fabric: "Pure Silk",
-    colour: "Gold",
-    occasion: "Wedding",
-    weave: "Bridal wedding silk",
-    design: "Champagne gold with rich bridal borders",
-    price: 32000,
-    priceLabel: "₹32,000",
-    createdAt: "2026-09-19",
-    isNewArrival: true,
-    shortDescription:
-      "A champagne bridal silk with rich borders. Statement weaving for wedding ceremonies.",
-    about:
-      "A new bridal weave in pure silk, this champagne saree pairs soft gold tones with rich border work. Designed for ceremonial presence. Chosen for weddings and receptions, with substantial texture and lasting lustre.",
-  }),
-  createProduct({
-    slug: "lavender-meadow-silk",
-    productId: "JS-N08",
-    name: "Lavender Meadow Silk",
-    category: "Soft Silk",
-    fabric: "Soft Silk",
-    colour: "Rose",
-    occasion: "Everyday / Festive",
-    weave: "Soft silk with tonal accents",
-    design: "Lavender-rose field with meadow-light border",
-    price: 7200,
-    priceLabel: "₹7,200",
-    createdAt: "2026-09-18",
-    isNewArrival: true,
-    shortDescription:
-      "A lavender soft silk with a light meadow border. Soft colour for festive days and elevated everyday wear.",
-    about:
-      "Crafted in soft silk for easy wear, this lavender saree uses a gentle rose-lavender tone and a restrained border. Fresh seasonal colouring. Suited to festive days and polished daily looks.",
-  }),
-  createProduct({
-    slug: "copper-banarasi-glow",
-    productId: "JS-N09",
-    name: "Copper Banarasi Glow",
-    category: "Banarasi",
-    fabric: "Silk Brocade",
-    colour: "Gold",
-    occasion: "Festive / Wedding",
-    weave: "Banarasi brocade with copper zari",
-    design: "Warm copper floral with glowing zari",
-    price: 17400,
-    priceLabel: "₹17,400",
-    createdAt: "2026-09-17",
-    isNewArrival: true,
-    shortDescription:
-      "A copper-toned Banarasi with glowing zari florals. Warm elegance for festive and wedding evenings.",
-    about:
-      "A newly arrived Banarasi brocade in warm copper-gold tones, with glowing floral zari. The design feels rich yet wearable. Ideal for festive and wedding evenings, with a fine sheen and graceful fall.",
-  }),
-  createProduct({
-    slug: "pearl-kanjivaram",
-    productId: "JS-N10",
-    name: "Pearl Kanjivaram",
-    category: "Kanchipuram",
-    fabric: "Pure Silk",
-    colour: "Ivory",
-    occasion: "Wedding / Formal",
-    weave: "Traditional Kanchipuram handloom",
-    design: "Pearl ivory body with contrast temple borders",
-    price: 22500,
-    priceLabel: "₹22,500",
-    createdAt: "2026-09-16",
-    isNewArrival: true,
-    shortDescription:
-      "A pearl ivory Kanjivaram with contrast temple borders. Fresh classic weaving for formal celebrations.",
-    about:
-      "Handloom-woven in pure silk, this pearl Kanjivaram pairs an ivory body with structured temple borders. Newly added for the wedding season. Best for formal celebrations, with a clean colour story and lasting drape.",
-  }),
-  createProduct({
-    slug: "berry-soft-silk",
-    productId: "JS-N11",
-    name: "Berry Soft Silk",
-    category: "Soft Silk",
-    fabric: "Soft Silk",
-    colour: "Crimson",
-    occasion: "Festive / Everyday",
-    weave: "Soft silk weave",
-    design: "Deep berry field with slim contrast border",
-    price: 6450,
-    priceLabel: "₹6,450",
-    createdAt: "2026-09-15",
-    isNewArrival: true,
-    shortDescription:
-      "A berry soft silk with a slim contrast border. Deep colour, light fall, easy festive wear.",
-    about:
-      "Made in soft silk for comfort, this berry saree offers deep colour with a slim border. A fresh everyday-festive addition. Ideal for gatherings and elevated daily looks, with a soft hand and smooth finish.",
-  }),
-  createProduct({
-    slug: "sky-festive-organza",
-    productId: "JS-N12",
-    name: "Sky Festive Organza",
-    category: "Festive",
-    fabric: "Organza",
-    colour: "Teal",
-    occasion: "Festive / Party",
-    weave: "Light festive organza",
-    design: "Sky-teal organza with airy festive accents",
-    price: 9800,
-    priceLabel: "₹9,800",
-    createdAt: "2026-09-14",
-    isNewArrival: true,
-    shortDescription:
-      "A sky-teal festive organza with airy accents. Light, bright and ready for celebrations.",
-    about:
-      "A new festive organza in sky-teal tones with light accents. The craft stays airy and celebratory. Perfect for festivals and parties, with translucent movement and fresh colour.",
-  }),
-];
+/** Client catalogue. Real photos replace `defaultGallery` by setting `gallery[].src`. */
+export const products: Product[] = catalogueEntries.map((entry, index) => {
+  const priceLabel = `₹${entry.sellingPrice.toLocaleString("en-IN")}`;
+  const details = [
+    entry.colour ? `Colour: ${entry.colour}.` : "",
+    entry.design ? `${entry.design}.` : "",
+    entry.note ?? "",
+    `Fabric: ${entry.fabric}.`,
+    `Price: ${priceLabel}.`,
+  ].filter(Boolean);
+  const summary = `${entry.name}. ${details.join(" ")}`;
+  const added = new Date(Date.UTC(2026, 9, 11));
+  added.setUTCDate(added.getUTCDate() - index);
+
+  return createProduct({
+    slug: slugify(entry.name),
+    productId: entry.sku,
+    name: entry.name,
+    category: entry.category,
+    fabric: entry.fabric,
+    colour: entry.colour ?? "",
+    colourOptions: entry.colour
+      ? [
+          {
+            id: slugify(entry.colour),
+            label: entry.colour,
+            hex: entry.colour === "Bright shade" ? "" : swatchFor(entry.colour),
+          },
+        ]
+      : [],
+    occasion: "",
+    weave: "",
+    design: entry.design ?? "",
+    price: entry.sellingPrice,
+    sellingPrice: entry.sellingPrice,
+    priceLabel,
+    originalPrice: entry.originalPrice,
+    offerPrice: entry.offerPrice,
+    offerNote: entry.offerNote,
+    createdAt: added.toISOString().slice(0, 10),
+    shortDescription: summary,
+    about: summary,
+  });
+});
 
 /** Main Sarees catalogue — excludes New Arrivals exclusives. */
 export const catalogueProducts: Product[] = products.filter(
@@ -618,12 +225,11 @@ export const catalogueProducts: Product[] = products.filter(
 
 const CATEGORY_NAV_ORDER = [
   "All Sarees",
-  "Silk Sarees",
-  "Kanchipuram",
+  "Ajrakh",
   "Banarasi",
-  "Designer",
-  "Festive",
-  "Wedding",
+  "Pattu",
+  "Kora",
+  "Silk Sarees",
 ] as const;
 
 function uniqueSorted(values: string[]) {
@@ -653,7 +259,7 @@ export function getFilterOptions(items: Product[] = products) {
   return {
     categories: uniqueSorted(items.map((item) => item.category)),
     collections: uniqueSorted(items.map((item) => item.collection)),
-    colours: uniqueSorted(items.map((item) => item.colour)),
+    colours: uniqueSorted(items.map((item) => item.colour).filter(Boolean)),
     fabrics: uniqueSorted(items.map((item) => item.fabric)),
   };
 }
@@ -765,6 +371,13 @@ export function formatPrice(price: number) {
   return `₹${price.toLocaleString("en-IN")}`;
 }
 
+/** Whole-number percent saved. Null unless a confirmed original price is higher. */
+export function discountPercent(sellingPrice: number, originalPrice?: number) {
+  if (originalPrice === undefined || originalPrice <= sellingPrice) return null;
+  const percent = Math.round(((originalPrice - sellingPrice) / originalPrice) * 100);
+  return percent >= 1 ? percent : null;
+}
+
 export function slugify(value: string) {
   return value
     .toLowerCase()
@@ -800,9 +413,9 @@ export function getColourOption(
   return (
     product.colourOptions.find((option) => option.label === product.colour) ??
     product.colourOptions[0] ?? {
-      id: slugify(product.colour),
+      id: product.colour ? slugify(product.colour) : "unspecified",
       label: product.colour,
-      hex: "#6b7280",
+      hex: "",
     }
   );
 }
@@ -856,8 +469,9 @@ export function cartItemHref(item: {
 
 /** New Arrivals exclusives — distinct styles, names and pricing. */
 export function getNewArrivals(limit = 8): Product[] {
-  return products
-    .filter((product) => product.isNewArrival)
+  const exclusive = products.filter((product) => product.isNewArrival);
+  const source = exclusive.length > 0 ? exclusive : products;
+  return [...source]
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .slice(0, limit);
 }
@@ -902,9 +516,13 @@ export function whatsappEnquiryUrl(
   productName: string,
   baseUrl: string,
   productId?: string,
+  priceLabel?: string,
 ) {
-  const text = productId
-    ? `Hi, I'm interested in ${productName} (${productId}). Please share more details.`
+  const reference = [productId ? `(${productId})` : "", priceLabel ? `Price: ${priceLabel}.` : ""]
+    .filter(Boolean)
+    .join(" ");
+  const text = reference
+    ? `Hi, I'm interested in ${productName} ${reference} Please share more details.`
     : `Hi, I'm interested in ${productName}. Please share more details.`;
   const separator = baseUrl.includes("?") ? "&" : "?";
   return `${baseUrl}${separator}text=${encodeURIComponent(text)}`;

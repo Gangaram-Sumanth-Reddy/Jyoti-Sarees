@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { ExternalButtonLink } from "@/components/ui/Button";
+import { PriceOffer } from "@/components/ui/PriceOffer";
 import { AddToCartControl } from "@/components/cart/AddToCartControl";
 import { cn } from "@/lib/cn";
 import {
@@ -80,10 +81,6 @@ export function ProductInfo({
     { label: "Colour", value: selectedColour.label },
     { label: "Occasion", value: product.occasion },
     { label: "Category", value: product.category },
-    {
-      label: "Availability",
-      value: product.available ? "In stock" : "Out of stock",
-    },
   ].filter((row) => Boolean(row.value));
 
   const aboutItems = [
@@ -111,10 +108,6 @@ export function ProductInfo({
     { label: "Colour", value: selectedColour.label },
     { label: "Collection", value: product.collection },
     { label: "Occasion", value: product.occasion },
-    {
-      label: "Availability",
-      value: product.available ? "In stock" : "Out of stock",
-    },
   ].filter((row) => Boolean(row.value));
 
   return (
@@ -125,9 +118,13 @@ export function ProductInfo({
       <h1 className="mt-2.5 text-balance text-[clamp(1.65rem,1.15rem+1.4vw,2.35rem)] font-semibold leading-tight tracking-[-0.02em] text-rich-black">
         {product.name}
       </h1>
-      <p className="mt-3 text-[1.2rem] font-semibold text-rich-black sm:text-h3">
-        {product.priceLabel}
-      </p>
+      <PriceOffer
+        className="mt-3"
+        size="detail"
+        sellingPrice={product.sellingPrice}
+        originalPrice={product.originalPrice}
+        sellingLabel={product.priceLabel}
+      />
       {!product.available ? (
         <p className="mt-2 text-small font-semibold uppercase tracking-[0.1em] text-navy">
           Currently out of stock — enquire for similar options
@@ -184,9 +181,12 @@ export function ProductInfo({
       <div className="mt-7 flex flex-col gap-3 max-sm:grid max-sm:grid-cols-2 max-sm:gap-[clamp(0.5rem,0.2rem+1.2vw,0.75rem)] sm:flex-row sm:flex-wrap sm:items-center">
         <ExternalButtonLink
           href={whatsappEnquiryUrl(
-            `${product.name} (${selectedColour.label})`,
+            selectedColour.label
+              ? `${product.name} (${selectedColour.label})`
+              : product.name,
             site.whatsappUrl,
             product.productId,
+            product.priceLabel,
           )}
           size="lg"
           className="w-full bg-navy text-white hover:bg-navy-mid max-sm:min-w-0 max-sm:px-2 max-sm:text-[clamp(0.78rem,0.62rem+0.8vw,0.9375rem)] max-sm:tracking-[0.02em] sm:w-auto sm:min-w-[14rem]"

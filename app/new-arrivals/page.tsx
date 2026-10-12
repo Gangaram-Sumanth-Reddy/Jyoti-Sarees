@@ -11,7 +11,7 @@ const latestYear = arrivals[0]
   : null;
 
 const description =
-  "The latest sarees added to Jyoti Sarees — new silk, Banarasi, organza, georgette and festive pieces, newest first. Enquire on WhatsApp about any saree.";
+  "The latest sarees added to Jyoti Sarees — Ajrakh, Banarasi, Pattu and Kora pieces, newest first. Enquire on WhatsApp about any saree.";
 
 export const metadata = buildMetadata({
   title: latestYear
@@ -34,8 +34,8 @@ export default function NewArrivalsPage() {
           ]),
         ]}
       />
-      <NewArrivalsHero count={arrivals.length} />
-      <CatalogueBrowser products={arrivals} cardBadge="New" mobileListing />
+      <NewArrivalsHero />
+      <CatalogueBrowser products={arrivals} cardBadge="New" />
     </>
   );
 }

@@ -125,9 +125,6 @@ function offerFor(product: Product, path: string) {
     url: absoluteUrl(path),
     price: product.price,
     priceCurrency: "INR",
-    availability: product.available
-      ? "https://schema.org/InStock"
-      : "https://schema.org/OutOfStock",
     itemCondition: "https://schema.org/NewCondition",
   };
 }
@@ -153,7 +150,7 @@ export function productSchema(product: Product): JsonLd {
       sku: product.productId,
       brand,
       category,
-      color: product.colour,
+      color: product.colour || undefined,
       material: product.fabric,
       image: images,
       url: absoluteUrl(path),

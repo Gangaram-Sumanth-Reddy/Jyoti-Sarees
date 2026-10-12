@@ -48,8 +48,11 @@ export function ProductDetailView({
 
       <RelatedProducts products={related} />
       <ProductWhatsAppCta
-        productName={`${product.name} (${selected.label})`}
+        productName={
+          selected.label ? `${product.name} (${selected.label})` : product.name
+        }
         productId={product.productId}
+        priceLabel={product.priceLabel}
       />
     </>
   );

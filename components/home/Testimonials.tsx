@@ -4,7 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { cn } from "@/lib/cn";
-import { copy } from "@/lib/site";
+import { copy, site } from "@/lib/site";
 import { testimonials, type Testimonial } from "@/lib/testimonials";
 
 function StarRating({ rating, className }: { rating: number; className?: string }) {
@@ -71,32 +71,58 @@ function Attribution({
   );
 }
 
-function FeaturedTestimonial({ testimonial }: { testimonial: Testimonial }) {
+const houseNotes = [
+  {
+    title: "Tell us the occasion",
+    detail: "A wedding, a puja, the office, or a gift — start with how you will wear it.",
+  },
+  {
+    title: "Name a colour or weave",
+    detail: "Ajrakh, Banarasi, Pattu and Kora are in the current catalogue.",
+  },
+  {
+    title: "We confirm it with you",
+    detail: "Add it to your enquiry list. There is no online payment.",
+  },
+] as const;
+
+function HouseNote() {
   return (
-    <figure className="relative flex flex-col overflow-hidden rounded-lg border border-border bg-white shadow-soft sm:col-span-2 sm:flex-row lg:col-span-1 lg:row-span-2 lg:min-h-[34rem] lg:flex-col lg:justify-end lg:border-0">
-      <div className="relative aspect-square w-full shrink-0 bg-cream sm:aspect-auto sm:min-h-[20rem] sm:w-2/5 lg:absolute lg:inset-0 lg:w-full">
-        <Image
-          src={testimonial.image}
-          alt={`${testimonial.name} wearing her ${testimonial.saree} saree`}
-          fill
-          sizes="(min-width: 1024px) 30vw, (min-width: 640px) 40vw, 100vw"
-          className="object-cover object-[50%_15%]"
-        />
+    <aside className="house-note flex flex-col rounded-lg p-1.5 shadow-soft sm:col-span-2 lg:col-span-1 lg:row-span-2">
+      <div className="house-note-frame flex h-full flex-col rounded-md px-5 py-6 sm:px-7 sm:py-8">
+        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em]">From the house</p>
+        <h3 className="mt-3 text-[1.7rem] font-semibold leading-[1.15] tracking-[-0.02em]">
+          We help you choose the right saree.
+        </h3>
+        <p className="mt-3 text-body leading-relaxed">
+          Share what you need. Our team checks availability and replies on WhatsApp.
+        </p>
+        <ol className="mt-6 flex flex-1 flex-col gap-4">
+          {houseNotes.map((note, index) => (
+            <li key={note.title} className="flex gap-3">
+              <span className="house-note-mark mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full text-[0.8rem] font-semibold">
+                {index + 1}
+              </span>
+              <span>
+                <span className="block text-body font-semibold">{note.title}</span>
+                <span className="house-note-detail mt-0.5 block text-small leading-relaxed">
+                  {note.detail}
+                </span>
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p className="house-note-foot mt-8 border-t pt-4 text-small leading-relaxed">
+          <a href={site.whatsappUrl} className="font-semibold underline underline-offset-4">
+            WhatsApp {site.whatsapp}
+          </a>
+          <span className="mt-1 block">
+            {site.hours.opens}–{site.hours.closes}
+          </span>
+          <span className="mt-1 block">{site.cities}</span>
+        </p>
       </div>
-      <div className="relative flex flex-1 flex-col p-6 lg:flex-none lg:bg-linear-to-t lg:from-navy-deep/95 lg:via-navy-deep/80 lg:to-transparent lg:pt-28">
-        <StarRating rating={testimonial.rating} />
-        <blockquote className="mt-4 flex-1 text-[1.0625rem] leading-relaxed text-rich-black lg:text-white">
-          “{testimonial.quote}”
-        </blockquote>
-        <figcaption className="mt-5 border-t border-border pt-4 lg:border-white/20">
-          <Attribution
-            testimonial={testimonial}
-            className="lg:text-white"
-            metaClassName="lg:text-white/75"
-          />
-        </figcaption>
-      </div>
-    </figure>
+    </aside>
   );
 }
 
@@ -205,7 +231,7 @@ export function Testimonials({ uniform = false }: TestimonialsProps) {
           </div>
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-            <FeaturedTestimonial testimonial={featured} />
+            <HouseNote />
             {cards.map((testimonial) => (
               <TestimonialCard key={testimonial.id} testimonial={testimonial} />
             ))}

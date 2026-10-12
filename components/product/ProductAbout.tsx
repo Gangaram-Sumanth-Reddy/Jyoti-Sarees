@@ -17,10 +17,6 @@ function detailRows(product: Product) {
     { label: "Weave", value: product.weave },
     { label: "Design", value: product.design },
     { label: "Product ID", value: product.productId },
-    {
-      label: "Availability",
-      value: product.available ? "In stock" : "Out of stock",
-    },
   ].filter((row) => Boolean(row.value));
 }
 

@@ -129,8 +129,8 @@ function CtaButton({
 }) {
   const className =
     tone === "primary"
-      ? "page-pre-cta-primary !border-transparent !bg-[#0a2472] !text-[#ffffff] hover:!bg-[#051650] max-sm:min-w-0"
-      : "page-pre-cta-secondary !border-[#d5dbe8] !bg-[#ffffff] !text-[#0a2472] hover:!border-[#0a2472] hover:!bg-[#f4f6fb] hover:!text-[#0a2472] max-sm:min-w-0";
+      ? "page-pre-cta-primary max-sm:min-w-0"
+      : "page-pre-cta-secondary max-sm:min-w-0";
 
   if (link.external) {
     return (
@@ -154,26 +154,26 @@ export function PagePreCta() {
   return (
     <section className="page-pre-cta w-full px-gutter py-12 sm:py-16">
       <Container>
-        <div className="page-pre-cta-card mx-auto max-w-3xl rounded-[1.75rem] border border-[#eceff5] bg-[#ffffff] px-6 py-10 text-center shadow-[0_24px_60px_-32px_rgb(10_36_114/0.28)] sm:px-12 sm:py-14">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#5c677d]">
+        <div className="page-pre-cta-card mx-auto max-w-3xl rounded-[1.75rem] border px-6 py-10 text-center sm:px-12 sm:py-14">
+          <p className="page-pre-cta-eyebrow text-[0.72rem] font-semibold uppercase tracking-[0.22em]">
             {content.eyebrow}
           </p>
-          <h2 className="mx-auto mt-4 max-w-[18ch] text-balance text-[clamp(1.75rem,1.15rem+1.8vw,2.65rem)] font-semibold leading-[1.12] tracking-[-0.03em] text-[#0a1024]">
+          <h2 className="page-pre-cta-title mx-auto mt-4 max-w-[18ch] text-balance text-[clamp(1.75rem,1.15rem+1.8vw,2.65rem)] font-semibold leading-[1.12] tracking-[-0.03em]">
             {content.title}
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-body leading-relaxed text-[#3a4560]">
+          <p className="page-pre-cta-copy mx-auto mt-4 max-w-xl text-body leading-relaxed">
             {content.description}
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-8 flex flex-nowrap items-center justify-center gap-2 sm:gap-3">
             <CtaButton link={content.primary} tone="primary" />
             <CtaButton link={content.secondary} tone="secondary" />
           </div>
           {content.note ? (
-            <p className="mt-6 text-small text-[#3a4560]">
+            <p className="page-pre-cta-note mt-6 text-small">
               {content.note.lead}{" "}
               <Link
                 href={content.note.href}
-                className="font-semibold text-[#0a2472] underline decoration-[#0a2472]/30 underline-offset-4 hover:decoration-[#0a2472]"
+                className="page-pre-cta-link font-semibold underline decoration-current/30 underline-offset-4 hover:decoration-current"
               >
                 {content.note.label}
               </Link>

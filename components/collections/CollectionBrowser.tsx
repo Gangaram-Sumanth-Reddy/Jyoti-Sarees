@@ -87,14 +87,12 @@ export function CollectionBrowser({ products }: CollectionBrowserProps) {
 
               <div className="min-w-0">
                 {visible.length > 0 ? (
-                  <ul className="grid list-none grid-cols-2 items-stretch gap-3 p-0 sm:gap-4 lg:gap-4 xl:grid-cols-3 xl:gap-5">
+                  <ul className="grid list-none grid-cols-2 items-stretch gap-3 p-0 sm:gap-4 lg:grid-cols-3 lg:gap-4">
                     {visible.map((product) => (
                       <ProductCard
                         key={product.slug}
                         product={product}
                         href={productHref(product)}
-                        showWhatsApp
-                        listing
                         className="h-full"
                       />
                     ))}

@@ -323,8 +323,8 @@ export function Hero() {
 
                     <FloatingNote
                       icon={<SilkIcon />}
-                      title="Pure silk & zari weaves"
-                      detail="Kanchipuram · Banarasi · Soft Silk"
+                      title="Current catalogue"
+                      detail="Ajrakh · Banarasi · Pattu · Kora"
                       className={cn(
                         "absolute bottom-5 z-10 hidden sm:bottom-8 sm:flex lg:bottom-16",
                         slide.notesOnRight

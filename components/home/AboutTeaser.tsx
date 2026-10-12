@@ -19,7 +19,7 @@ export function AboutTeaser() {
               fill
               sizes="(min-width: 1024px) 46vw, 100vw"
               className="object-cover"
-              style={{ objectPosition: "50% 25%" }}
+              style={{ objectPosition: "center 42%" }}
             />
           </ImageFrame>
           <div>

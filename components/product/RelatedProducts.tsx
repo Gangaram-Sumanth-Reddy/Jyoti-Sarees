@@ -21,14 +21,12 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
           align="center"
           className="max-w-2xl"
         />
-        <ul className="grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5 xl:grid-cols-4">
+        <ul className="grid list-none grid-cols-2 gap-3 p-0 sm:gap-4 lg:grid-cols-3 lg:gap-5">
           {products.map((product) => (
             <ProductCard
               key={product.slug}
               product={product}
               href={productHref(product)}
-              showAddToCart
-              inlineCtas
               className="h-full"
             />
           ))}

@@ -1,16 +1,15 @@
-import { CatalogueBanner } from "@/components/catalogue/CatalogueBanner";
 import { CatalogueBrowser } from "@/components/catalogue/CatalogueBrowser";
-import { CatalogueIntro } from "@/components/catalogue/CatalogueIntro";
+import { DussehraOffer } from "@/components/catalogue/DussehraOffer";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { catalogueProducts } from "@/lib/products";
 import { buildMetadata } from "@/lib/seo";
 import { breadcrumbSchema, collectionPageSchema } from "@/lib/structured-data";
 
 const description =
-  "Browse Kanchipuram silk, Banarasi, soft silk, designer, festive and wedding sarees at Jyoti Sarees. Filter by fabric, colour and price, then enquire on WhatsApp.";
+  "Browse Ajrakh, Banarasi, Pattu and Kora sarees at Jyoti Sarees. Filter by fabric, colour and price, then enquire on WhatsApp.";
 
 export const metadata = buildMetadata({
-  title: "Silk, Banarasi, Designer & Wedding Sarees",
+  title: "Ajrakh, Banarasi, Pattu & Kora Sarees",
   description,
   path: "/sarees",
 });
@@ -27,9 +26,8 @@ export default function SareesPage() {
           ]),
         ]}
       />
-      <CatalogueBanner />
-      <CatalogueIntro />
-      <CatalogueBrowser products={catalogueProducts} mobileListing />
+      <DussehraOffer />
+      <CatalogueBrowser products={catalogueProducts} />
     </>
   );
 }

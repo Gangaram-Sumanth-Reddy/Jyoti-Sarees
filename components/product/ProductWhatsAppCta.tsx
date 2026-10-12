@@ -8,11 +8,13 @@ import { site } from "@/lib/site";
 type ProductWhatsAppCtaProps = {
   productName: string;
   productId: string;
+  priceLabel: string;
 };
 
 export function ProductWhatsAppCta({
   productName,
   productId,
+  priceLabel,
 }: ProductWhatsAppCtaProps) {
   return (
     <Section tone="inverse" className="bg-midnight-gradient">
@@ -26,7 +28,7 @@ export function ProductWhatsAppCta({
             className="mb-8 sm:mb-10"
           />
           <ExternalButtonLink
-            href={whatsappEnquiryUrl(productName, site.whatsappUrl, productId)}
+            href={whatsappEnquiryUrl(productName, site.whatsappUrl, productId, priceLabel)}
             size="lg"
             className="border-transparent bg-white text-rich-black hover:bg-cream"
           >

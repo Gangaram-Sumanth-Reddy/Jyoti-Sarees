@@ -22,22 +22,24 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label="Toggle dark and light mode"
-      className="inline-flex size-11 shrink-0 items-center justify-center rounded-full text-[var(--jyoti-header-text)] transition-colors duration-200 hover:bg-[rgb(255_255_255/0.15)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+      className="theme-toggle inline-flex size-11 shrink-0 items-center justify-center rounded-full transition-colors duration-200 hover:bg-[rgb(255_255_255/0.15)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
     >
-      <SunIcon />
-      <MoonIcon />
+      <span className="theme-toggle-icon">
+        <SunIcon />
+        <MoonIcon />
+      </span>
     </button>
   );
 }
 
 function SunIcon() {
   return (
-    <svg className="theme-toggle-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8" />
+    <svg className="theme-toggle-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.75" />
       <path
-        d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3l-1.6 1.6"
+        d="M12 2.75v2.1M12 19.15v2.1M2.75 12h2.1M19.15 12h2.1M5.2 5.2l1.5 1.5M17.3 17.3l1.5 1.5M18.8 5.2l-1.5 1.5M6.7 17.3l-1.5 1.5"
         stroke="currentColor"
-        strokeWidth="1.8"
+        strokeWidth="1.75"
         strokeLinecap="round"
       />
     </svg>
@@ -46,11 +48,11 @@ function SunIcon() {
 
 function MoonIcon() {
   return (
-    <svg className="theme-toggle-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg className="theme-toggle-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
-        d="M16.5 14.5A6.5 6.5 0 0 1 9 4.2 7 7 0 1 0 19.8 15a6.5 6.5 0 0 1-3.3-.5Z"
+        d="M14.5 3.2a7.6 7.6 0 1 0 6.3 11.4A6.4 6.4 0 0 1 14.5 3.2Z"
         stroke="currentColor"
-        strokeWidth="1.8"
+        strokeWidth="1.75"
         strokeLinejoin="round"
       />
     </svg>

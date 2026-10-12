@@ -381,21 +381,6 @@
     box-shadow: inset 0 -2px 0 rgb(255 255 255 / 0.95);
   }
 
-  .theme-toggle-sun {
-    display: none;
-  }
-
-  .theme-toggle-moon {
-    display: block;
-  }
-
-  html[data-theme="dark"] .theme-toggle-sun {
-    display: block;
-  }
-
-  html[data-theme="dark"] .theme-toggle-moon {
-    display: none;
-  }
 
   /* Home hero card — background matches the ivory wall in H1.png so the
      photo blends into the card instead of sitting in a box. */
@@ -462,31 +447,6 @@
     animation: hero-copy-in 480ms ease-out;
   }
 
-  /* Photos are 16:9: shown whole on phones, then a wide ad crop that only trims height. */
-  .catalogue-banner-media {
-    position: relative;
-    aspect-ratio: 16 / 9;
-  }
-
-  @media (min-width: 40rem) {
-    .catalogue-banner {
-      aspect-ratio: 2 / 1;
-    }
-
-    .catalogue-banner-media {
-      position: absolute;
-      inset: 0;
-      aspect-ratio: auto;
-    }
-  }
-
-  @media (min-width: 64rem) {
-    .catalogue-banner {
-      aspect-ratio: 12 / 5;
-      max-height: 32rem;
-    }
-  }
-
   /* Route loading indicator: a thin sweep under the sticky header. */
   .route-loading-bar {
     position: sticky;
@@ -513,19 +473,6 @@
     to {
       transform: translateX(290%);
     }
-  }
-
-  .catalogue-banner-copy {
-    animation: hero-copy-in 480ms ease-out;
-  }
-
-  .catalogue-banner-gradient-light {
-    background: linear-gradient(
-      120deg,
-      color-mix(in srgb, var(--jyoti-navy) 12%, white) 0%,
-      white 55%,
-      color-mix(in srgb, var(--jyoti-accent) 10%, white) 100%
-    );
   }
 
   /* Empty enquiry-cart illustration motion */
@@ -1164,6 +1111,126 @@ html[data-theme="dark"] .page-pre-cta {
   background-color: #10182b;
 }
 
+.page-pre-cta-card {
+  background-color: #ffffff;
+  border-color: #eceff5;
+  box-shadow: 0 24px 60px -32px rgb(10 36 114 / 0.28);
+}
+
+.page-pre-cta-eyebrow {
+  color: #5c677d;
+}
+
+.page-pre-cta-title {
+  color: #0a1024;
+}
+
+.page-pre-cta-copy,
+.page-pre-cta-note {
+  color: #3a4560;
+}
+
+.page-pre-cta-link {
+  color: #0a2472;
+}
+
+.page-pre-cta-primary {
+  background-color: #0a2472;
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.page-pre-cta-primary:hover {
+  background-color: #051650;
+  color: #ffffff;
+}
+
+.page-pre-cta-secondary {
+  background-color: #ffffff;
+  color: #0a2472;
+  border-color: #d5dbe8;
+}
+
+.page-pre-cta-secondary:hover {
+  background-color: #f4f6fb;
+  color: #0a2472;
+  border-color: #0a2472;
+}
+
+html[data-theme="dark"] .page-pre-cta-card {
+  background-color: #172238;
+  border-color: #31456f;
+  box-shadow: 0 24px 50px -28px rgb(0 0 0 / 0.55);
+}
+
+html[data-theme="dark"] .page-pre-cta-eyebrow,
+html[data-theme="dark"] .page-pre-cta-copy,
+html[data-theme="dark"] .page-pre-cta-note {
+  color: #e4ecff;
+}
+
+html[data-theme="dark"] .page-pre-cta-title,
+html[data-theme="dark"] .page-pre-cta-link {
+  color: #f7f9ff;
+}
+
+html[data-theme="dark"] .page-pre-cta-primary {
+  background-color: #2a62d6;
+  color: #ffffff;
+  border-color: transparent;
+}
+
+html[data-theme="dark"] .page-pre-cta-primary:hover {
+  background-color: #3b78f0;
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .page-pre-cta-secondary {
+  background-color: transparent;
+  color: #f7f9ff;
+  border-color: #c5d4f0;
+}
+
+html[data-theme="dark"] .page-pre-cta-secondary:hover {
+  background-color: #243656;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.theme-toggle {
+  color: #ffffff;
+}
+
+.theme-toggle-icon {
+  display: grid;
+  width: 1.25rem;
+  height: 1.25rem;
+  place-items: center;
+}
+
+.theme-toggle-icon svg {
+  grid-area: 1 / 1;
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke: #ffffff;
+}
+
+.theme-toggle-sun {
+  display: none;
+}
+
+.theme-toggle-moon {
+  display: block;
+}
+
+html[data-theme="dark"] .theme-toggle-sun {
+  display: block;
+}
+
+html[data-theme="dark"] .theme-toggle-moon {
+  display: none;
+}
+
 html[data-theme="dark"] .whatsapp-float {
   background-color: #2a62d6 !important;
   color: #ffffff !important;
@@ -1179,30 +1246,171 @@ html[data-theme="dark"] .whatsapp-float svg {
   fill: #ffffff !important;
 }
 
-/* Catalogue banners keep the light-mode copy: dark type on light photos, white type on dark photos. */
-html[data-theme="dark"] .catalogue-banner {
-  --jyoti-rich-black: #00072d;
-  --jyoti-navy-deep: #02060e;
-  --jyoti-navy-mid: #051650;
-  --jyoti-navy: #0a2472;
-  --jyoti-white: #ffffff;
-  --jyoti-cream: #f4f6fb;
+.dussehra-banner {
+  position: relative;
+  color: #0a2472;
+  background: #ffffff;
+  border: 1px solid #d5deef;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.9);
 }
 
-html[data-theme="dark"] .catalogue-banner :is(
-  .text-white,
-  .text-white\/70,
-  .text-white\/75,
-  .text-white\/80,
-  .text-white\/85,
-  .text-white\/90,
-  .text-rich-black\/75,
-  .text-rich-black\/80
-) {
-  color: revert-layer;
+.dussehra-mark {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: min(100%, 9.5rem);
+  margin-bottom: 0.65rem;
 }
 
-html[data-theme="dark"] .catalogue-banner :is(.bg-navy, .bg-navy\/80, .bg-navy\/90, .bg-navy\/95),
-html[data-theme="dark"] .catalogue-banner :is(.hover\:bg-navy:hover, .hover\:bg-navy-mid:hover) {
-  background-color: revert-layer;
+.dussehra-mark::before,
+.dussehra-mark::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, #0356c5 40%, #0356c5 60%, transparent);
+}
+
+.dussehra-mark > span {
+  width: 0.42rem;
+  height: 0.42rem;
+  flex: none;
+  rotate: 45deg;
+  background: #0a2472;
+  box-shadow: 0 0 0 3px rgb(3 86 197 / 0.16);
+}
+
+.dussehra-banner h1,
+.dussehra-banner p {
+  color: #0a2472;
+}
+
+@media (max-width: 639px) {
+  .page-pre-cta-primary,
+  .page-pre-cta-secondary {
+    min-height: 2.5rem;
+    padding-inline: 0.7rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.01em;
+  }
+}
+
+.dussehra-banner .dussehra-offer {
+  color: #0356c5;
+}
+
+.dussehra-cta {
+  background: #0a2472;
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.dussehra-cta:hover {
+  background: #051650;
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .dussehra-banner {
+  color: #f7f9ff;
+  background: #172238;
+  border-color: #31456f;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+}
+
+html[data-theme="dark"] .dussehra-banner h1,
+html[data-theme="dark"] .dussehra-banner p {
+  color: #f7f9ff;
+}
+
+html[data-theme="dark"] .dussehra-banner .dussehra-offer {
+  color: #9ec2ff;
+}
+
+html[data-theme="dark"] .dussehra-mark::before,
+html[data-theme="dark"] .dussehra-mark::after {
+  background: linear-gradient(90deg, transparent, #7eb0ff 40%, #7eb0ff 60%, transparent);
+}
+
+html[data-theme="dark"] .dussehra-mark > span {
+  background: #7eb0ff;
+  box-shadow: 0 0 0 3px rgb(126 176 255 / 0.24);
+}
+
+html[data-theme="dark"] .dussehra-cta {
+  background: #3b78f0;
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .dussehra-cta:hover {
+  background: #5b90ff;
+  color: #ffffff;
+}
+
+.deal-save {
+  color: #388e3c;
+}
+
+.price-was {
+  color: #565959;
+}
+
+html[data-theme="dark"] .deal-save {
+  color: #3dce8a;
+}
+
+html[data-theme="dark"] .price-was {
+  color: #c5cedd;
+}
+
+.house-note {
+  background: #0a2472;
+  color: #ffffff;
+}
+
+.house-note-frame {
+  border: 1px solid rgb(255 255 255 / 0.32);
+}
+
+.house-note-mark {
+  border: 1px solid rgb(255 255 255 / 0.55);
+  color: #ffffff;
+}
+
+.house-note-detail {
+  color: rgb(255 255 255 / 0.88);
+}
+
+.house-note-foot {
+  border-color: rgb(255 255 255 / 0.28);
+  color: #ffffff;
+}
+
+.house-note h3,
+.house-note a {
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .house-note {
+  background: #172238;
+  color: #f7f9ff;
+  box-shadow: 0 0 0 1px #31456f;
+}
+
+html[data-theme="dark"] .house-note-frame {
+  border-color: rgb(247 249 255 / 0.28);
+}
+
+html[data-theme="dark"] .house-note h3,
+html[data-theme="dark"] .house-note-mark,
+html[data-theme="dark"] .house-note-detail,
+html[data-theme="dark"] .house-note-foot,
+html[data-theme="dark"] .house-note a {
+  color: #f7f9ff;
+}
+
+html[data-theme="dark"] .house-note-mark {
+  border-color: rgb(247 249 255 / 0.5);
+}
+
+html[data-theme="dark"] .house-note-foot {
+  border-color: rgb(247 249 255 / 0.28);
 }

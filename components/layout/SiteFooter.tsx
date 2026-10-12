@@ -43,7 +43,7 @@ export function SiteFooter() {
           </a>
         </div>
 
-        <nav aria-label="Footer">
+        <nav aria-label="Footer" className="max-lg:pl-4">
           <p className="mb-4 text-small font-semibold uppercase tracking-[0.14em] text-navy">
             Explore
           </p>

@@ -12,6 +12,22 @@ export const colourSwatchMap: Record<string, string> = {
   Crimson: "#b01030",
   Orange: "#d96a1f",
   Teal: "#1a7a7a",
+  Red: "#b42334",
+  Maroon: "#6e1b2a",
+  Purple: "#6b3fa0",
+  Wine: "#722f37",
+  "Bright Blue with Red": "#1d4e89",
+  "Dark Green": "#1b4d3e",
+  "Baby Pink": "#f4c2d0",
+  "Peach with Ice Blue": "#f3c1a8",
+  "Light Baby Pink": "#f6d5df",
+  "Light Blue with Teal Green": "#7ec8d4",
+  Cream: "#f3ead7",
+  Black: "#1a1a1a",
+  Lavender: "#c4b5e0",
+  "Orange and Red": "#e05a2b",
+  /* Exact shade was not confirmed, so the swatch stays neutral. */
+  "Bright shade": "#c8c2b8",
 };
 
 export function swatchFor(colour: string) {

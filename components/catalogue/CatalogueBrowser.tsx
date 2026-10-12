@@ -22,14 +22,11 @@ type CatalogueBrowserProps = {
   products: Product[];
   /** Optional badge on every card (e.g. "New" on New Arrivals). */
   cardBadge?: string;
-  /** Phone card layout used on the Sarees catalogue only. */
-  mobileListing?: boolean;
 };
 
 export function CatalogueBrowser({
   products,
   cardBadge,
-  mobileListing = false,
 }: CatalogueBrowserProps) {
   const [filters, setFilters] = useState<CatalogueFilters>(defaultCatalogueFilters);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -54,7 +51,7 @@ export function CatalogueBrowser({
   const canClear = filtersActive || filters.sort !== defaultCatalogueFilters.sort;
 
   return (
-    <Section tone="muted" className="pt-6 sm:pt-8">
+    <Section tone="muted" id="sarees-listing" className="scroll-mt-24 pt-6 sm:pt-8">
       <Container className="max-w-[90rem]">
         <div className="flex items-center justify-between gap-3 lg:hidden">
           <p className="text-small font-semibold text-rich-black" aria-live="polite">
@@ -62,7 +59,7 @@ export function CatalogueBrowser({
           </p>
           <Button
             type="button"
-            variant={filtersActive ? "primary" : "secondary"}
+            variant="primary"
             size="sm"
             className="min-h-11 px-5"
             aria-haspopup="dialog"
@@ -92,14 +89,12 @@ export function CatalogueBrowser({
 
           <div className="min-w-0">
             {visible.length > 0 ? (
-              <ul className="mt-4 grid list-none grid-cols-2 items-stretch gap-3 p-0 sm:gap-4 lg:mt-0 lg:gap-4 xl:grid-cols-3 xl:gap-5">
+              <ul className="mt-4 grid list-none grid-cols-2 items-stretch gap-3 p-0 sm:gap-4 lg:mt-0 lg:grid-cols-3 lg:gap-4">
                 {visible.map((product) => (
                   <ProductCard
                     key={product.slug}
                     product={product}
                     href={productHref(product)}
-                    showAddToCart
-                    listing={mobileListing}
                     badge={cardBadge}
                     className="h-full"
                   />

@@ -10,8 +10,8 @@ export const aboutContent = {
       alt: "Potnuru Jyoti, founder of Jyoti Sarees, in a cream silk saree with a pink and gold border",
     },
     image: {
-      src: "/assets/about/hero.jpg",
-      alt: "Woman in a navy Kanchipuram silk saree with a gold zari border beside shelves of folded silk sarees in the Jyoti Sarees boutique",
+      src: "/assets/Jyoti.png",
+      alt: "Potnuru Jyoti, founder of Jyoti Sarees, in a cream silk saree with a pink and gold border",
     },
   },
   chapters: [

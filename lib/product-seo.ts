@@ -35,7 +35,8 @@ export function productDescriptor(product: Product) {
 export function productTitle(product: Product, colour?: ProductColourOption) {
   const name = colour ? `${product.name} in ${colour.label}` : product.name;
   const descriptor = productDescriptor(product);
-  return descriptor ? `${name} | ${descriptor}` : `${name} Saree`;
+  if (descriptor) return `${name} | ${descriptor}`;
+  return /saree$/i.test(name) ? name : `${name} Saree`;
 }
 
 /** Unique, data-derived description kept within a typical snippet length. */
