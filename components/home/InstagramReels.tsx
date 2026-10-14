@@ -6,12 +6,15 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { reels } from "@/lib/reels";
+import { getReelMedia } from "@/lib/server/reel-media";
 import { copy, site } from "@/lib/site";
 
 const cardClassName =
   "reels-card w-[calc((100cqw-0.75rem)/1.4)] shrink-0 pr-3 sm:w-[calc(100cqw/3)] sm:pr-4 lg:w-[calc(100cqw/4)] lg:pr-5";
 
 export function InstagramReels() {
+  const items = reels.map((reel) => ({ reel, media: getReelMedia(reel.id) }));
+
   return (
     <Section>
       <Container>
@@ -22,19 +25,19 @@ export function InstagramReels() {
           className="max-w-2xl"
         />
 
-        <div className="reels-marquee @container overflow-hidden">
+        <div className="reels-marquee @container overflow-hidden motion-reduce:overflow-x-auto">
           <ul
             className="reels-track flex w-max list-none p-0"
             style={{ "--reels-duration": `${reels.length * 7}s` } as CSSProperties}
           >
-            {reels.map((reel) => (
+            {items.map(({ reel, media }) => (
               <li key={reel.id} className={cardClassName}>
-                <ReelCard reel={reel} />
+                <ReelCard reel={reel} media={media} />
               </li>
             ))}
-            {reels.map((reel) => (
+            {items.map(({ reel, media }) => (
               <li key={`${reel.id}-loop`} className={`${cardClassName} reels-loop-copy`} aria-hidden="true">
-                <ReelCard reel={reel} decorative />
+                <ReelCard reel={reel} media={media} decorative />
               </li>
             ))}
           </ul>

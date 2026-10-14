@@ -542,7 +542,8 @@
   }
 
   .reels-marquee:hover .reels-track,
-  .reels-marquee:focus-within .reels-track {
+  .reels-marquee:focus-within .reels-track,
+  .reels-marquee[data-sound="on"] .reels-track {
     animation-play-state: paused;
   }
 
@@ -593,7 +594,6 @@
 
   @media (prefers-reduced-motion: reduce) {
     .reels-marquee {
-      overflow-x: auto;
       scrollbar-width: none;
     }
 
