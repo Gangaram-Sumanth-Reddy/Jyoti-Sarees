@@ -4,19 +4,17 @@ import { parseTestimonial } from "@/lib/testimonial-submissions";
 
 export async function POST(request: Request) {
   return handleFormSubmission(request, {
-    table: "testimonial_submissions",
+    formType: "testimonial",
     referencePrefix: "TST",
     parse: parseTestimonial,
-    toRow: (data, reference) => ({
-      reference,
+    toRow: (data) => ({
       name: data.name,
       city: data.city || null,
       saree: data.saree || null,
       message: data.message,
-      publication_consent: true,
-      publication_consent_at: new Date().toISOString(),
-      publication_consent_text: privacyConfig.consentText.testimonialPublication,
-      policy_version: privacyConfig.policyVersion,
+      publicationConsent: true,
+      consentText: privacyConfig.consentText.testimonialPublication,
+      policyVersion: privacyConfig.policyVersion,
     }),
   });
 }

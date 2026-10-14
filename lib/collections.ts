@@ -23,6 +23,8 @@ export type Collection = {
   related: string[];
   /** Related journal article slugs. */
   journal: string[];
+  /** Card photo; without one the first product photo is used. */
+  image?: string;
 };
 
 function catalogueCollection(input: {
@@ -31,10 +33,12 @@ function catalogueCollection(input: {
   category: string;
   summary: string;
   related: string[];
+  image?: string;
 }): Collection {
   return {
     slug: input.slug,
     name: input.name,
+    image: input.image,
     shortDescription: input.summary,
     description: input.summary,
     categories: [input.category],
@@ -76,28 +80,56 @@ export const collections: Collection[] = [
     category: "Ajrakh",
     summary: "Pure Ajrakh sarees from the current Jyoti Sarees catalogue.",
     related: ["banarasi", "pattu", "kora"],
+    image: "/assets/banners/collections/ajrakh.jpg",
   }),
   catalogueCollection({
     slug: "banarasi",
     name: "Banarasi",
     category: "Banarasi",
     summary:
-      "Banarasi sarees in the current catalogue, including georgette and kora silk.",
+      "Banarasi sarees in the current catalogue, including georgette, kora silk, tissue and silk pattu.",
     related: ["ajrakh", "pattu", "kora"],
+    image: "/assets/banners/collections/banarasi.jpg",
   }),
   catalogueCollection({
     slug: "pattu",
     name: "Pattu",
     category: "Pattu",
-    summary: "Fancy Pattu sarees from the current Jyoti Sarees catalogue.",
+    summary: "Traditional, soft and fancy Pattu sarees from the current Jyoti Sarees catalogue.",
     related: ["ajrakh", "banarasi", "kora"],
+    image: "/assets/banners/collections/pattu.jpg",
   }),
   catalogueCollection({
     slug: "kora",
     name: "Kora",
     category: "Kora",
-    summary: "Pure Kora sarees from the current Jyoti Sarees catalogue.",
+    summary: "Pure and fancy Kora sarees from the current Jyoti Sarees catalogue.",
     related: ["ajrakh", "banarasi", "pattu"],
+    image: "/assets/banners/collections/kora.jpg",
+  }),
+  catalogueCollection({
+    slug: "silk",
+    name: "Silk",
+    category: "Silk",
+    summary: "Silk, fancy silk, silk tissue and Mashroof silk sarees from the current Jyoti Sarees catalogue.",
+    related: ["pattu", "banarasi", "georgette"],
+    image: "/assets/banners/collections/silk.jpg",
+  }),
+  catalogueCollection({
+    slug: "georgette",
+    name: "Georgette",
+    category: "Georgette",
+    summary: "Pure and khadi georgette sarees from the current Jyoti Sarees catalogue.",
+    related: ["silk", "designer", "banarasi"],
+    image: "/assets/banners/collections/georgette.jpg",
+  }),
+  catalogueCollection({
+    slug: "designer",
+    name: "Designer",
+    category: "Designer",
+    summary: "Fancy designer sarees from the current Jyoti Sarees catalogue.",
+    related: ["georgette", "silk", "pattu"],
+    image: "/assets/banners/collections/designer.jpg",
   }),
 ];
 
@@ -121,6 +153,16 @@ export function getProductsForCollection(collection: Collection): Product[] {
       product.collection === collection.name
     );
   });
+}
+
+/** The collection's own photo, else the lead photo of its first saree. */
+export function getCollectionCoverImage(collection: Collection) {
+  return (
+    collection.image ??
+    getProductsForCollection(collection)
+      .flatMap((product) => product.gallery)
+      .find((item) => item.src)?.src
+  );
 }
 
 /** Collections with at least one product — the only ones that get a page. */

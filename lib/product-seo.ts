@@ -68,7 +68,7 @@ export function productPhotos(product: Product) {
 export function productOgImage(product: Product): SeoImage {
   const [photo] = productPhotos(product);
   const alt = `${product.name} — ${product.colour} ${product.fabric.toLowerCase()} saree from ${seoConfig.siteName}`;
-  if (photo) return { url: photo, width: 1200, height: 1200, alt };
+  if (photo) return { url: photo, width: 1024, height: 1536, alt };
   return { url: `/og/product/${product.slug}`, width: 1200, height: 630, alt };
 }
 

@@ -6,10 +6,10 @@ import { buildMetadata } from "@/lib/seo";
 import { breadcrumbSchema, collectionPageSchema } from "@/lib/structured-data";
 
 const description =
-  "Browse Ajrakh, Banarasi, Pattu and Kora sarees at Jyoti Sarees. Filter by fabric, colour and price, then enquire on WhatsApp.";
+  "Browse Ajrakh, Banarasi, Pattu, Kora, Silk, Georgette and Designer sarees at Jyoti Sarees. Filter by fabric, colour and price, then enquire on WhatsApp.";
 
 export const metadata = buildMetadata({
-  title: "Ajrakh, Banarasi, Pattu & Kora Sarees",
+  title: "Ajrakh, Banarasi, Pattu, Kora & Silk Sarees",
   description,
   path: "/sarees",
 });

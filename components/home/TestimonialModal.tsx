@@ -56,6 +56,7 @@ export function TestimonialModal({ open, onClose }: TestimonialModalProps) {
     if (status === "success") {
       setForm(emptyTestimonialSubmission);
       setStatus("idle");
+      pending.current = false;
     }
   }
 

@@ -1,17 +1,15 @@
 import { notFound } from "next/navigation";
 import { ProductDetailPanel } from "@/components/product/ProductDetailPanel";
-import { ProductWhatsAppCta } from "@/components/product/ProductWhatsAppCta";
+import { ProductOfferBanner } from "@/components/product/ProductOfferBanner";
+import { RecentlyViewed } from "@/components/product/RecentlyViewed";
 import { RelatedProducts } from "@/components/product/RelatedProducts";
+import { ProductReviews } from "@/components/reviews/ProductReviews";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { productBreadcrumbs } from "@/lib/product-seo";
-import {
-  getColourOption,
-  getRelatedProducts,
-  type Product,
-} from "@/lib/products";
+import { getRelatedProducts, type Product } from "@/lib/products";
 import { productPageSchemas } from "@/lib/structured-data";
 
 type ProductDetailViewProps = {
@@ -32,8 +30,7 @@ export function ProductDetailView({
     if (!match) notFound();
   }
 
-  const selected = getColourOption(product, colourSlug);
-  const related = getRelatedProducts(product, 4);
+  const related = getRelatedProducts(product, 12);
 
   return (
     <>
@@ -42,18 +39,22 @@ export function ProductDetailView({
         <Container className="max-w-[82.5rem]">
           <Breadcrumbs items={productBreadcrumbs(product)} />
 
-          <ProductDetailPanel product={product} colourSlug={colourSlug} />
+          <ProductDetailPanel
+            product={product}
+            colourSlug={colourSlug}
+            offerBanner={<ProductOfferBanner product={product} />}
+          />
+        </Container>
+      </Section>
+
+      <Section className="!pt-0">
+        <Container className="max-w-[82.5rem]">
+          <ProductReviews productSlug={product.slug} productName={product.name} />
         </Container>
       </Section>
 
       <RelatedProducts products={related} />
-      <ProductWhatsAppCta
-        productName={
-          selected.label ? `${product.name} (${selected.label})` : product.name
-        }
-        productId={product.productId}
-        priceLabel={product.priceLabel}
-      />
+      <RecentlyViewed currentSlug={product.slug} />
     </>
   );
 }

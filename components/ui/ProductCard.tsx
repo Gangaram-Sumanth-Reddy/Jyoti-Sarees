@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { NavPendingBar } from "@/components/layout/NavPendingBar";
+import { RatingBadge } from "@/components/reviews/RatingBadge";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
@@ -18,6 +20,8 @@ type ProductCardProps = {
   className?: string;
   badge?: string;
   available?: boolean;
+  /** Load the photo immediately (for cards in the first visible row). */
+  eager?: boolean;
 };
 
 export function ProductCard({
@@ -31,6 +35,7 @@ export function ProductCard({
   className,
   badge,
   available: availableProp,
+  eager = false,
 }: ProductCardProps) {
   const name = product?.name ?? nameProp ?? "";
   const category = product?.category ?? categoryProp ?? "";
@@ -52,22 +57,29 @@ export function ProductCard({
       )}
     >
       <Link href={href} className="group flex min-w-0 flex-1 flex-col">
-        <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg bg-[#f7f5f2]">
+        <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg bg-[#f7f5f2]">
           {photo ? (
             <Image
               src={photo}
               alt={`${name}${colour ? ` in ${colour}` : ""} saree`}
               fill
-              sizes="(max-width: 639px) 46vw, (max-width: 1023px) 31vw, 22vw"
-              className="object-contain"
+              loading={eager ? "eager" : "lazy"}
+              sizes="(min-width: 1440px) 420px, (min-width: 1024px) 30vw, 48vw"
+              className="object-cover"
             />
           ) : (
             <ImagePlaceholder label={name} />
           )}
           {badge ? (
-            <Badge variant="inverse" className="absolute left-2 top-2 z-10 shadow-soft">
+            <Badge variant="inverse" className="absolute right-2 top-2 z-10 shadow-soft sm:right-2.5 sm:top-2.5">
               {badge}
             </Badge>
+          ) : null}
+          {product ? (
+            <RatingBadge
+              slug={product.slug}
+              className={available ? "bottom-2 left-2" : "bottom-2 right-2"}
+            />
           ) : null}
           {!available ? (
             <span className="absolute bottom-2 left-2 rounded-pill bg-navy/90 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-white">
@@ -92,6 +104,7 @@ export function ProductCard({
             sellingLabel={price}
           />
         </div>
+        <NavPendingBar />
       </Link>
     </Card>
   );

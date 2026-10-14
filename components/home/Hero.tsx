@@ -324,7 +324,7 @@ export function Hero() {
                     <FloatingNote
                       icon={<SilkIcon />}
                       title="Current catalogue"
-                      detail="Ajrakh · Banarasi · Pattu · Kora"
+                      detail="Ajrakh · Banarasi · Pattu · Kora · Silk & more"
                       className={cn(
                         "absolute bottom-5 z-10 hidden sm:bottom-8 sm:flex lg:bottom-16",
                         slide.notesOnRight

@@ -44,15 +44,15 @@
   --jyoti-border: color-mix(in srgb, var(--jyoti-navy) 14%, white);
   --jyoti-border-strong: color-mix(in srgb, var(--jyoti-navy) 28%, white);
 
-  /* Buttons */
-  --jyoti-button-primary: var(--jyoti-accent);
+  /* Buttons: primary is solid brand navy; secondary is a navy outline that tints on hover. */
+  --jyoti-button-primary: var(--jyoti-navy);
   --jyoti-button-primary-text: var(--jyoti-white);
-  --jyoti-button-primary-hover: var(--jyoti-accent-deep);
+  --jyoti-button-primary-hover: var(--jyoti-navy-mid);
   --jyoti-button-secondary: transparent;
   --jyoti-button-secondary-text: var(--jyoti-navy);
   --jyoti-button-secondary-border: var(--jyoti-navy);
-  --jyoti-button-secondary-hover: var(--jyoti-navy);
-  --jyoti-button-secondary-hover-text: var(--jyoti-white);
+  --jyoti-button-secondary-hover: color-mix(in srgb, var(--jyoti-navy) 8%, white);
+  --jyoti-button-secondary-hover-text: var(--jyoti-navy);
 
   /* Cards & sections */
   --jyoti-card: var(--jyoti-surface);
@@ -127,6 +127,8 @@
   --color-button-secondary: var(--jyoti-button-secondary);
   --color-button-secondary-text: var(--jyoti-button-secondary-text);
   --color-button-secondary-hover: var(--jyoti-button-secondary-hover);
+  --color-button-secondary-border: var(--jyoti-button-secondary-border);
+  --color-button-secondary-hover-text: var(--jyoti-button-secondary-hover-text);
   --color-page: var(--jyoti-page);
   --color-background: var(--jyoti-page);
   --color-foreground: var(--jyoti-text);
@@ -447,13 +449,27 @@
     animation: hero-copy-in 480ms ease-out;
   }
 
-  /* Route loading indicator: a thin sweep under the sticky header. */
+  /*
+   * Pending-navigation sweep under the sticky header. Fades in late so
+   * prefetched (instant) navigations never show it.
+   */
   .route-loading-bar {
-    position: sticky;
+    position: fixed;
+    inset-inline: 0;
     top: var(--site-header-height, 4rem);
+    z-index: 60;
     height: 2px;
     overflow: hidden;
+    pointer-events: none;
     background: color-mix(in srgb, var(--jyoti-navy) 10%, transparent);
+    opacity: 0;
+    animation: route-loading-show 150ms ease-out 120ms forwards;
+  }
+
+  @keyframes route-loading-show {
+    to {
+      opacity: 1;
+    }
   }
 
   .route-loading-bar::after {
@@ -644,11 +660,41 @@
     animation: testimonial-dialog-in 220ms ease-out;
   }
 
+  [open] .success-badge {
+    animation: success-badge-pop 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  [open] .success-check path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: success-check-draw 380ms 260ms ease-out forwards;
+  }
+
+  @keyframes success-badge-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes success-check-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .testimonial-dialog[open],
     .story-dialog[open],
-    .filter-sheet[open] > * {
+    .filter-sheet[open] > *,
+    [open] .success-badge,
+    [open] .success-check path {
       animation: none;
+      stroke-dashoffset: 0;
     }
   }
 
@@ -950,13 +996,13 @@ html[data-theme="dark"] {
   --jyoti-border: rgb(238 243 255 / 0.22);
   --jyoti-border-strong: rgb(238 243 255 / 0.42);
   --jyoti-text-inverse: #f7f9ff;
-  --jyoti-button-primary: #3b78f0;
+  --jyoti-button-primary: #2a62d6;
   --jyoti-button-primary-text: #ffffff;
-  --jyoti-button-primary-hover: #5b90ff;
+  --jyoti-button-primary-hover: #3b78f0;
   --jyoti-button-secondary-text: #f4f7ff;
-  --jyoti-button-secondary-border: #f4f7ff;
-  --jyoti-button-secondary-hover: #f4f7ff;
-  --jyoti-button-secondary-hover-text: #10182b;
+  --jyoti-button-secondary-border: #c5d4f0;
+  --jyoti-button-secondary-hover: #243656;
+  --jyoti-button-secondary-hover-text: #ffffff;
   --jyoti-card: #172238;
   --jyoti-section: #10182b;
   --jyoti-section-muted: #162036;
@@ -1026,14 +1072,14 @@ html[data-theme="dark"] .hero-card {
   --jyoti-white: #ffffff;
   --jyoti-text: #00072d;
   --jyoti-text-inverse: #ffffff;
-  --jyoti-button-primary: #0356c5;
+  --jyoti-button-primary: #0a2472;
   --jyoti-button-primary-text: #ffffff;
-  --jyoti-button-primary-hover: #0a2472;
+  --jyoti-button-primary-hover: #051650;
   --jyoti-button-secondary: transparent;
   --jyoti-button-secondary-text: #0a2472;
   --jyoti-button-secondary-border: #0a2472;
-  --jyoti-button-secondary-hover: #0a2472;
-  --jyoti-button-secondary-hover-text: #ffffff;
+  --jyoti-button-secondary-hover: #eef1f8;
+  --jyoti-button-secondary-hover-text: #0a2472;
 }
 
 html[data-theme="dark"] .hero-card :is(
@@ -1246,44 +1292,6 @@ html[data-theme="dark"] .whatsapp-float svg {
   fill: #ffffff !important;
 }
 
-.dussehra-banner {
-  position: relative;
-  color: #0a2472;
-  background: #ffffff;
-  border: 1px solid #d5deef;
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.9);
-}
-
-.dussehra-mark {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  width: min(100%, 9.5rem);
-  margin-bottom: 0.65rem;
-}
-
-.dussehra-mark::before,
-.dussehra-mark::after {
-  content: "";
-  height: 1px;
-  flex: 1;
-  background: linear-gradient(90deg, transparent, #0356c5 40%, #0356c5 60%, transparent);
-}
-
-.dussehra-mark > span {
-  width: 0.42rem;
-  height: 0.42rem;
-  flex: none;
-  rotate: 45deg;
-  background: #0a2472;
-  box-shadow: 0 0 0 3px rgb(3 86 197 / 0.16);
-}
-
-.dussehra-banner h1,
-.dussehra-banner p {
-  color: #0a2472;
-}
-
 @media (max-width: 639px) {
   .page-pre-cta-primary,
   .page-pre-cta-secondary {
@@ -1294,63 +1302,55 @@ html[data-theme="dark"] .whatsapp-float svg {
   }
 }
 
-.dussehra-banner .dussehra-offer {
-  color: #0356c5;
-}
-
-.dussehra-cta {
-  background: #0a2472;
-  color: #ffffff;
-  border-color: transparent;
-}
-
-.dussehra-cta:hover {
-  background: #051650;
-  color: #ffffff;
-}
-
-html[data-theme="dark"] .dussehra-banner {
-  color: #f7f9ff;
-  background: #172238;
-  border-color: #31456f;
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
-}
-
-html[data-theme="dark"] .dussehra-banner h1,
-html[data-theme="dark"] .dussehra-banner p {
-  color: #f7f9ff;
-}
-
-html[data-theme="dark"] .dussehra-banner .dussehra-offer {
-  color: #9ec2ff;
-}
-
-html[data-theme="dark"] .dussehra-mark::before,
-html[data-theme="dark"] .dussehra-mark::after {
-  background: linear-gradient(90deg, transparent, #7eb0ff 40%, #7eb0ff 60%, transparent);
-}
-
-html[data-theme="dark"] .dussehra-mark > span {
-  background: #7eb0ff;
-  box-shadow: 0 0 0 3px rgb(126 176 255 / 0.24);
-}
-
-html[data-theme="dark"] .dussehra-cta {
-  background: #3b78f0;
-  color: #ffffff;
-}
-
-html[data-theme="dark"] .dussehra-cta:hover {
-  background: #5b90ff;
-  color: #ffffff;
-}
-
 .deal-save {
   color: #388e3c;
 }
 
 .price-was {
   color: #565959;
+}
+
+/* Custom ::-webkit-scrollbar styles keep the bar visible (macOS overlay
+   scrollbars otherwise auto-hide). Any scrollbar-* value, including the one
+   inherited from html, disables them in Chrome, so reset it here and keep
+   scrollbar-* for browsers without ::-webkit-scrollbar. */
+.filter-scroll {
+  overflow-y: scroll;
+  scrollbar-width: auto;
+  scrollbar-color: auto;
+}
+
+.filter-scroll::-webkit-scrollbar {
+  width: 0.4rem;
+}
+
+.filter-scroll::-webkit-scrollbar-track {
+  background-color: rgb(10 36 114 / 0.06);
+  border-radius: 999px;
+}
+
+.filter-scroll::-webkit-scrollbar-thumb {
+  background-color: rgb(10 36 114 / 0.4);
+  border-radius: 999px;
+}
+
+.filter-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(10 36 114 / 0.6);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .filter-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(10 36 114 / 0.4) rgb(10 36 114 / 0.06);
+  }
+}
+
+html[data-theme="dark"] .filter-scroll::-webkit-scrollbar-track {
+  background-color: rgb(255 255 255 / 0.06);
+}
+
+html[data-theme="dark"] .filter-scroll::-webkit-scrollbar-thumb {
+  background-color: rgb(197 212 240 / 0.45);
 }
 
 html[data-theme="dark"] .deal-save {

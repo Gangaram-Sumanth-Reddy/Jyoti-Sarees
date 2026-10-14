@@ -3,7 +3,6 @@ import {
   sortedCountryCodes,
   type CountryDialCode,
 } from "@/lib/country-codes";
-import { products } from "@/lib/products";
 import { site } from "@/lib/site";
 
 export type ContactAddress = {
@@ -87,22 +86,6 @@ export const contactCopy = {
   },
 } as const;
 
-/** Catalogue-driven saree type / requirement suggestions. */
-export function getSareeRequirementSuggestions(): string[] {
-  const values = new Set<string>();
-
-  for (const product of products) {
-    values.add(product.name);
-    values.add(product.category);
-    values.add(product.collection);
-    values.add(product.fabric);
-    if (product.occasion) values.add(product.occasion);
-    if (product.design) values.add(product.design);
-  }
-
-  return [...bulkOrders.types, ...values].sort((a, b) => a.localeCompare(b, "en"));
-}
-
 export function contactEnquiryWhatsAppUrl(
   baseUrl: string,
   payload: {
@@ -113,8 +96,7 @@ export function contactEnquiryWhatsAppUrl(
     pincode: string;
     state: string;
     city: string;
-    requirement: string;
-    quantity: string;
+    message: string;
   },
 ) {
   const details = [
@@ -125,8 +107,7 @@ export function contactEnquiryWhatsAppUrl(
     ["PIN code", payload.pincode],
     ["State", payload.state],
     ["City", payload.city],
-    ["Saree / Requirement", payload.requirement],
-    ["Quantity", payload.quantity],
+    ["Message", payload.message],
   ]
     .filter(([, value]) => value.trim())
     .map(([label, value]) => `${label}: ${value.trim()}`);

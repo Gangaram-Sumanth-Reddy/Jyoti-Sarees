@@ -11,7 +11,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // /cart and /privacy-requests stay crawlable so their noindex tag is seen.
-      disallow: ["/api/"],
+      disallow: ["/api/", "/admin/"],
     },
     sitemap: absoluteUrl("/sitemap.xml"),
   };

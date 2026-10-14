@@ -1,7 +1,6 @@
-import { ContactAddresses } from "@/components/contact/ContactAddresses";
 import { ContactBulkOrders } from "@/components/contact/ContactBulkOrders";
 import { ContactEnquiryPanel } from "@/components/contact/ContactEnquiryPanel";
-import { ContactFaq } from "@/components/contact/ContactFaq";
+import { ContactVisitAndFaq } from "@/components/contact/ContactVisitAndFaq";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { buildMetadata } from "@/lib/seo";
@@ -16,14 +15,13 @@ export const metadata = buildMetadata({
 export default function ContactPage() {
   return (
     <>
-      <Section className="overflow-x-clip pt-8 sm:pt-10 lg:pt-12">
+      <Section className="overflow-x-clip pt-8 sm:pt-10 lg:pt-8">
         <Container className="max-w-[84rem]">
           <ContactEnquiryPanel />
         </Container>
       </Section>
       <ContactBulkOrders />
-      <ContactAddresses />
-      <ContactFaq />
+      <ContactVisitAndFaq />
     </>
   );
 }

@@ -4,6 +4,8 @@ import { cn } from "@/lib/cn";
 const aspects = {
   square: "aspect-square",
   portrait: "aspect-[3/4]",
+  /** Matches the 1024×1536 product photos. */
+  saree: "aspect-[2/3]",
   card: "aspect-[5/6]",
   landscape: "aspect-[4/3]",
   wide: "aspect-[16/9]",

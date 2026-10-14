@@ -7,7 +7,7 @@ import { site } from "@/lib/site";
  * Rule: anything emitted in structured data must be verified by the business.
  * Unverified values stay `null`/empty and are simply omitted from JSON-LD —
  * never replaced with a guess. Values the business may change later can be
- * supplied through environment variables (see .env.example).
+ * supplied through environment variables in `.env` (see SEO.md).
  */
 
 function fromEnv(name: string) {

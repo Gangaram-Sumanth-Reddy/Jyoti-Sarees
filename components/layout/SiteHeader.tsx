@@ -2,10 +2,11 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { CartNavButton } from "@/components/cart/CartNavButton";
 import { MobileMenu } from "@/components/layout/MobileMenu";
 import { NavLogo } from "@/components/layout/NavLogo";
+import { NavPendingBar } from "@/components/layout/NavPendingBar";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Container } from "@/components/ui/Container";
 import { ExternalButtonLink } from "@/components/ui/Button";
@@ -14,10 +15,22 @@ import { navigation, site } from "@/lib/site";
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const menuId = useId();
+
+  // Below xl the primary links live in a closed menu, so viewport prefetching never sees them.
+  useEffect(() => {
+    const prefetch = () => navigation.forEach((item) => router.prefetch(item.href));
+    if (typeof window.requestIdleCallback !== "function") {
+      const id = window.setTimeout(prefetch, 300);
+      return () => window.clearTimeout(id);
+    }
+    const id = window.requestIdleCallback(prefetch, { timeout: 2000 });
+    return () => window.cancelIdleCallback(id);
+  }, [router]);
 
   useEffect(() => {
     const header = headerRef.current;
@@ -56,6 +69,7 @@ export function SiteHeader() {
                 className="nav-link nav-link--inverse px-2.5 xl:px-3"
               >
                 {item.label}
+                <NavPendingBar />
               </Link>
             );
           })}

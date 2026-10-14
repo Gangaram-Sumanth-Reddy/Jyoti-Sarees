@@ -3,10 +3,12 @@ import "server-only";
 import type { FieldErrors, ParseResult } from "@/lib/form-validation";
 import { honeypotFieldName, type FormSubmissionResponse } from "@/lib/form-submission";
 import {
-  DataStoreError,
-  insertPrivateRecord,
-  type PrivateTable,
-} from "@/lib/server/data-store";
+  AppsScriptError,
+  appendSubmission,
+  appsScriptSetupHint,
+  type InsertOutcome,
+  type SheetFormType,
+} from "@/lib/server/google-apps-script";
 
 const MAX_BODY_BYTES = 16 * 1024;
 const RATE_LIMIT = { windowMs: 10 * 60 * 1000, max: 8 };
@@ -41,23 +43,34 @@ function json(body: FormSubmissionResponse, status = 200) {
   });
 }
 
+type SheetRow = Record<string, string | number | boolean | null>;
+
 type FormEndpointOptions<T> = {
-  table: PrivateTable;
+  formType: SheetFormType;
   parse: (body: unknown) => ParseResult<T>;
-  toRow: (data: T, reference: string) => Record<string, unknown>;
   referencePrefix: string;
-};
+  /** Shown to the visitor when the storage backend is not set up. */
+  notConfiguredMessage?: string;
+} & (
+  | { toRow: (data: T) => SheetRow }
+  | {
+      /** Custom storage, e.g. reviews, which may also use a private file store. */
+      save: (data: T, reference: string) => Promise<InsertOutcome>;
+      setupHint: string;
+    }
+);
 
 /**
  * Shared POST handler for public forms: same-origin check, size cap, basic
  * rate limiting, honeypot, server-side validation, then a write to the
- * configured Google Apps Script web app. Personal data is never logged —
- * only the form name and status code.
+ * Google Apps Script web app. Personal data is never logged — only the form
+ * type and status.
  */
 export async function handleFormSubmission<T>(
   request: Request,
-  { table, parse, toRow, referencePrefix }: FormEndpointOptions<T>,
+  options: FormEndpointOptions<T>,
 ) {
+  const { formType: table, parse, referencePrefix } = options;
   if (!isSameOrigin(request)) {
     return json({ ok: false, message: "Request not allowed." }, 403);
   }
@@ -107,15 +120,18 @@ export async function handleFormSubmission<T>(
   }
 
   try {
-    const outcome = await insertPrivateRecord(table, toRow(parsed.data, reference));
+    const outcome =
+      "save" in options
+        ? await options.save(parsed.data, reference)
+        : await appendSubmission(table, reference, options.toRow(parsed.data));
     if (outcome === "not_configured") {
-      console.warn(
-        `[forms] ${table}: NEXT_PUBLIC_GOOGLE_APPS_SCRIPT_URL is not configured.`,
-      );
+      const setting = "save" in options ? options.setupHint : appsScriptSetupHint;
+      console.warn(`[forms] ${table}: ${setting} is not configured.`);
       return json(
         {
           ok: false,
           message:
+            options.notConfiguredMessage ??
             "We cannot receive form submissions right now. Please reach us on WhatsApp or by email.",
         },
         503,
@@ -123,7 +139,7 @@ export async function handleFormSubmission<T>(
     }
     return json({ ok: true, stored: true, reference });
   } catch (error) {
-    const status = error instanceof DataStoreError ? error.status : "network";
+    const status = error instanceof AppsScriptError ? error.status : "network";
     console.error(`[forms] ${table}: insert failed (status ${status}).`);
     return json(
       { ok: false, message: "We could not save your submission. Please try again." },

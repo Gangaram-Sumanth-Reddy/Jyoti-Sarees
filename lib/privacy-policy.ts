@@ -39,7 +39,7 @@ export const privacyPolicy: LegalDocument = {
         {
           term: "Saree enquiry form",
           detail:
-            "Required: your name, mobile number, the saree or requirement you are asking about, and quantity. Optional: email address, address, PIN code, state and city. Also your marketing preference, if you choose to give one.",
+            "Required: your name, mobile number, and a message about the saree or help you are looking for. Optional: email address, address, PIN code, state and city. Also your marketing preference, if you choose to give one.",
         },
         {
           term: "Testimonial form",

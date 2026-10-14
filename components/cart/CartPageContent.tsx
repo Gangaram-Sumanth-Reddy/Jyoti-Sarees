@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { EmptyCartIllustration } from "@/components/cart/EmptyCartIllustration";
 import { Button, ButtonLink, ExternalButtonLink } from "@/components/ui/Button";
@@ -7,11 +8,13 @@ import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
 import { ImageFrame } from "@/components/ui/ImageFrame";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
+import { PriceOffer } from "@/components/ui/PriceOffer";
 import { Section } from "@/components/ui/Section";
 import {
   clearEnquiryCart,
   getCartItemKey,
   getEnquiryCartCount,
+  getEnquiryCartTotal,
   getEnquiryCartTotalLabel,
   openEnquirySentModal,
   removeFromEnquiryCart,
@@ -19,23 +22,68 @@ import {
   useEnquiryCart,
   type EnquiryCartItem,
 } from "@/lib/enquiry-cart";
-import { cartItemHref, whatsappOrderUrl } from "@/lib/products";
+import {
+  cartItemHref,
+  formatPrice,
+  getProductBySlug,
+  productHref,
+  whatsappOrderUrl,
+} from "@/lib/products";
+import { cn } from "@/lib/cn";
+import { useProductShare } from "@/components/product/ProductShareButton";
 import { site } from "@/lib/site";
+
+function TrashIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M4 7h16M10 11v6M14 11v6M5.5 7l1 12a2 2 0 0 0 2 1.8h7a2 2 0 0 0 2-1.8l1-12M9 7V4.8A.8.8 0 0 1 9.8 4h4.4a.8.8 0 0 1 .8.8V7"
+        stroke="currentColor"
+        strokeWidth="1.9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Catalogue MRP for a cart line, when it is higher than the enquiry price. */
+function cartItemOriginalPrice(item: EnquiryCartItem) {
+  const original = getProductBySlug(item.slug)?.originalPrice;
+  return original !== undefined && original > item.price ? original : undefined;
+}
 
 function CartItemCard({ item }: { item: EnquiryCartItem }) {
   const href = cartItemHref(item);
+  const product = getProductBySlug(item.slug);
+  const photo = product?.gallery.find((entry) => entry.src)?.src;
+  const sharePath = product
+    ? product.colourOptions.length > 1
+      ? productHref(product, item.colourId)
+      : productHref(product)
+    : href;
+  const { share, copied } = useProductShare(sharePath);
 
   return (
     <Card className="overflow-hidden p-0 shadow-soft">
       <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3.5 p-3.5 min-[400px]:grid-cols-[6.5rem_minmax(0,1fr)] sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-5 sm:p-5">
         <Link href={href} className="block min-w-0">
-          <ImageFrame aspect="card" radius="md" className="shadow-none">
-            <ImagePlaceholder label={item.name} />
+          <ImageFrame aspect={photo ? "saree" : "card"} radius="md" className="shadow-none">
+            {photo ? (
+              <Image
+                src={photo}
+                alt={`${item.name} saree`}
+                fill
+                sizes="(min-width: 640px) 9rem, 6.5rem"
+              />
+            ) : (
+              <ImagePlaceholder label={item.name} />
+            )}
           </ImageFrame>
         </Link>
 
         <div className="flex min-w-0 flex-col">
-          <div className="flex items-start justify-between gap-3">
+          <div>
             <div className="min-w-0">
               <Link
                 href={href}
@@ -49,38 +97,44 @@ function CartItemCard({ item }: { item: EnquiryCartItem }) {
               <p className="mt-1 text-small font-medium text-navy">
                 Colour: {item.colour}
               </p>
-              <p className="mt-2 text-body font-semibold text-rich-black">
-                {item.priceLabel}
-              </p>
+              <PriceOffer
+                className="mt-2"
+                sellingPrice={item.price}
+                originalPrice={cartItemOriginalPrice(item)}
+                sellingLabel={item.priceLabel}
+              />
             </div>
-            <button
-              type="button"
-              className="-mr-1 -mt-1 inline-flex min-h-9 shrink-0 items-center px-1 text-small font-semibold text-muted transition-colors hover:text-navy sm:m-0 sm:min-h-0 sm:p-0"
-              onClick={() => removeFromEnquiryCart(item.slug, item.colour)}
-            >
-              Remove
-            </button>
           </div>
 
-          <div className="mt-auto flex items-center gap-2 pt-3 sm:mt-4 sm:pt-0">
-            <span className="text-small text-muted">Qty</span>
-            <div className="inline-flex items-center overflow-hidden rounded-pill border border-navy bg-navy text-white">
+          <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-2 pt-3 sm:mt-4 sm:pt-0">
+            <div className="inline-flex items-center rounded-pill border-2 border-navy bg-white text-navy">
               <button
                 type="button"
-                className="inline-flex min-h-10 min-w-10 items-center justify-center text-lg font-semibold transition-colors hover:bg-navy-mid sm:min-h-9 sm:min-w-9"
-                aria-label={`Decrease quantity of ${item.name}`}
+                className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-l-pill transition-colors hover:bg-cream"
+                aria-label={
+                  item.quantity === 1
+                    ? `Delete ${item.name}`
+                    : `Decrease quantity of ${item.name}`
+                }
                 onClick={() =>
                   setEnquiryQuantity(item.slug, item.quantity - 1, item.colour)
                 }
               >
-                −
+                {item.quantity === 1 ? (
+                  <TrashIcon />
+                ) : (
+                  <span className="text-lg font-semibold leading-none">−</span>
+                )}
               </button>
-              <span className="min-w-8 text-center text-small font-semibold tabular-nums">
+              <span
+                className="min-w-7 text-center text-small font-bold tabular-nums text-rich-black"
+                aria-label={`Quantity ${item.quantity}`}
+              >
                 {item.quantity}
               </span>
               <button
                 type="button"
-                className="inline-flex min-h-10 min-w-10 items-center justify-center text-lg font-semibold transition-colors hover:bg-navy-mid disabled:opacity-40 sm:min-h-9 sm:min-w-9"
+                className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-r-pill text-lg font-semibold leading-none transition-colors hover:bg-cream disabled:opacity-40"
                 aria-label={`Increase quantity of ${item.name}`}
                 disabled={item.quantity >= 99}
                 onClick={() =>
@@ -89,6 +143,34 @@ function CartItemCard({ item }: { item: EnquiryCartItem }) {
               >
                 +
               </button>
+            </div>
+
+            <div className="flex items-center text-small">
+              <button
+                type="button"
+                className="min-h-9 px-0.5 font-medium text-accent transition-colors hover:text-navy hover:underline"
+                onClick={() => removeFromEnquiryCart(item.slug, item.colour)}
+              >
+                Delete
+              </button>
+              <span className="mx-2.5 h-4 w-px bg-border-strong" aria-hidden="true" />
+              <button
+                type="button"
+                className="min-h-9 px-0.5 font-medium text-accent transition-colors hover:text-navy hover:underline"
+                aria-label={`Share ${item.name}`}
+                onClick={share}
+              >
+                Share
+              </button>
+              <span
+                role="status"
+                className={cn(
+                  "ml-2 text-[0.75rem] font-semibold text-navy transition-opacity duration-200",
+                  copied ? "opacity-100" : "opacity-0",
+                )}
+              >
+                {copied ? "Link copied" : ""}
+              </span>
             </div>
           </div>
         </div>
@@ -136,6 +218,12 @@ export function CartPageContent() {
   const { items } = useEnquiryCart();
   const count = getEnquiryCartCount(items);
   const totalLabel = getEnquiryCartTotalLabel(items);
+  const mrpTotal = items.reduce(
+    (sum, item) =>
+      sum + (cartItemOriginalPrice(item) ?? item.price) * item.quantity,
+    0,
+  );
+  const savings = mrpTotal - getEnquiryCartTotal(items);
 
   function handleSendEnquiry() {
     if (items.length === 0) return;
@@ -182,14 +270,35 @@ export function CartPageContent() {
             <h2 className="text-body font-semibold text-rich-black">
               Enquiry summary
             </h2>
-            <div className="mt-4 flex items-center justify-between gap-3 border-b border-border pb-4">
-              <p className="text-small text-muted">
-                {count} {count === 1 ? "item" : "items"}
+            <dl className="mt-4 flex flex-col gap-2.5 border-b border-border pb-4 text-small">
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-muted">
+                  Price ({count} {count === 1 ? "item" : "items"})
+                </dt>
+                <dd className="text-rich-black">{formatPrice(mrpTotal)}</dd>
+              </div>
+              {savings > 0 ? (
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="text-muted">Discount</dt>
+                  <dd className="deal-save font-semibold">
+                    −{formatPrice(savings)}
+                  </dd>
+                </div>
+              ) : null}
+              <div className="flex items-center justify-between gap-3 border-t border-dashed border-border pt-2.5">
+                <dt className="text-body font-semibold text-rich-black">
+                  Total
+                </dt>
+                <dd className="text-body font-bold text-rich-black">
+                  {totalLabel}
+                </dd>
+              </div>
+            </dl>
+            {savings > 0 ? (
+              <p className="deal-save mt-3 rounded-md bg-[rgb(22_128_61/0.08)] px-3 py-2 text-small font-semibold">
+                You save {formatPrice(savings)} on this enquiry
               </p>
-              <p className="text-body font-semibold text-rich-black">
-                {totalLabel}
-              </p>
-            </div>
+            ) : null}
             <p className="mt-4 text-small leading-relaxed text-muted">
               Enquiry value only — we confirm stock and details with you on
               WhatsApp.

@@ -9,7 +9,7 @@ export const site = {
   instagramUrl:
     "https://www.instagram.com/jyoti_sarees_?stkn=aGd3dnMyYXl3MWI4&utm_source=qr",
   facebookUrl: "https://www.facebook.com/share/1Dkntsvdx9/?mibextid=wwXIfr",
-  email: "hello@jyotisarees.com",
+  email: "hello.jyotisarees@gmail.com",
   phones: [
     { display: "0556820010", href: "tel:0556820010" },
     { display: "05556677477", href: "tel:05556677477" },

@@ -2,7 +2,11 @@ import { CollectionCard } from "@/components/ui/CollectionCard";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { collectionHref, collections } from "@/lib/collections";
+import {
+  collectionHref,
+  collections,
+  getCollectionCoverImage,
+} from "@/lib/collections";
 
 export function CatalogueCollections() {
   return (
@@ -21,6 +25,7 @@ export function CatalogueCollections() {
               name={collection.name}
               description={collection.shortDescription}
               href={collectionHref(collection.slug)}
+              image={getCollectionCoverImage(collection)}
             />
           ))}
         </ul>

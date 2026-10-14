@@ -1,8 +1,19 @@
 /**
  * Client catalogue. Prices are INR amounts exactly as supplied.
- * Gallery images stay empty until real product photos are added on each
- * product in `lib/products.ts` (`gallery[].src`).
+ * Photos come from `public/assets/Products/`; `npm run photos` writes the
+ * web copies to `public/assets/sarees/` that `images` points at.
  */
+export type CatalogueImage = {
+  src: string;
+  /** Shown under the main photo, for example "Front view". */
+  label: string;
+};
+
+/** `file` is the slugged source name, e.g. "Pure Ajreek  red saree 1.png" -> "pure-ajreek-red-saree-1". */
+function photo(file: string, label: string): CatalogueImage {
+  return { src: `/assets/sarees/${file}.jpg`, label };
+}
+
 export type CatalogueEntry = {
   sku: string;
   name: string;
@@ -22,9 +33,668 @@ export type CatalogueEntry = {
   offerPrice?: number;
   /** Label shown with `offerPrice`, for example "with coupon". */
   offerNote?: string;
+  /** Product photos, front view first. The first one is the listing image. */
+  images?: CatalogueImage[];
 };
 
+/**
+ * Curated premium picks shown on New Arrivals, in display order. Keep this
+ * short; the full range lives on the Sarees page.
+ */
+export const newArrivalSkus = [
+  "JS-A061", // Pastel Aqua Pure Kora
+  "JS-A058", // Mint Floral Pure Kora with Golden Zari Border
+  "JS-A064", // Magenta and Gold Pure Banarasi Silk Pattu
+  "JS-A062", // Olive-Green Floral Pure Kora
+  "JS-A041", // Teal and Gold Traditional Pattu
+  "JS-A042", // Magenta Banarasi Tissue Pattu
+  "JS-A048", // Pink and Teal Silk
+  "JS-A021", // Black and Gold Golden Pattu
+  "JS-A029", // Turquoise Floral with Gold Border
+];
+
+/**
+ * Newest first: list order sets the "added" date (see `lib/products.ts`), so
+ * new sarees go at the top. Colours on the generic "fancy" sarees are taken
+ * from their photos because the file names do not state one.
+ */
 export const catalogueEntries: CatalogueEntry[] = [
+  {
+    sku: "JS-A040",
+    name: "Elegant Pink and Silver Traditional Pattu Saree with Tissue Touch",
+    category: "Pattu",
+    fabric: "Tissue Pattu",
+    colour: "Pink and Silver",
+    sellingPrice: 4500,
+    originalPrice: 5850,
+    images: [
+      photo("elegant-pink-and-silver-saree-traditional-pattu-with-tissue-touch-rs-4500-1", "Front view"),
+      photo("elegant-pink-and-silver-saree-traditional-pattu-with-tissue-touch-rs-4500-2", "Back view"),
+    ],
+  },
+  {
+    sku: "JS-A041",
+    name: "Elegant Teal and Gold Traditional Pattu Saree",
+    category: "Pattu",
+    fabric: "Pattu",
+    colour: "Teal and Gold",
+    sellingPrice: 8500,
+    originalPrice: 11050,
+    images: [
+      photo("elegant-teal-and-gold-saree-traditional-pattu-rs8500-2", "Front view"),
+      photo("elegant-teal-and-gold-saree-traditional-pattu-rs8500-1", "Back view"),
+    ],
+  },
+  {
+    sku: "JS-A042",
+    name: "Elegant Magenta Banarasi Tissue Pattu Saree",
+    category: "Banarasi",
+    fabric: "Tissue Pattu",
+    colour: "Magenta",
+    sellingPrice: 8500,
+    originalPrice: 11050,
+    images: [
+      photo("elegant-magenta-banarasi-saree-tissue-pattu-rs-8500-2", "Front view"),
+      photo("elegant-magenta-banarasi-saree-tissue-pattu-rs-8500-1", "Back view"),
+    ],
+  },
+  {
+    sku: "JS-A043",
+    name: "Elegant Olive Silk Thread Work Fancy Saree",
+    category: "Silk",
+    fabric: "Fancy Silk",
+    colour: "Olive",
+    design: "Thread work",
+    sellingPrice: 4000,
+    originalPrice: 5200,
+    images: [
+      photo("elegance-in-olive-silk-saree-thread-work-fancy-saree-rs-4000-1", "Front view"),
+      photo("thread-work-fancy-saree-rs-4000-2", "Back view"),
+    ],
+  },
+  {
+    sku: "JS-A044",
+    name: "Elegant Purple and Silver Soft Pattu Saree",
+    category: "Pattu",
+    fabric: "Soft Pattu",
+    colour: "Purple and Silver",
+    sellingPrice: 3500,
+    originalPrice: 4550,
+    images: [
+      photo("elegant-purple-and-silver-saree-draping-soft-pattu-rs-3500-2", "Front view"),
+      photo("elegant-purple-and-silver-saree-draping-soft-pattu-rs-3500-1", "Back view"),
+    ],
+  },
+  {
+    sku: "JS-A045",
+    name: "Green Ikat Silk Saree in Soft Fancy Pattu",
+    category: "Pattu",
+    fabric: "Soft Fancy Pattu",
+    colour: "Green",
+    design: "Ikat",
+    sellingPrice: 6500,
+    originalPrice: 8450,
+    images: [
+      photo("green-ikat-silk-saree-soft-fancy-pattu-rs-6500-2", "Front view"),
+      photo("green-ikat-silk-saree-soft-fancy-pattu-rs-6500-1", "Back view"),
+    ],
+  },
+  {
+    sku: "JS-A046",
+    name: "Elegant Pink and Blue Banarasi Semi Pochampalli Saree",
+    category: "Banarasi",
+    fabric: "Semi Pochampalli Soft",
+    colour: "Pink and Blue",
+    sellingPrice: 5500,
+    originalPrice: 7150,
+    images: [
+      photo("elegant-pink-and-blue-banarasi-saree-semi-pochampalli-soft-5500-2", "Front view"),
+      photo("elegant-pink-and-blue-banarasi-saree-semi-pochampalli-soft-5500-1", "Back view"),
+    ],
+  },
+  {
+    sku: "JS-A047",
+    name: "Golden Banarasi Semi Pattu Saree",
+    category: "Banarasi",
+    fabric: "Semi Pattu",
+    colour: "Golden",
+    sellingPrice: 4500,
+    originalPrice: 5850,
+    images: [
+      photo("golden-banarasi-saree-semi-pattu-rs-4500-2", "Front view"),
+      photo("golden-banarasi-saree-semi-pattu-rs-4500-1", "Back view"),
+    ],
+  },
+  {
+    sku: "JS-A048",
+    name: "Elegant Pink and Teal Silk Saree",
+    category: "Silk",
+    fabric: "Silk",
+    colour: "Pink and Teal",
+    sellingPrice: 8500,
+    originalPrice: 11050,
+    images: [
+      photo("elegant-pink-and-teal-silk-saree-rs-8500-1", "Front view"),
+      photo("elegant-pink-and-teal-silk-saree-rs-8500-2", "Back view"),
+    ],
+  },
+  {
+    sku: "JS-A049",
+    name: "Elegant Charcoal Pure Kora Saree",
+    category: "Kora",
+    fabric: "Pure Kora",
+    colour: "Charcoal",
+    sellingPrice: 8000,
+    originalPrice: 10400,
+    images: [
+      photo("elegant-charcoal-saree-rs-8000-pure-kora-1", "Front view"),
+      photo("elegant-charcoal-saree-rs-8000-pure-kora-2", "Back view"),
+    ],
+  },
+  {
+    sku: "JS-A050",
+    name: "Elegant Charcoal Floral Pure Georgette Saree",
+    category: "Georgette",
+    fabric: "Pure Georgette",
+    colour: "Charcoal",
+    design: "Floral print",
+    sellingPrice: 7000,
+    originalPrice: 9100,
+    images: [
+      photo("elegant-charcoal-floral-saree-rs-7000-pure-georgette-2", "Front view"),
+      photo("elegant-charcoal-floral-saree-rs-7000-pure-georgette-1", "Back view"),
+    ],
+  },
+  {
+    sku: "JS-A051",
+    name: "Elegant Emerald Silk Saree",
+    category: "Silk",
+    fabric: "Silk",
+    colour: "Emerald",
+    sellingPrice: 6599,
+    originalPrice: 8600,
+    images: [
+      photo("emerald-silk-saree-in-elegant-rs-6599-2", "Front view"),
+      photo("emerald-silk-saree-in-elegant-rs-6599-1", "Back view"),
+    ],
+  },
+  {
+    sku: "JS-A052",
+    name: "Elegant Red and Green Silk Saree",
+    category: "Silk",
+    fabric: "Silk",
+    colour: "Red and Green",
+    sellingPrice: 3500,
+    originalPrice: 4550,
+    images: [
+      photo("elegant-red-and-green-silk-saree-rs-3500-2", "Front view"),
+      photo("elegant-red-and-green-silk-saree-rs-3500-1", "Back view"),
+    ],
+  },
+  {
+    sku: "JS-A053",
+    name: "Golden Yellow Silk Saree with Magenta Zari Border",
+    category: "Silk",
+    fabric: "Silk",
+    colour: "Golden Yellow",
+    design: "Magenta zari border",
+    sellingPrice: 5500,
+    originalPrice: 7150,
+    images: [
+      photo("golden-yellow-silk-saree-with-magenta-zari-border-rs-5500-3", "Front view"),
+      photo("golden-yellow-silk-saree-with-magenta-zari-border-rs-5500-2", "Back view"),
+      photo("golden-yellow-silk-saree-with-magenta-zari-border-rs-5500-1", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A054",
+    name: "Turquoise Silk Saree with Silver Border",
+    category: "Silk",
+    fabric: "Silk",
+    colour: "Turquoise",
+    design: "Silver border",
+    sellingPrice: 3700,
+    originalPrice: 4800,
+    images: [
+      photo("turquoise-silk-saree-with-silver-border-rs-3700-2", "Front view"),
+      photo("turquoise-silk-saree-with-silver-border-rs-3700-3", "Back view"),
+      photo("turquoise-silk-saree-with-silver-border-rs-3700-1", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A055",
+    name: "Royal Blue and Teal Silk Pattu Saree",
+    category: "Pattu",
+    fabric: "Silk Pattu",
+    colour: "Royal Blue and Teal",
+    sellingPrice: 5500,
+    originalPrice: 7150,
+    images: [
+      photo("royal-blue-teal-silk-saree-rs-5500-pattu-1", "Front view"),
+      photo("royal-blue-teal-silk-saree-rs-5500-pattu-2", "Back view"),
+      photo("royal-blue-teal-silk-saree-rs-5500-pattu-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A056",
+    name: "Elegant Red and Ivory Pattu Saree",
+    category: "Pattu",
+    fabric: "Pattu",
+    colour: "Red and Ivory",
+    sellingPrice: 3500,
+    originalPrice: 4550,
+    images: [
+      photo("elegant-red-and-ivory-saree-red-pattu-rs-3500-1", "Front view"),
+      photo("elegant-red-and-ivory-saree-red-pattu-rs-3500-2", "Back view"),
+      photo("elegant-red-and-ivory-saree-red-pattu-rs-3500-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A057",
+    name: "Elegant Floral Pure Kora Saree",
+    category: "Kora",
+    fabric: "Pure Kora",
+    design: "Floral print",
+    sellingPrice: 8000,
+    originalPrice: 10400,
+    images: [
+      photo("elegant-floral-saree-pure-kora-saree-rs-8000-1", "Front view"),
+      photo("elegant-floral-saree-pure-kora-saree-rs-8000-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A058",
+    name: "Mint Floral Pure Kora Saree with Golden Zari Border",
+    category: "Kora",
+    fabric: "Pure Kora",
+    colour: "Mint",
+    design: "Floral print and golden zari border",
+    sellingPrice: 9500,
+    originalPrice: 12350,
+    images: [
+      photo("mint-floral-saree-with-golden-zari-border-pure-kora-rs9500-3", "Front view"),
+      /* Supplied as "Elegant Floral Saree pure kora saree rs-8000 2"; it shows this saree. */
+      photo("elegant-floral-saree-pure-kora-saree-rs-8000-2", "Back view"),
+      photo("mint-floral-saree-with-golden-zari-border-pure-kora-rs9500-1", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A059",
+    name: "Elegant Rose Gold Pure Kora Saree",
+    category: "Kora",
+    fabric: "Pure Kora",
+    colour: "Rose Gold",
+    sellingPrice: 8000,
+    originalPrice: 10400,
+    images: [
+      photo("elegant-rose-gold-saree-pure-kora-rs-8000-1", "Front view"),
+      photo("elegant-rose-gold-saree-pure-kora-rs-8000-2", "Back view"),
+      photo("elegant-rose-gold-saree-pure-kora-rs-8000-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A060",
+    name: "Lavender Floral Organza Saree with Brocade Borders",
+    category: "Kora",
+    fabric: "Pure Kora",
+    colour: "Lavender",
+    design: "Floral print and brocade borders",
+    sellingPrice: 7000,
+    originalPrice: 9100,
+    images: [
+      photo("lavender-floral-organza-saree-with-brocade-borders-pure-kora-rs-7000-3", "Front view"),
+      photo("lavender-floral-organza-saree-with-brocade-borders-pure-kora-rs-7000-2", "Back view"),
+      photo("lavender-floral-organza-saree-with-brocade-borders-pure-kora-rs-7000-1", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A061",
+    name: "Pastel Aqua Pure Kora Saree",
+    category: "Kora",
+    fabric: "Pure Kora",
+    colour: "Pastel Aqua",
+    sellingPrice: 10500,
+    originalPrice: 13650,
+    images: [
+      photo("pastel-aqua-saree-pure-kora-rs-10500-3", "Front view"),
+      photo("pastel-aqua-saree-pure-kora-rs-10500-1", "Back view"),
+      photo("pastel-aqua-saree-pure-kora-rs-10500-2", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A062",
+    name: "Elegant Olive-Green Floral Pure Kora Saree",
+    category: "Kora",
+    fabric: "Pure Kora",
+    colour: "Olive Green",
+    design: "Floral print",
+    sellingPrice: 8599,
+    originalPrice: 11200,
+    images: [
+      photo("elegant-olive-green-floral-pure-kora-rs-8599-1", "Front view"),
+      photo("elegant-olive-green-floral-pure-kora-rs-8599-2", "Back view"),
+      photo("elegant-olive-green-floral-pure-kora-rs-8599-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A063",
+    name: "Graceful Silver Floral Pure Georgette Saree",
+    category: "Georgette",
+    fabric: "Pure Georgette",
+    colour: "Silver",
+    design: "Floral print",
+    sellingPrice: 7000,
+    originalPrice: 9100,
+    images: [
+      photo("graceful-silver-floral-pure-georgette-rs-7000-1", "Front view"),
+      photo("graceful-silver-floral-pure-georgette-rs-7000-3", "Front and back view"),
+      photo("graceful-silver-floral-pure-georgette-rs-7000-2", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A064",
+    name: "Magenta and Gold Pure Banarasi Silk Pattu Saree",
+    category: "Banarasi",
+    fabric: "Banarasi Silk Pattu",
+    colour: "Magenta and Gold",
+    sellingPrice: 8599,
+    originalPrice: 11200,
+    images: [
+      photo("magenta-gold-pure-banarasi-silk-pattu-rs-8599-3", "Front view"),
+      photo("magenta-gold-pure-banarasi-silk-pattu-rs-8599-1", "Front and back view"),
+      photo("magenta-gold-pure-banarasi-silk-pattu-rs-8599-2", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A065",
+    name: "Maroon and Gold Floral Pattu Saree",
+    category: "Pattu",
+    fabric: "Pattu",
+    colour: "Maroon and Gold",
+    design: "Gold floral weave",
+    sellingPrice: 3500,
+    originalPrice: 4550,
+    images: [
+      photo("maroon-gold-floral-pattu-saree-rs3500-3", "Front view"),
+      photo("maroon-gold-floral-pattu-saree-rs3500-2", "Back view"),
+      photo("maroon-gold-floral-pattu-saree-rs3500-1", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A021",
+    name: "Black and Gold Golden Pattu Saree with Black Finish",
+    category: "Pattu",
+    fabric: "Pattu",
+    colour: "Black and Gold",
+    sellingPrice: 8500,
+    originalPrice: 11050,
+    images: [
+      photo("black-and-gold-golden-pattu-withblack-finish-rs-8500-2", "Front view"),
+      photo("black-and-gold-golden-pattu-withblack-finish-rs-8500-1", "Front and back view"),
+      photo("black-and-gold-golden-pattu-withblack-finish-rs-8500-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A022",
+    name: "Elegant Aqua Silk Fancy Saree",
+    category: "Silk",
+    fabric: "Fancy Silk",
+    colour: "Aqua",
+    sellingPrice: 4000,
+    originalPrice: 5200,
+    images: [
+      photo("elegant-aqua-silk-fancy-saree-rs4000-1", "Seated view"),
+      photo("elegant-aqua-silk-fancy-saree-rs4000-2", "Back view"),
+      photo("elegant-aqua-silk-fancy-saree-rs4000-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A023",
+    name: "Elegant Black Floral Georgette Saree",
+    category: "Georgette",
+    fabric: "Georgette",
+    colour: "Black",
+    design: "Floral print",
+    sellingPrice: 7000,
+    originalPrice: 9100,
+    images: [
+      photo("elegant-black-floral-sareegeorgette-rs-7000-2", "Front view"),
+      photo("elegant-black-floral-sareegeorgette-rs-7000-1", "Back view"),
+      photo("elegant-black-floral-sareegeorgette-rs-7000-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A024",
+    name: "Elegant Blue and Red Traditional Silk Fancy Saree",
+    category: "Silk",
+    fabric: "Fancy Silk",
+    colour: "Blue and Red",
+    sellingPrice: 3500,
+    originalPrice: 4550,
+    images: [
+      photo("elegant-blue-and-red-silk-fancy-traditional-rs-3500-1", "Seated view"),
+      photo("elegant-blue-and-red-silk-fancy-traditional-rs-3500-2", "Back view"),
+      photo("elegant-blue-and-red-silk-fancy-traditional-rs-3500-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A025",
+    name: "Elegant Lilac Silk Fancy Tissue Saree",
+    category: "Silk",
+    fabric: "Silk Tissue",
+    colour: "Lilac",
+    sellingPrice: 7500,
+    originalPrice: 9750,
+    images: [
+      photo("elegant-lilac-silk-fancy-tissue-rs7500-1", "Seated view"),
+      photo("elegant-lilac-silk-fancy-tissue-rs7500-2", "Back view"),
+      photo("elegant-lilac-silk-fancy-tissue-rs7500-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A026",
+    name: "Elegant Mashroof Silk Saree",
+    category: "Silk",
+    fabric: "Mashroof Silk",
+    sellingPrice: 8000,
+    originalPrice: 10400,
+    images: [
+      photo("elegant-mashroof-silk-saree-rs-8000-1", "Seated view"),
+      photo("elegant-mashroof-silk-saree-rs-8000-2", "Back view"),
+      photo("elegant-mashroof-silk-saree-rs-8000-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A027",
+    name: "Elegant Silver-Gold Pattu Saree",
+    category: "Pattu",
+    fabric: "Pattu",
+    colour: "Silver-Gold",
+    sellingPrice: 4500,
+    originalPrice: 5850,
+    images: [
+      photo("elegant-silver-gold-saree-pattu-rs-4500-2", "Front view"),
+      photo("elegant-silver-gold-saree-pattu-rs-4500-1", "Front and back view"),
+      photo("elegant-silver-gold-saree-pattu-rs-4500-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A028",
+    name: "Pure Georgette Floral Saree",
+    category: "Georgette",
+    fabric: "Pure Georgette",
+    design: "Floral print",
+    sellingPrice: 7000,
+    originalPrice: 9100,
+    images: [
+      photo("floral-georgette-pure-rs-7000-saree-2", "Front view"),
+      photo("floral-georgette-pure-rs-7000-saree-1", "Back view"),
+      photo("floral-georgette-pure-rs-7000-saree-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A029",
+    name: "Turquoise Floral Saree with Gold Border",
+    category: "Designer",
+    fabric: "Fancy",
+    colour: "Turquoise",
+    design: "Floral print and gold border",
+    sellingPrice: 8500,
+    originalPrice: 11050,
+    images: [
+      photo("turquoise-floral-saree-with-gold-border-rs8500-2", "Seated view"),
+      photo("turquoise-floral-saree-with-gold-border-rs8500-3", "Seated and back view"),
+      photo("turquoise-floral-saree-with-gold-border-rs8500-1", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A030",
+    name: "Magenta Pink Fancy Designer Saree",
+    category: "Designer",
+    fabric: "Fancy",
+    colour: "Magenta Pink",
+    sellingPrice: 4500,
+    originalPrice: 5850,
+    images: [
+      photo("fancy-designer-rs-4500-1", "Front view"),
+      photo("fancy-designer-rs-4500-3", "Back view"),
+      photo("fancy-designer-rs-4500-2", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A031",
+    name: "Grey Fancy Kora Saree with Yellow Border",
+    category: "Kora",
+    fabric: "Fancy Kora",
+    colour: "Grey with Yellow",
+    design: "Yellow border",
+    sellingPrice: 7500,
+    originalPrice: 9750,
+    images: [
+      photo("fancy-korars-7500-2", "Front view"),
+      photo("fancy-korars-7500-1", "Back view"),
+      photo("fancy-korars-7500-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A032",
+    name: "Light Grey Fancy Pattu Saree with Pink Border",
+    category: "Pattu",
+    fabric: "Fancy Pattu",
+    colour: "Light Grey",
+    design: "Pink border",
+    sellingPrice: 3500,
+    originalPrice: 4550,
+    images: [
+      photo("fancy-pattu-rs-3500-1", "Front view"),
+      photo("fancy-pattu-rs-3500-2", "Back view"),
+      photo("fancy-pattu-rs-3500-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A033",
+    name: "Sky Blue Fancy Pattu Saree with Peacock Pallu",
+    category: "Pattu",
+    fabric: "Fancy Pattu",
+    colour: "Sky Blue",
+    design: "Peacock pallu and silver border",
+    sellingPrice: 3700,
+    originalPrice: 4800,
+    images: [
+      photo("fancy-pattu-rs-3700-3", "Front view"),
+      photo("fancy-pattu-rs-3700-1", "Back view"),
+      photo("fancy-pattu-rs-3700-2", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A034",
+    name: "Pink Floral Fancy Pattu Saree",
+    category: "Pattu",
+    fabric: "Fancy Pattu",
+    colour: "Pink",
+    design: "Floral print",
+    sellingPrice: 4500,
+    originalPrice: 5850,
+    images: [
+      photo("fancy-pattu-rs-4500-1", "Front view"),
+      photo("fancy-pattu-rs-4500-2", "Back view"),
+      photo("fancy-pattu-rs-4500-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A035",
+    name: "Beige Fancy Pattu Saree with Geometric Weave",
+    category: "Pattu",
+    fabric: "Fancy Pattu",
+    colour: "Beige",
+    design: "Geometric weave",
+    sellingPrice: 4500,
+    originalPrice: 5850,
+    images: [
+      photo("fancy-pattu-rs-4500-2-2", "Front view"),
+      photo("fancy-pattu-rs-4500-2-1", "Back view"),
+      photo("fancy-pattu-rs-4500-2-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A036",
+    name: "Onion Pink Fancy Pattu Saree with Zari Butis",
+    category: "Pattu",
+    fabric: "Fancy Pattu",
+    colour: "Onion Pink",
+    design: "Zari butis",
+    sellingPrice: 6000,
+    originalPrice: 7800,
+    images: [
+      photo("fancy-pattu-rs-6000-1", "Seated view"),
+      photo("fancy-pattu-rs-6000-3", "Back view"),
+      photo("fancy-pattu-rs-6000-2", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A037",
+    name: "Grey Fancy Pattu Saree with Zig-Zag Weave",
+    category: "Pattu",
+    fabric: "Fancy Pattu",
+    colour: "Grey",
+    design: "Zig-zag weave",
+    sellingPrice: 3500,
+    originalPrice: 4550,
+    images: [
+      photo("fancy-pattu-saree-rs-3500-2", "Seated view"),
+      photo("fancy-pattu-saree-rs-3500-1", "Back view"),
+      photo("fancy-pattu-saree-rs-3500-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A038",
+    name: "Pure Khadi Georgette Saree with Golden and Colourful Floral Print",
+    category: "Georgette",
+    fabric: "Khadi Georgette",
+    design: "Golden and colourful floral print",
+    sellingPrice: 7000,
+    originalPrice: 9100,
+    images: [
+      photo("pure-khadi-georgette-with-golden-and-colurfull-floral-print-price-7000-1", "Front view"),
+      photo("pure-khadi-georgette-with-golden-and-colurfull-floral-print-price-7000-2", "Back view"),
+      photo("pure-khadi-georgette-with-golden-and-colurfull-floral-print-price-7000-3", "Fabric close-up"),
+    ],
+  },
+  {
+    sku: "JS-A039",
+    name: "Pure Kora Blue Saree with Small Golden Zari",
+    category: "Kora",
+    fabric: "Pure Kora",
+    colour: "Blue",
+    design: "Small golden zari",
+    sellingPrice: 4500,
+    originalPrice: 5850,
+    images: [
+      photo("pure-kora-saree-blue-with-small-golden-zari-price-4500-1", "Front view"),
+      photo("pure-kora-saree-blue-with-small-golden-zari-price-4500-2", "Back view"),
+      photo("pure-kora-saree-blue-with-small-golden-zari-price-4500-3", "Fabric close-up"),
+    ],
+  },
   {
     sku: "JS-A001",
     name: "Pure Ajrakh Red Saree",
@@ -33,6 +703,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     colour: "Red",
     sellingPrice: 6500,
     originalPrice: 8248,
+    images: [
+      photo("pure-ajreek-red-saree-3", "Front view"),
+      photo("pure-ajreek-red-saree-2", "Back view"),
+      photo("pure-ajreek-red-saree-1", "Seated view"),
+    ],
   },
   {
     sku: "JS-A002",
@@ -43,6 +718,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "Bandhani dots and a rainbow pallu",
     sellingPrice: 6500,
     originalPrice: 9126,
+    images: [
+      photo("pure-ajreek-saree-marron-colour-with-bandhani-dots-and-rainbow-palu-3", "Front view"),
+      photo("pure-ajreek-saree-marron-colour-with-bandhani-dots-and-rainbow-palu-2", "Back view"),
+      photo("pure-ajreek-saree-marron-colour-with-bandhani-dots-and-rainbow-palu-1", "Seated view"),
+    ],
   },
   {
     sku: "JS-A003",
@@ -54,6 +734,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     note: "Exact colour to be confirmed.",
     sellingPrice: 4200,
     originalPrice: 6842,
+    images: [
+      photo("pure-ajreek-bright-plan-saree-with-shibori-palu-price-4200-1", "Front view"),
+      photo("pure-ajreek-bright-plan-saree-with-shibori-palu-price-4200-3", "Pallu view"),
+      photo("pure-ajreek-bright-plan-saree-with-shibori-palu-price-4200-2", "Seated view"),
+    ],
   },
   {
     sku: "JS-A004",
@@ -63,6 +748,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "All-over design",
     sellingPrice: 5000,
     originalPrice: 7936,
+    // Source photo 3 is an exact copy of photo 2.
+    images: [
+      photo("pure-ajreek-with-whole-saree-with-design-price-5000-2", "Front view"),
+      photo("pure-ajreek-with-whole-saree-with-design-price-5000-1", "Seated view"),
+    ],
   },
   {
     sku: "JS-A005",
@@ -73,6 +763,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "Elephant border",
     sellingPrice: 9500,
     originalPrice: 9864,
+    images: [
+      photo("pure-ajreek-purple-saree-with-elephant-border-price-9500-1", "Front view"),
+      photo("pure-ajreek-purple-saree-with-elephant-border-price-9500-2", "Pallu view"),
+      photo("pure-ajreek-purple-saree-with-elephant-border-price-9500-3", "Seated view"),
+    ],
   },
   {
     sku: "JS-A006",
@@ -82,6 +777,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "Contrast border",
     sellingPrice: 7500,
     originalPrice: 9184,
+    images: [
+      photo("pure-ajreek-sarees-with-contrasct-border-price-7500-3", "Front view"),
+      photo("pure-ajreek-sarees-with-contrasct-border-price-7500-1", "Seated view"),
+      photo("pure-ajreek-sarees-with-contrasct-border-price-7500-2", "Pallu view"),
+    ],
   },
   {
     sku: "JS-A007",
@@ -91,6 +791,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     colour: "Wine",
     sellingPrice: 6500,
     originalPrice: 7685,
+    images: [
+      photo("pure-ajeeek-saree-wine-colour-price-6500-1", "Front view"),
+      photo("pure-ajeeek-saree-wine-colour-price-6500-2", "Pallu view"),
+      photo("pure-ajeeek-saree-wine-colour-price-6500-3", "Border close-up"),
+    ],
   },
   {
     sku: "JS-A008",
@@ -101,6 +806,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "Red border and bandhani dots",
     sellingPrice: 6500,
     originalPrice: 9472,
+    images: [
+      photo("pure-ajreek-saree-bright-blue-with-red-border-with-unique-design-saree-with-bandani-dots-price-6500-1", "Front view"),
+      photo("pure-ajreek-saree-bright-blue-with-red-border-with-unique-design-saree-with-bandani-dots-price-6500-2", "Pallu view"),
+      photo("pure-ajreek-saree-bright-blue-with-red-border-with-unique-design-saree-with-bandani-dots-price-6500-3", "Fabric close-up"),
+    ],
   },
   {
     sku: "JS-A009",
@@ -111,6 +821,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "Bandhani dots and a golden zari pallu",
     sellingPrice: 6500,
     originalPrice: 8420,
+    images: [
+      photo("dark-green-saree-with-bandani-dots-pure-ajreek-saree-in-pallu-with-golden-jari-price-6500-1", "Front view"),
+      photo("dark-green-saree-with-bandani-dots-pure-ajreek-saree-in-pallu-with-golden-jari-price-6500-2", "Back view"),
+      photo("dark-green-saree-with-bandani-dots-pure-ajreek-saree-in-pallu-with-golden-jari-price-6500-3", "Fabric close-up"),
+    ],
   },
   {
     sku: "JS-A010",
@@ -120,6 +835,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "Traditional golden border and an all-over design",
     sellingPrice: 6500,
     originalPrice: 7058,
+    images: [
+      photo("pure-ajreek-saree-whole-sare-designed-and-with-the-golden-border-traditional-touch-price-6500-2", "Front view"),
+      photo("pure-ajreek-saree-whole-sare-designed-and-with-the-golden-border-traditional-touch-price-6500-1", "Back view"),
+      photo("pure-ajreek-saree-whole-sare-designed-and-with-the-golden-border-traditional-touch-price-6500-3", "Fabric close-up"),
+    ],
   },
   {
     sku: "JS-A011",
@@ -129,6 +849,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     colour: "Baby Pink",
     sellingPrice: 7000,
     originalPrice: 8647,
+    images: [
+      photo("baby-pink-fancy-pattu-rs-7000-1", "Front view"),
+      photo("baby-pink-fancy-pattu-rs-7000-2", "Back view"),
+      photo("baby-pink-fancy-pattu-rs-7000-3", "Fabric close-up"),
+    ],
   },
   {
     sku: "JS-A012",
@@ -139,6 +864,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "Ice blue contrast border",
     sellingPrice: 9500,
     originalPrice: 9782,
+    images: [
+      photo("banarasi-georgette-peach-saree-colour-with-contrast-ice-blue-1", "Front view"),
+      photo("banarasi-georgette-peach-saree-colour-with-contrast-ice-blue-2", "Back view"),
+      photo("banarasi-georgette-peach-saree-colour-with-contrast-ice-blue-3", "Fabric close-up"),
+    ],
   },
   {
     sku: "JS-A013",
@@ -148,6 +878,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     colour: "Light Baby Pink",
     sellingPrice: 6000,
     originalPrice: 7486,
+    images: [
+      photo("banarasi-kora-silk-pure-light-baby-pink-price-6000-2", "Front view"),
+      photo("banarasi-kora-silk-pure-light-baby-pink-price-6000-1", "Seated view"),
+      photo("banarasi-kora-silk-pure-light-baby-pink-price-6000-3", "Fabric close-up"),
+    ],
   },
   {
     sku: "JS-A014",
@@ -158,6 +893,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "Light teal green border",
     sellingPrice: 7500,
     originalPrice: 8894,
+    images: [
+      photo("banarasi-pure-georgette-saree-light-blue-saree-with-light-teal-green-border-price-7500-2", "Front view"),
+      photo("banarasi-pure-georgette-saree-light-blue-saree-with-light-teal-green-border-price-7500-1", "Back view"),
+      photo("banarasi-pure-georgette-saree-light-blue-saree-with-light-teal-green-border-price-7500-3", "Fabric close-up"),
+    ],
   },
   {
     sku: "JS-A015",
@@ -168,6 +908,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "Colourful leaf motifs and all-over butis",
     sellingPrice: 4500,
     originalPrice: 6274,
+    images: [
+      photo("pure-kora-saree-red-colour-with-colurfull-leafs-and-butis-whole-over-saree-price-4500-1", "Front view"),
+      photo("pure-kora-saree-red-colour-with-colurfull-leafs-and-butis-whole-over-saree-price-4500-2", "Back view"),
+      photo("pure-kora-saree-red-colour-with-colurfull-leafs-and-butis-whole-over-saree-price-4500-3", "Fabric close-up"),
+    ],
   },
   {
     sku: "JS-A016",
@@ -177,6 +922,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "Golden work",
     sellingPrice: 4500,
     originalPrice: 5968,
+    images: [
+      photo("pure-kora-fancy-saree-with-unique-golden-work-price-4500-1", "Front view"),
+      photo("pure-kora-fancy-saree-with-unique-golden-work-price-4500-2", "Back view"),
+      photo("pure-kora-fancy-saree-with-unique-golden-work-price-4500-3", "Fabric close-up"),
+    ],
   },
   {
     sku: "JS-A017",
@@ -187,6 +937,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "All-over floral threadwork",
     sellingPrice: 4500,
     originalPrice: 8126,
+    images: [
+      photo("pure-kora-fancy-cream-colour-saree-with-thread-work-with-beautiful-flowers-whole-over-saree-price-4500-1", "Front view"),
+      photo("pure-kora-fancy-cream-colour-saree-with-thread-work-with-beautiful-flowers-whole-over-saree-price-4500-2", "Back view"),
+      photo("pure-kora-fancy-cream-colour-saree-with-thread-work-with-beautiful-flowers-whole-over-saree-price-4500-3", "Fabric close-up"),
+    ],
   },
   {
     sku: "JS-A018",
@@ -197,6 +952,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "Small golden border and colourful floral prints",
     sellingPrice: 4500,
     originalPrice: 5342,
+    images: [
+      photo("pure-kora-fancy-saree-black-colour-with-small-golden-border-and-with-colourfull-flowers-printed-its-a-unique-saree-price-4500-1", "Front view"),
+      photo("pure-kora-fancy-saree-black-colour-with-small-golden-border-and-with-colourfull-flowers-printed-its-a-unique-saree-price-4500-2", "Back view"),
+      photo("pure-kora-fancy-saree-black-colour-with-small-golden-border-and-with-colourfull-flowers-printed-its-a-unique-saree-price-4500-3", "Fabric close-up"),
+    ],
   },
   {
     sku: "JS-A019",
@@ -207,6 +967,11 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "Golden butis",
     sellingPrice: 4500,
     originalPrice: 9967,
+    images: [
+      photo("pure-kora-fancy-saree-with-lawander-colour-with-golden-butis-price-4500-1", "Front view"),
+      photo("pure-kora-fancy-saree-with-lawander-colour-with-golden-butis-price-4500-2", "Back view"),
+      photo("pure-kora-fancy-saree-with-lawander-colour-with-golden-butis-price-4500-3", "Fabric close-up"),
+    ],
   },
   {
     sku: "JS-A020",
@@ -217,5 +982,10 @@ export const catalogueEntries: CatalogueEntry[] = [
     design: "Elegant border",
     sellingPrice: 4500,
     originalPrice: 7185,
+    images: [
+      photo("pure-kora-fancy-with-dual-shade-or-orange-and-red-with-simple-elegant-border-price-4500-1", "Front view"),
+      photo("pure-kora-fancy-with-dual-shade-or-orange-and-red-with-simple-elegant-border-price-4500-2", "Back view"),
+      photo("pure-kora-fancy-with-dual-shade-or-orange-and-red-with-simple-elegant-border-price-4500-3", "Fabric close-up"),
+    ],
   },
 ];

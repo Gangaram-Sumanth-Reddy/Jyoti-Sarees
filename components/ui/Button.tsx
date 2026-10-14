@@ -6,7 +6,7 @@ const variants = {
   primary:
     "border border-transparent bg-button-primary text-button-primary-text hover:bg-button-primary-hover",
   secondary:
-    "border border-navy bg-button-secondary text-button-secondary-text hover:bg-button-secondary-hover hover:text-white",
+    "border border-button-secondary-border bg-button-secondary text-button-secondary-text hover:bg-button-secondary-hover hover:text-button-secondary-hover-text",
 } as const;
 
 const sizes = {
@@ -25,7 +25,7 @@ export function buttonClasses(
 ) {
   return cn(
     "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-pill font-semibold tracking-[0.04em] transition-colors duration-200 ease-out",
-    "disabled:pointer-events-none disabled:opacity-50",
+    "disabled:pointer-events-none disabled:opacity-45 aria-disabled:pointer-events-none aria-disabled:opacity-45",
     "focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-accent",
     variants[variant],
     sizes[size],

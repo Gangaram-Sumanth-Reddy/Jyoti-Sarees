@@ -3,7 +3,11 @@ import { CollectionCard } from "@/components/ui/CollectionCard";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { collectionHref, collections } from "@/lib/collections";
+import {
+  collectionHref,
+  collections,
+  getCollectionCoverImage,
+} from "@/lib/collections";
 import { copy } from "@/lib/site";
 
 const HOME_COLLECTION_LIMIT = 8;
@@ -30,6 +34,7 @@ export function FeaturedCollections() {
               name={collection.name}
               description={collection.shortDescription}
               href={collectionHref(collection.slug)}
+              image={getCollectionCoverImage(collection)}
               className="h-full w-[62%] shrink-0 snap-start max-lg:!h-auto min-[480px]:w-[44%] sm:w-[36%] md:w-[29%] lg:w-auto"
             />
           ))}

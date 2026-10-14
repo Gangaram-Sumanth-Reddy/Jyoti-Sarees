@@ -24,7 +24,7 @@ export default function SareeNotFound() {
             </Link>
             <Link
               href="/new-arrivals"
-              className="inline-flex min-h-11 items-center justify-center rounded-pill border border-navy bg-transparent px-6 text-button font-semibold tracking-[0.04em] text-navy transition-colors hover:bg-navy hover:text-white"
+              className="inline-flex min-h-11 items-center justify-center rounded-pill border border-button-secondary-border bg-button-secondary px-6 text-button font-semibold tracking-[0.04em] text-button-secondary-text transition-colors hover:bg-button-secondary-hover hover:text-button-secondary-hover-text"
             >
               New Arrivals
             </Link>

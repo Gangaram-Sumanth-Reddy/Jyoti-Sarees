@@ -2,55 +2,66 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
+import { ProductShareButton } from "@/components/product/ProductShareButton";
 import { cn } from "@/lib/cn";
 import type { ProductGalleryItem } from "@/lib/products";
 
 type ProductGalleryProps = {
   productName: string;
+  /** Clean product path shared by the share button. */
+  sharePath: string;
   gallery: ProductGalleryItem[];
   /** Selected colourway — tints placeholders so only the saree colour changes. */
   colourHex?: string;
   colourLabel?: string;
 };
 
+type GalleryVariant = "thumb" | "main" | "lightbox";
+
+const photoSizes: Record<GalleryVariant, string> = {
+  thumb: "48px",
+  main: "(min-width: 1280px) 27rem, (min-width: 1024px) 25rem, calc(100vw - 6rem)",
+  lightbox: "100vw",
+};
+
+const photoFit: Record<GalleryVariant, string> = {
+  thumb: "object-cover object-top",
+  /* Some fabric close-ups are landscape; contain keeps them uncropped. */
+  main: "object-contain",
+  lightbox: "object-contain",
+};
+
 function GalleryVisual({
   item,
   productName,
-  compact = false,
+  variant,
   preload = false,
   colourHex,
   colourLabel,
 }: {
   item: ProductGalleryItem;
   productName: string;
-  compact?: boolean;
+  variant: GalleryVariant;
   preload?: boolean;
   colourHex?: string;
   colourLabel?: string;
 }) {
+  const compact = variant === "thumb";
+
   if (item.src) {
     return (
-      <>
-        <Image
-          src={item.src}
-          alt={
-            compact
-              ? ""
-              : `${productName} saree${colourLabel ? ` in ${colourLabel}` : ""} — ${item.label.toLowerCase()} view`
-          }
-          fill
-          preload={preload}
-          sizes={compact ? "56px" : "(max-width: 1024px) 90vw, 280px"}
-          className="object-contain p-1.5"
-        />
-        {colourHex ? (
-          <span
-            className="pointer-events-none absolute inset-0 mix-blend-multiply opacity-35"
-            style={{ backgroundColor: colourHex }}
-            aria-hidden="true"
-          />
-        ) : null}
-      </>
+      <Image
+        src={item.src}
+        alt={
+          compact
+            ? ""
+            : `${productName} saree${colourLabel ? ` in ${colourLabel}` : ""} — ${item.label.toLowerCase()}`
+        }
+        fill
+        preload={preload}
+        sizes={photoSizes[variant]}
+        className={photoFit[variant]}
+      />
     );
   }
 
@@ -91,6 +102,7 @@ function GalleryVisual({
 
 export function ProductGallery({
   productName,
+  sharePath,
   gallery,
   colourHex,
   colourLabel,
@@ -140,7 +152,7 @@ export function ProductGallery({
                   <GalleryVisual
                     item={item}
                     productName={productName}
-                    compact
+                    variant="thumb"
                     colourHex={colourHex}
                   />
                 </button>
@@ -149,18 +161,24 @@ export function ProductGallery({
           })}
         </ul>
 
-        <div className="min-w-0 flex-1">
+        <div className="relative min-w-0 flex-1">
+          <ProductShareButton
+            productName={productName}
+            path={sharePath}
+            className="absolute right-2.5 top-2.5 z-10 sm:right-3 sm:top-3"
+          />
           <button
             type="button"
             onClick={() => setLightboxOpen(true)}
             className="group relative block w-full overflow-hidden rounded-lg border border-border bg-cream text-left shadow-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             aria-label={`View ${active.label} fullscreen`}
           >
-            <div className="relative aspect-[3/4] w-full">
+            <div className="relative aspect-[2/3] w-full">
               <GalleryVisual
                 item={active}
                 productName={productName}
-                preload
+                variant="main"
+                preload={activeIndex === 0}
                 colourHex={colourHex}
                 colourLabel={colourLabel}
               />
@@ -221,6 +239,7 @@ export function ProductGallery({
               <GalleryVisual
                 item={active}
                 productName={productName}
+                variant="lightbox"
                 colourHex={colourHex}
               />
             </div>

@@ -14,8 +14,7 @@ const securityHeaders = [
 
 /**
  * A product lives under exactly one section. Requests for it under the other
- * section redirect to the canonical URL before rendering (the root loading UI
- * streams responses, so in-page redirects could not set a 308 status).
+ * section redirect to the canonical URL before rendering, with a 308 status.
  */
 const crossSectionRedirects = products.flatMap((product) => {
   const [from, to] = product.isNewArrival

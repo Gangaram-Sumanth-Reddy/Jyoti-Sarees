@@ -4,6 +4,7 @@ import { useEffect, type RefObject } from "react";
 import Link from "next/link";
 import { navigation, site } from "@/lib/site";
 import { BrandMark } from "@/components/layout/BrandMark";
+import { NavPendingBar } from "@/components/layout/NavPendingBar";
 import { ExternalButtonLink } from "@/components/ui/Button";
 import { isNavActive } from "@/lib/nav";
 
@@ -66,6 +67,7 @@ export function MobileMenu({
               className="flex min-h-12 items-center border-b border-border text-h3 font-semibold tracking-[0.04em] text-rich-black data-[active=true]:text-accent"
             >
               {item.label}
+              <NavPendingBar />
             </Link>
           ))}
           <div className="pt-8">

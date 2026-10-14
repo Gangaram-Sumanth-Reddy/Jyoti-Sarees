@@ -10,6 +10,7 @@ import { ProductCard } from "@/components/ui/ProductCard";
 import { Section } from "@/components/ui/Section";
 import { cn } from "@/lib/cn";
 import {
+  activeFilterCount,
   defaultCatalogueFilters,
   filterAndSortProducts,
   hasActiveFilters,
@@ -48,12 +49,13 @@ export function CatalogueBrowser({
   }
 
   const filtersActive = hasActiveFilters(filters);
+  const filterCount = activeFilterCount(filters);
   const canClear = filtersActive || filters.sort !== defaultCatalogueFilters.sort;
 
   return (
     <Section tone="muted" id="sarees-listing" className="scroll-mt-24 pt-6 sm:pt-8">
       <Container className="max-w-[90rem]">
-        <div className="flex items-center justify-between gap-3 lg:hidden">
+        <div className="sticky top-[var(--site-header-height)] z-30 -mx-gutter flex items-center justify-between gap-3 border-b border-border/70 bg-section-muted/95 px-gutter py-2.5 backdrop-blur-sm lg:hidden">
           <p className="text-small font-semibold text-rich-black" aria-live="polite">
             {visible.length} {visible.length === 1 ? "saree" : "sarees"}
           </p>
@@ -63,11 +65,20 @@ export function CatalogueBrowser({
             size="sm"
             className="min-h-11 px-5"
             aria-haspopup="dialog"
+            aria-label={
+              filterCount > 0
+                ? `Filter and sort, ${filterCount} active`
+                : "Filter and sort"
+            }
             onClick={() => setDrawerOpen(true)}
           >
             <FilterTriggerIcon />
-            Filters &amp; Sort
-            {filtersActive ? " · On" : ""}
+            Filter &amp; Sort
+            {filterCount > 0 ? (
+              <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-white px-1.5 text-[0.7rem] font-bold leading-5 text-navy">
+                {filterCount}
+              </span>
+            ) : null}
           </Button>
         </div>
 
@@ -80,22 +91,22 @@ export function CatalogueBrowser({
             canClear={canClear}
             idPrefix="desktop"
             className={cn(
-              "sticky z-20 hidden w-full self-start lg:block",
+              "sticky z-20 hidden w-full self-start overflow-hidden lg:flex",
               "top-[calc(var(--site-header-height)+1rem)]",
               "max-h-[calc(100dvh-var(--site-header-height)-2rem)]",
-              "overflow-y-auto overscroll-contain",
             )}
           />
 
           <div className="min-w-0">
             {visible.length > 0 ? (
               <ul className="mt-4 grid list-none grid-cols-2 items-stretch gap-3 p-0 sm:gap-4 lg:mt-0 lg:grid-cols-3 lg:gap-4">
-                {visible.map((product) => (
+                {visible.map((product, index) => (
                   <ProductCard
                     key={product.slug}
                     product={product}
                     href={productHref(product)}
                     badge={cardBadge}
+                    eager={index < 3}
                     className="h-full"
                   />
                 ))}
@@ -110,7 +121,7 @@ export function CatalogueBrowser({
       <FilterSheet
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        title="Filters & Sort"
+        title="Filter & Sort"
         footer={
           <Button
             type="button"
@@ -130,7 +141,7 @@ export function CatalogueBrowser({
           canClear={canClear}
           idPrefix="drawer"
           hideTitle
-          className="!border-0 !p-0 !shadow-none"
+          className="flex !rounded-none !border-0 !shadow-none"
         />
       </FilterSheet>
     </Section>

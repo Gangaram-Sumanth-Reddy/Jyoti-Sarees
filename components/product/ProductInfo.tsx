@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { ExternalButtonLink } from "@/components/ui/Button";
 import { PriceOffer } from "@/components/ui/PriceOffer";
 import { AddToCartControl } from "@/components/cart/AddToCartControl";
+import { ProductRatingSummary } from "@/components/reviews/ProductRatingSummary";
 import { cn } from "@/lib/cn";
 import {
   whatsappEnquiryUrl,
@@ -118,6 +119,7 @@ export function ProductInfo({
       <h1 className="mt-2.5 text-balance text-[clamp(1.65rem,1.15rem+1.4vw,2.35rem)] font-semibold leading-tight tracking-[-0.02em] text-rich-black">
         {product.name}
       </h1>
+      <ProductRatingSummary slug={product.slug} />
       <PriceOffer
         className="mt-3"
         size="detail"

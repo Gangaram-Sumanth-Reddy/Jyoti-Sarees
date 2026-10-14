@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { NavPendingBar } from "@/components/layout/NavPendingBar";
 import { cn } from "@/lib/cn";
 import { isNavActive } from "@/lib/nav";
 
@@ -84,6 +85,7 @@ export function MobileBottomNav() {
                   {item.icon}
                 </span>
                 <span className="max-w-full truncate leading-none">{item.label}</span>
+                <NavPendingBar />
               </Link>
             </li>
           );

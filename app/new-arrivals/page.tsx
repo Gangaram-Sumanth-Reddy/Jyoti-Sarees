@@ -11,7 +11,7 @@ const latestYear = arrivals[0]
   : null;
 
 const description =
-  "The latest sarees added to Jyoti Sarees — Ajrakh, Banarasi, Pattu and Kora pieces, newest first. Enquire on WhatsApp about any saree.";
+  "A curated edit of premium new sarees at Jyoti Sarees — pure Kora, Banarasi silk pattu, traditional pattu and silk with zari work. Enquire on WhatsApp about any saree.";
 
 export const metadata = buildMetadata({
   title: latestYear

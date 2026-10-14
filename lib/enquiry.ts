@@ -10,9 +10,9 @@ import {
 import { isValidIndianPincode } from "@/lib/india-pincodes";
 
 /**
- * Only name, contact number and the saree requirement are needed to answer an
- * enquiry. Everything else is optional and only helps with availability and
- * delivery questions.
+ * Only name, contact number and a message are needed to answer an enquiry.
+ * Everything else is optional and only helps with availability and delivery
+ * questions.
  */
 export type EnquiryInput = {
   fullName: string;
@@ -23,8 +23,7 @@ export type EnquiryInput = {
   pincode: string;
   state: string;
   city: string;
-  requirement: string;
-  quantity: string;
+  message: string;
   marketingConsent: boolean;
 };
 
@@ -39,8 +38,7 @@ export const emptyEnquiry: EnquiryInput = {
   pincode: "",
   state: "",
   city: "",
-  requirement: "",
-  quantity: "1",
+  message: "",
   marketingConsent: false,
 };
 
@@ -53,9 +51,10 @@ const limits = {
   pincode: 6,
   state: 60,
   city: 80,
-  requirement: 500,
-  quantity: 5,
+  message: 1500,
 } as const;
+
+export const enquiryMessageLimit = limits.message;
 
 export function validateEnquiry(form: EnquiryInput): EnquiryErrors {
   const errors: EnquiryErrors = {};
@@ -71,12 +70,8 @@ export function validateEnquiry(form: EnquiryInput): EnquiryErrors {
   if (form.pincode.trim() && !isValidIndianPincode(form.pincode)) {
     errors.pincode = "Enter a valid 6-digit PIN code, or leave this blank.";
   }
-  if (!form.requirement.trim()) {
-    errors.requirement = "Tell us the saree type or requirement.";
-  }
-  const qty = Number(form.quantity);
-  if (!Number.isInteger(qty) || qty < 1 || qty > 99999) {
-    errors.quantity = "Enter a quantity of 1 or more.";
+  if (!form.message.trim()) {
+    errors.message = "Tell us which saree you are looking for or how we can help.";
   }
 
   return errors;
@@ -93,8 +88,7 @@ export function parseEnquiry(body: unknown): ParseResult<EnquiryInput> {
     pincode: readString(body, "pincode", limits.pincode),
     state: readString(body, "state", limits.state),
     city: readString(body, "city", limits.city),
-    requirement: readString(body, "requirement", limits.requirement),
-    quantity: readString(body, "quantity", limits.quantity),
+    message: readString(body, "message", limits.message),
     marketingConsent: readBoolean(body, "marketingConsent"),
   };
   const errors = validateEnquiry(data);

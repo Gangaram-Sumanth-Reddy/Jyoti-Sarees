@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { Container } from "@/components/ui/Container";
-import { Section } from "@/components/ui/Section";
 import { bulkOrders } from "@/lib/contact";
 import { deliveryConfig, isShippingPageEnabled } from "@/lib/seo";
 import { site } from "@/lib/site";
@@ -77,58 +75,44 @@ function buildFaqs(): Faq[] {
   return faqs;
 }
 
-export function ContactFaq() {
+export function ContactFaqList() {
   const faqs = buildFaqs();
 
   return (
-    <Section>
-      <Container className="max-w-3xl">
-        <div className="mb-8 flex flex-col items-center text-center sm:mb-10">
-          <p className="inline-flex items-center gap-2 text-small font-semibold uppercase tracking-[0.16em] text-navy">
-            <span className="size-1.5 rounded-full bg-navy" aria-hidden="true" />
-            FAQ
-          </p>
-          <h2 className="mt-3 text-h2 text-rich-black">Frequently Asked Questions</h2>
-          <p className="mt-3 max-w-xl text-body leading-relaxed text-rich-black">
-            Buying, store visits, bulk orders, and how we use your details.
-          </p>
-        </div>
-        <div className="grid gap-3">
-          {faqs.map((faq) => (
-            <details
-              key={faq.question}
-              className="group rounded-lg border border-border bg-white px-5 py-4 shadow-soft"
+    <div className="grid gap-3 lg:flex lg:h-full lg:flex-col lg:justify-between">
+      {faqs.map((faq) => (
+        <details
+          key={faq.question}
+          className="group rounded-lg border border-border bg-white px-5 py-4 shadow-soft"
+        >
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-body font-semibold text-rich-black [&::-webkit-details-marker]:hidden">
+            {faq.question}
+            <span
+              aria-hidden="true"
+              className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-cream text-navy"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-body font-semibold text-rich-black [&::-webkit-details-marker]:hidden">
-                {faq.question}
-                <span
-                  aria-hidden="true"
-                  className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-cream text-navy"
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    className="transition-transform duration-200 group-open:rotate-180"
-                  >
-                    <path
-                      d="M6 9.5 12 15.5 18 9.5"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-              </summary>
-              <p className="mt-3 pr-12 text-body leading-relaxed text-rich-black">
-                {faq.answer}
-              </p>
-            </details>
-          ))}
-        </div>
-      </Container>
-    </Section>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="transition-transform duration-200 group-open:rotate-180"
+              >
+                <path
+                  d="M6 9.5 12 15.5 18 9.5"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+          </summary>
+          <p className="mt-3 pr-12 text-body leading-relaxed text-rich-black">
+            {faq.answer}
+          </p>
+        </details>
+      ))}
+    </div>
   );
 }

@@ -45,7 +45,7 @@ export function CartNavButton({ inverse = false, className }: CartNavButtonProps
       {count > 0 ? (
         <span
           className={cn(
-            "cart-count absolute right-1 top-1 inline-flex min-h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full px-1 text-[0.65rem] font-semibold leading-none",
+            "cart-count absolute right-0.5 top-0.5 inline-flex min-h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full px-1 text-[0.65rem] font-bold leading-none ring-2 ring-navy",
             inverse ? "bg-[#ffffff] text-[#0a2472]" : "bg-navy text-white",
           )}
         >
@@ -58,17 +58,10 @@ export function CartNavButton({ inverse = false, className }: CartNavButtonProps
 
 function CartIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
       <path
-        d="M3.5 5.5h1.4l1.2 9.2a1.5 1.5 0 0 0 1.5 1.3h8.3a1.5 1.5 0 0 0 1.5-1.25l.9-5.75H6.2"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M8.2 18.2a.9.9 0 1 0 0-1.8.9.9 0 0 0 0 1.8ZM15.3 18.2a.9.9 0 1 0 0-1.8.9.9 0 0 0 0 1.8Z"
         fill="currentColor"
+        d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2ZM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42a.25.25 0 0 1-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 20 4H5.21l-.94-2H1Zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2Z"
       />
     </svg>
   );

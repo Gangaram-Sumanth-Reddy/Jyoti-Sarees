@@ -78,7 +78,7 @@ const houseNotes = [
   },
   {
     title: "Name a colour or weave",
-    detail: "Ajrakh, Banarasi, Pattu and Kora are in the current catalogue.",
+    detail: "Ajrakh, Banarasi, Pattu, Kora, Silk, Georgette and Designer sarees are in the current catalogue.",
   },
   {
     title: "We confirm it with you",

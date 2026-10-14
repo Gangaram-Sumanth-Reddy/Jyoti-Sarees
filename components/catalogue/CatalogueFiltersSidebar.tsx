@@ -11,9 +11,7 @@ import {
   type Product,
   type SortId,
 } from "@/lib/products";
-import { isLightSwatch, swatchFor } from "@/lib/colours";
-
-/** Display hex values for catalogue colour filter swatches. */
+import { familySwatch, isLightSwatch } from "@/lib/colours";
 
 type CatalogueFiltersSidebarProps = {
   products: Product[];
@@ -67,7 +65,7 @@ function FilterPill({
       aria-pressed={selected}
       onClick={onClick}
       className={cn(
-        "inline-flex min-h-7 items-center rounded-pill border px-2.5 text-[0.7rem] font-semibold tracking-[0.02em] transition-colors duration-200 max-lg:min-h-9 max-lg:px-3.5 max-lg:text-[0.8125rem]",
+        "inline-flex min-h-7 items-center justify-center whitespace-nowrap rounded-pill border px-2.5 text-[0.7rem] font-semibold tracking-[0.02em] transition-colors duration-200 max-lg:min-h-9 max-lg:px-3.5 max-lg:text-[0.8125rem]",
         selected
           ? "border-navy bg-navy text-white"
           : "border-border bg-white text-rich-black hover:border-navy/45 hover:text-navy",
@@ -151,15 +149,18 @@ export function CatalogueFiltersSidebar({
   return (
     <aside
       className={cn(
-        "rounded-lg border border-border bg-white p-3.5 shadow-soft sm:p-4",
+        "flex-col rounded-lg border border-border bg-white shadow-soft",
         className,
       )}
       aria-label="Product filters"
     >
       <div
         className={cn(
-          "mb-3 flex items-center justify-between gap-2 border-b border-border pb-2.5",
-          hideTitle && "justify-end",
+          "sticky z-10 flex shrink-0 items-center justify-between gap-2 border-b border-border bg-white",
+          /* In the drawer the sheet body (p-4) scrolls; -top-4 pins the header flush with its top edge. */
+          hideTitle
+            ? "-top-4 -mt-4 justify-end pb-2.5 pt-4"
+            : "top-0 rounded-t-lg px-3.5 pb-2.5 pt-3.5 sm:px-4 sm:pt-4",
         )}
       >
         <h2
@@ -175,21 +176,28 @@ export function CatalogueFiltersSidebar({
           onClick={onClear}
           disabled={!canClear}
           className={cn(
-            "inline-flex h-8 shrink-0 items-center justify-center whitespace-nowrap rounded-pill border border-navy bg-white px-3.5 max-lg:h-10 max-lg:px-4",
-            "text-[0.72rem] font-semibold tracking-[0.02em] text-navy transition-colors duration-200",
-            "hover:bg-navy hover:text-white",
+            "inline-flex h-8 shrink-0 items-center justify-center whitespace-nowrap rounded-pill border border-button-secondary-border bg-button-secondary px-3.5 max-lg:h-10 max-lg:px-4",
+            "text-[0.72rem] font-semibold tracking-[0.02em] text-button-secondary-text transition-colors duration-200",
+            "hover:bg-button-secondary-hover hover:text-button-secondary-hover-text",
             "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-            "disabled:pointer-events-none disabled:border-border-strong disabled:text-navy/45",
+            "disabled:pointer-events-none disabled:opacity-45",
           )}
         >
           Clear All Filters
         </button>
       </div>
 
-      <div className="flex flex-col gap-3.5">
+      <div
+        className={cn(
+          "flex min-h-0 flex-1 flex-col gap-3.5",
+          hideTitle
+            ? "pt-3"
+            : "filter-scroll overscroll-contain px-3.5 pb-3.5 pt-3 sm:px-4 sm:pb-4",
+        )}
+      >
         <FilterGroup
           title="Collection"
-          contentClassName="flex-row flex-wrap gap-1.5"
+          contentClassName="flex-row flex-wrap gap-1.5 max-lg:gap-2 [&>button]:grow"
         >
           <FilterPill
             selected={filters.collection === "all"}
@@ -220,7 +228,7 @@ export function CatalogueFiltersSidebar({
           >
             {options.colours.map((colour) => {
               const selected = filters.colour === colour;
-              const hex = swatchFor(colour);
+              const hex = familySwatch(colour);
               const light = isLightSwatch(hex);
 
               return (
@@ -257,7 +265,10 @@ export function CatalogueFiltersSidebar({
           </p>
         </FilterGroup>
 
-        <FilterGroup title="Fabric" contentClassName="flex-row flex-wrap gap-1.5">
+        <FilterGroup
+          title="Fabric"
+          contentClassName="flex-row flex-wrap gap-1.5 max-lg:gap-2 [&>button]:grow"
+        >
           <FilterPill
             selected={filters.fabric === "all"}
             label="All"

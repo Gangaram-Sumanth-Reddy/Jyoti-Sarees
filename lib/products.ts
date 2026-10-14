@@ -1,5 +1,5 @@
-import { catalogueEntries } from "./catalogue-products";
-import { swatchFor } from "./colours";
+import { catalogueEntries, newArrivalSkus } from "./catalogue-products";
+import { colourFamilies, colourFamilyFor, swatchFor } from "./colours";
 
 export type ProductGalleryItem = {
   id: string;
@@ -173,7 +173,7 @@ function createProduct(input: ProductInput): Product {
   };
 }
 
-/** Client catalogue. Real photos replace `defaultGallery` by setting `gallery[].src`. */
+/** Client catalogue. Entries with `images` use them; the rest fall back to `defaultGallery`. */
 export const products: Product[] = catalogueEntries.map((entry, index) => {
   const priceLabel = `₹${entry.sellingPrice.toLocaleString("en-IN")}`;
   const details = [
@@ -215,6 +215,11 @@ export const products: Product[] = catalogueEntries.map((entry, index) => {
     createdAt: added.toISOString().slice(0, 10),
     shortDescription: summary,
     about: summary,
+    gallery: entry.images?.map((image, photoIndex) => ({
+      id: `photo-${photoIndex + 1}`,
+      label: image.label,
+      src: image.src,
+    })),
   });
 });
 
@@ -230,6 +235,8 @@ const CATEGORY_NAV_ORDER = [
   "Pattu",
   "Kora",
   "Silk Sarees",
+  "Georgette",
+  "Designer",
 ] as const;
 
 function uniqueSorted(values: string[]) {
@@ -259,7 +266,10 @@ export function getFilterOptions(items: Product[] = products) {
   return {
     categories: uniqueSorted(items.map((item) => item.category)),
     collections: uniqueSorted(items.map((item) => item.collection)),
-    colours: uniqueSorted(items.map((item) => item.colour).filter(Boolean)),
+    /** Colour family names (see `colourFamilies`), in palette order. */
+    colours: colourFamilies
+      .map((family) => family.name)
+      .filter((name) => items.some((item) => colourFamilyFor(item.colour) === name)),
     fabrics: uniqueSorted(items.map((item) => item.fabric)),
   };
 }
@@ -329,7 +339,7 @@ export function filterAndSortProducts(
     ) {
       return false;
     }
-    if (filters.colour !== "all" && product.colour !== filters.colour) {
+    if (filters.colour !== "all" && colourFamilyFor(product.colour) !== filters.colour) {
       return false;
     }
     if (filters.fabric !== "all" && product.fabric !== filters.fabric) {
@@ -351,6 +361,20 @@ export function filterAndSortProducts(
     if (filters.sort === "price-desc") return b.price - a.price;
     return b.createdAt.localeCompare(a.createdAt);
   });
+}
+
+export function activeFilterCount(filters: CatalogueFilters) {
+  return [
+    filters.categoryNav !== "all",
+    filters.category !== "all",
+    filters.collection !== "all",
+    filters.colour !== "all",
+    filters.fabric !== "all",
+    filters.priceRange !== "all" ||
+      filters.priceMin !== null ||
+      filters.priceMax !== null,
+    filters.availability !== "all",
+  ].filter(Boolean).length;
 }
 
 export function hasActiveFilters(filters: CatalogueFilters) {
@@ -467,13 +491,23 @@ export function cartItemHref(item: {
   return item.colourId ? `${base}/${item.colourId}` : base;
 }
 
-/** New Arrivals exclusives — distinct styles, names and pricing. */
+/** New Arrivals exclusives if any, otherwise the curated `newArrivalSkus` picks. */
 export function getNewArrivals(limit = 8): Product[] {
   const exclusive = products.filter((product) => product.isNewArrival);
-  const source = exclusive.length > 0 ? exclusive : products;
-  return [...source]
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+  if (exclusive.length > 0) {
+    return [...exclusive]
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .slice(0, limit);
+  }
+  return newArrivalSkus
+    .map((sku) => products.find((product) => product.productId === sku))
+    .filter((product): product is Product => Boolean(product))
     .slice(0, limit);
+}
+
+/** True for New Arrivals exclusives and the curated `newArrivalSkus` picks. */
+export function isNewArrivalPick(product: Product) {
+  return product.isNewArrival || newArrivalSkus.includes(product.productId);
 }
 
 export function getRelatedProducts(product: Product, limit = 4): Product[] {

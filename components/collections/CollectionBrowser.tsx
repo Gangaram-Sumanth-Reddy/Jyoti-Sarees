@@ -10,6 +10,7 @@ import { ProductCard } from "@/components/ui/ProductCard";
 import { Section } from "@/components/ui/Section";
 import { cn } from "@/lib/cn";
 import {
+  activeFilterCount,
   defaultCatalogueFilters,
   filterAndSortProducts,
   hasActiveFilters,
@@ -43,6 +44,7 @@ export function CollectionBrowser({ products }: CollectionBrowserProps) {
   }
 
   const filtersActive = hasActiveFilters(filters);
+  const filterCount = activeFilterCount(filters);
   const canClear = filtersActive || filters.sort !== defaultCatalogueFilters.sort;
   const hasSourceProducts = products.length > 0;
 
@@ -51,21 +53,30 @@ export function CollectionBrowser({ products }: CollectionBrowserProps) {
       <Container>
         {hasSourceProducts ? (
           <>
-            <div className="flex items-center justify-between gap-3 lg:hidden">
+            <div className="sticky top-[var(--site-header-height)] z-30 -mx-gutter flex items-center justify-between gap-3 border-b border-border/70 bg-section-muted/95 px-gutter py-2.5 backdrop-blur-sm lg:hidden">
               <p className="text-small font-semibold text-rich-black" aria-live="polite">
                 {visible.length} {visible.length === 1 ? "saree" : "sarees"}
               </p>
               <Button
                 type="button"
-                variant={filtersActive ? "primary" : "secondary"}
+                variant="primary"
                 size="sm"
                 className="min-h-11 px-5"
                 aria-haspopup="dialog"
+                aria-label={
+                  filterCount > 0
+                    ? `Filter and sort, ${filterCount} active`
+                    : "Filter and sort"
+                }
                 onClick={() => setSheetOpen(true)}
               >
                 <FilterTriggerIcon />
-                Filters &amp; Sort
-                {filtersActive ? " · On" : ""}
+                Filter &amp; Sort
+                {filterCount > 0 ? (
+                  <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-white px-1.5 text-[0.7rem] font-bold leading-5 text-navy">
+                    {filterCount}
+                  </span>
+                ) : null}
               </Button>
             </div>
 
@@ -78,10 +89,9 @@ export function CollectionBrowser({ products }: CollectionBrowserProps) {
                 canClear={canClear}
                 idPrefix="collection-desktop"
                 className={cn(
-                  "sticky z-20 hidden w-full self-start lg:block",
+                  "sticky z-20 hidden w-full self-start overflow-hidden lg:flex",
                   "top-[calc(var(--site-header-height)+1rem)]",
                   "max-h-[calc(100dvh-var(--site-header-height)-2rem)]",
-                  "overflow-y-auto overscroll-contain",
                 )}
               />
 
@@ -106,7 +116,7 @@ export function CollectionBrowser({ products }: CollectionBrowserProps) {
             <FilterSheet
               open={sheetOpen}
               onClose={() => setSheetOpen(false)}
-              title="Filters & Sort"
+              title="Filter & Sort"
               footer={
                 <Button
                   type="button"
@@ -126,7 +136,7 @@ export function CollectionBrowser({ products }: CollectionBrowserProps) {
                 canClear={canClear}
                 idPrefix="collection-drawer"
                 hideTitle
-                className="!border-0 !p-0 !shadow-none"
+                className="flex !rounded-none !border-0 !shadow-none"
               />
             </FilterSheet>
           </>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { ImageFrame } from "@/components/ui/ImageFrame";
@@ -8,6 +9,7 @@ type CollectionCardProps = {
   name: string;
   description: string;
   href: string;
+  image?: string;
   className?: string;
 };
 
@@ -15,6 +17,7 @@ export function CollectionCard({
   name,
   description,
   href,
+  image,
   className,
 }: CollectionCardProps) {
   return (
@@ -31,7 +34,17 @@ export function CollectionCard({
           radius="none"
           className="shrink-0 rounded-t-md max-sm:rounded-md max-sm:[&>div]:rounded-md"
         >
-          <ImagePlaceholder label={name} />
+          {image ? (
+            <Image
+              src={image}
+              alt={`${name} sarees`}
+              fill
+              sizes="(min-width: 1024px) 22vw, (min-width: 640px) 36vw, 62vw"
+              className="object-[50%_30%]"
+            />
+          ) : (
+            <ImagePlaceholder label={name} />
+          )}
         </ImageFrame>
         <div className="flex flex-1 flex-col items-center justify-center gap-1.5 px-1.5 pb-2 pt-3.5 text-center sm:px-4 sm:py-4">
           <h3 className="min-h-[1.6em] text-balance text-[1.05rem] font-semibold leading-snug text-rich-black transition-colors group-hover:text-accent sm:text-h3">
