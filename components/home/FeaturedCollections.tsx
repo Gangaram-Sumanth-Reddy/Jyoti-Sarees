@@ -37,7 +37,7 @@ export function FeaturedCollections() {
             return (
               <li
                 key={collection.slug}
-                className="w-[clamp(5.25rem,calc((100%-(var(--count)-1)*var(--gap))/var(--count)),9.5rem)] shrink-0 snap-start"
+                className="w-[clamp(8rem,calc((100%-(var(--count)-1)*var(--gap))/var(--count)),9.5rem)] md:w-[clamp(5.25rem,calc((100%-(var(--count)-1)*var(--gap))/var(--count)),9.5rem)] shrink-0 snap-start"
               >
                 <Link
                   href={collectionHref(collection.slug)}
@@ -50,7 +50,7 @@ export function FeaturedCollections() {
                           src={image}
                           alt=""
                           fill
-                          sizes="(min-width: 768px) 152px, 84px"
+                          sizes="(min-width: 768px) 152px, 128px"
                           className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                         />
                       ) : (
