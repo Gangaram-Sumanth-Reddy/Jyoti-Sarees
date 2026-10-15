@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { EnquiryCartHost } from "@/components/cart/EnquiryCartHost";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { RouteScrollReset } from "@/components/layout/RouteScrollReset";
@@ -61,7 +60,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteFooter />
         <FloatingWhatsApp />
         <MobileBottomNav />
-        <EnquiryCartHost />
       </body>
     </html>
   );

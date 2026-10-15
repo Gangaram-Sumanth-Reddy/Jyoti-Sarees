@@ -1,52 +1,46 @@
-import type { CSSProperties } from "react";
 import { SocialIcon } from "@/components/layout/SocialIcons";
 import { ReelCard } from "@/components/home/ReelCard";
+import { ReelsCarousel } from "@/components/home/ReelsCarousel";
 import { ExternalButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { reels } from "@/lib/reels";
-import { getReelMedia } from "@/lib/server/reel-media";
+import { getReelCover } from "@/lib/server/reel-media";
 import { copy, site } from "@/lib/site";
 
-const cardClassName =
-  "reels-card w-[calc((100cqw-0.75rem)/1.4)] shrink-0 pr-3 sm:w-[calc(100cqw/3)] sm:pr-4 lg:w-[calc(100cqw/4)] lg:pr-5";
+/** About 1.5 cards on phones, 2.5 on tablets and 4 on desktop; the right padding is the gap, so both loop halves match. */
+const cardClassName = "w-[calc(100cqw/1.5)] shrink-0 pr-4 @xl:w-[calc(100cqw/2.5)] @4xl:w-[calc(100cqw/4)] @4xl:pr-5";
 
 export function InstagramReels() {
-  const items = reels.map((reel) => ({ reel, media: getReelMedia(reel.id) }));
+  const items = reels.map((reel, index) => ({
+    reel,
+    image: getReelCover(reel.id) ?? reel.previewImage,
+    label: `Reel ${index + 1} of ${reels.length}`,
+  }));
 
   return (
     <Section>
       <Container>
-        <SectionHeading
-          title={copy.instagram.title}
-          description={copy.instagram.description}
-          align="center"
-          className="max-w-2xl"
-        />
+        <SectionHeading title={copy.instagram.title} align="center" className="max-w-2xl" />
 
-        <div className="reels-marquee @container overflow-hidden motion-reduce:overflow-x-auto">
-          <ul
-            className="reels-track flex w-max list-none p-0"
-            style={{ "--reels-duration": `${reels.length * 7}s` } as CSSProperties}
-          >
-            {items.map(({ reel, media }) => (
-              <li key={reel.id} className={cardClassName}>
-                <ReelCard reel={reel} media={media} />
-              </li>
-            ))}
-            {items.map(({ reel, media }) => (
-              <li key={`${reel.id}-loop`} className={`${cardClassName} reels-loop-copy`} aria-hidden="true">
-                <ReelCard reel={reel} media={media} decorative />
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ReelsCarousel label="Jyoti Sarees Reels">
+          {items.map(({ reel, image, label }) => (
+            <li key={reel.id} className={cardClassName}>
+              <ReelCard reel={reel} image={image} label={label} />
+            </li>
+          ))}
+          {items.map(({ reel, image, label }) => (
+            <li key={`${reel.id}-loop`} className={`${cardClassName} reels-loop-copy`} aria-hidden="true">
+              <ReelCard reel={reel} image={image} label={label} decorative />
+            </li>
+          ))}
+        </ReelsCarousel>
 
-        <div className="mt-10 flex justify-center sm:mt-12">
+        <div className="mt-2 flex justify-center sm:mt-4">
           <ExternalButtonLink href={site.instagramUrl}>
             <SocialIcon id="instagram" />
-            Follow Us on Instagram
+            Follow on Instagram
           </ExternalButtonLink>
         </div>
       </Container>

@@ -1,10 +1,17 @@
+"use client";
+
 import { SocialIcon } from "@/components/layout/SocialIcons";
 import { site } from "@/lib/site";
+import { useSiteOrigin } from "@/lib/use-site-origin";
+import { generalEnquiryMessage, whatsappMessageUrl } from "@/lib/whatsapp";
 
 export function FloatingWhatsApp() {
+  const origin = useSiteOrigin();
+  const href = whatsappMessageUrl(generalEnquiryMessage(origin ? `${origin}/` : undefined));
+
   return (
     <a
-      href={site.whatsappUrl}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`WhatsApp Us — chat with ${site.name}`}

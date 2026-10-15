@@ -530,30 +530,15 @@
     animation: cart-empty-accent 3.2s ease-in-out 0.7s infinite;
   }
 
-  /* Instagram reels marquee: the list is rendered twice, so -50% lands exactly on the copy. */
+  /* Reels carousel: a swipeable scroller whose list is rendered twice for a seamless loop. */
   .reels-marquee {
     -webkit-mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 97%, transparent 100%);
     mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 97%, transparent 100%);
+    scrollbar-width: none;
   }
 
-  .reels-track {
-    animation: reels-scroll var(--reels-duration, 42s) linear infinite;
-    will-change: transform;
-  }
-
-  .reels-marquee:hover .reels-track,
-  .reels-marquee:focus-within .reels-track,
-  .reels-marquee[data-sound="on"] .reels-track {
-    animation-play-state: paused;
-  }
-
-  @keyframes reels-scroll {
-    from {
-      transform: translate3d(0, 0, 0);
-    }
-    to {
-      transform: translate3d(-50%, 0, 0);
-    }
+  .reels-marquee::-webkit-scrollbar {
+    display: none;
   }
 
   /* About testimonials: row one drifts right, row two drifts left. Each track is rendered twice. */
@@ -593,24 +578,12 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .reels-marquee {
-      scrollbar-width: none;
-    }
-
-    .reels-marquee::-webkit-scrollbar {
-      display: none;
-    }
-
-    .reels-track,
     .testimonial-track-right,
     .testimonial-track-left {
       animation: none;
     }
 
-    .testimonial-loop-copy {
-      display: none;
-    }
-
+    .testimonial-loop-copy,
     .reels-loop-copy {
       display: none;
     }

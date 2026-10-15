@@ -6,8 +6,7 @@ export const site = {
     "Premium sarees from Jyoti Sarees — heritage craft with clean, modern elegance.",
   whatsapp: "9556820010",
   whatsappUrl: "https://wa.me/919556820010",
-  instagramUrl:
-    "https://www.instagram.com/jyoti_sarees_?stkn=aGd3dnMyYXl3MWI4&utm_source=qr",
+  instagramUrl: "https://www.instagram.com/jyoti_sarees_/",
   facebookUrl: "https://www.facebook.com/share/1Dkntsvdx9/?mibextid=wwXIfr",
   email: "hello.jyotisarees@gmail.com",
   phones: [
@@ -109,8 +108,6 @@ export const copy = {
   },
   instagram: {
     title: "Follow Jyoti Sarees",
-    description:
-      "A glimpse of new drapes, festive looks, and life at the store.",
   },
   finalCta: {
     title: "Looking for Something Special?",

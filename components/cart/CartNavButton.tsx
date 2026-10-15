@@ -35,7 +35,7 @@ export function CartNavButton({ inverse = false, className }: CartNavButtonProps
       )}
       aria-label={
         count > 0
-          ? `Enquiry cart, ${count} items`
+          ? `Enquiry cart, ${count} ${count === 1 ? "saree" : "sarees"}`
           : active
             ? "Enquiry cart, current page"
             : "Open enquiry cart"

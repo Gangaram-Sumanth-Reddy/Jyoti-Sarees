@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { formatPrice, type Product } from "@/lib/products";
+import type { Product } from "@/lib/products";
 
 export type EnquiryCartItem = {
   slug: string;
@@ -18,19 +18,17 @@ export type EnquiryCartItem = {
 
 type EnquiryCartState = {
   items: EnquiryCartItem[];
-  sentOpen: boolean;
 };
 
 const STORAGE_KEY = "jyoti-enquiry-cart";
+export const ENQUIRY_MAX_QUANTITY = 99;
 
 let state: EnquiryCartState = {
   items: [],
-  sentOpen: false,
 };
 
 const serverSnapshot: EnquiryCartState = {
   items: [],
-  sentOpen: false,
 };
 
 let hydrated = false;
@@ -57,7 +55,8 @@ function normalizeItem(raw: Partial<EnquiryCartItem>): EnquiryCartItem | null {
     !raw ||
     typeof raw.slug !== "string" ||
     typeof raw.quantity !== "number" ||
-    raw.quantity <= 0
+    !Number.isFinite(raw.quantity) ||
+    raw.quantity < 1
   ) {
     return null;
   }
@@ -75,7 +74,7 @@ function normalizeItem(raw: Partial<EnquiryCartItem>): EnquiryCartItem | null {
         ? raw.colourId
         : colour.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
     fabric: typeof raw.fabric === "string" ? raw.fabric : "",
-    quantity: Math.min(99, Math.floor(raw.quantity)),
+    quantity: Math.min(ENQUIRY_MAX_QUANTITY, Math.floor(raw.quantity)),
     isNewArrival: Boolean(raw.isNewArrival),
   };
 }
@@ -127,14 +126,6 @@ export function useEnquiryCart() {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
-export function openEnquirySentModal() {
-  setState({ ...state, sentOpen: true });
-}
-
-export function closeEnquirySentModal() {
-  setState({ ...state, sentOpen: false });
-}
-
 function itemKey(slug: string, colour: string) {
   return `${slug}::${colour}`;
 }
@@ -157,7 +148,7 @@ export function addToEnquiryCart(
   const items = existing
     ? state.items.map((item) =>
         item.slug === product.slug && item.colour === colour
-          ? { ...item, quantity: Math.min(99, item.quantity + 1) }
+          ? { ...item, quantity: Math.min(ENQUIRY_MAX_QUANTITY, item.quantity + 1) }
           : item,
       )
     : [
@@ -184,7 +175,8 @@ export function setEnquiryQuantity(
   quantity: number,
   colour?: string,
 ) {
-  const nextQty = Math.max(0, Math.min(99, Math.floor(quantity)));
+  if (!Number.isFinite(quantity)) return;
+  const nextQty = Math.max(0, Math.min(ENQUIRY_MAX_QUANTITY, Math.floor(quantity)));
   const items =
     nextQty === 0
       ? state.items.filter((item) =>
@@ -216,16 +208,14 @@ export function clearEnquiryCart() {
   setState({ ...state, items: [] });
 }
 
+/** Number of different sarees (cart lines) — what the cart badge shows. */
 export function getEnquiryCartCount(items: EnquiryCartItem[]) {
+  return items.length;
+}
+
+/** Total pieces across all lines. */
+export function getEnquiryCartQuantity(items: EnquiryCartItem[]) {
   return items.reduce((sum, item) => sum + item.quantity, 0);
-}
-
-export function getEnquiryCartTotal(items: EnquiryCartItem[]) {
-  return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-}
-
-export function getEnquiryCartTotalLabel(items: EnquiryCartItem[]) {
-  return formatPrice(getEnquiryCartTotal(items));
 }
 
 export function getCartItemKey(item: Pick<EnquiryCartItem, "slug" | "colour">) {

@@ -94,7 +94,7 @@ function contentFor(path: string): PreCtaContent {
       eyebrow: "Your enquiry list",
       title: "Ready when you are.",
       description:
-        "Send your list on WhatsApp. There is no online payment — our team confirms the details with you.",
+        "Questions before you order? Message us on WhatsApp. There is no online payment — our team confirms the details with you.",
       primary: whatsapp,
       secondary: sarees,
     };
