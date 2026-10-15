@@ -8,6 +8,7 @@ import {
   appsScriptSetupHint,
   type InsertOutcome,
   type SheetFormType,
+  type SheetRow,
 } from "@/lib/server/google-apps-script";
 
 const MAX_BODY_BYTES = 16 * 1024;
@@ -15,7 +16,7 @@ const RATE_LIMIT = { windowMs: 10 * 60 * 1000, max: 8 };
 
 const recentRequests = new Map<string, number[]>();
 
-function isRateLimited(key: string) {
+function isRateLimited(key: string, max = RATE_LIMIT.max) {
   const now = Date.now();
   const hits = (recentRequests.get(key) ?? []).filter(
     (time) => now - time < RATE_LIMIT.windowMs,
@@ -23,7 +24,7 @@ function isRateLimited(key: string) {
   hits.push(now);
   recentRequests.set(key, hits);
   if (recentRequests.size > 5000) recentRequests.clear();
-  return hits.length > RATE_LIMIT.max;
+  return hits.length > max;
 }
 
 function isSameOrigin(request: Request) {
@@ -43,12 +44,17 @@ function json(body: FormSubmissionResponse, status = 200) {
   });
 }
 
-type SheetRow = Record<string, string | number | boolean | null>;
-
 type FormEndpointOptions<T> = {
   formType: SheetFormType;
   parse: (body: unknown) => ParseResult<T>;
   referencePrefix: string;
+  /**
+   * Reference chosen by the visitor's browser (already validated by `parse`),
+   * so a retry of the same submission is recognised as a duplicate.
+   */
+  clientReference?: (data: T) => string;
+  /** Rate limit override for flows where retries are expected. */
+  rateLimitMax?: number;
   /** Shown to the visitor when the storage backend is not set up. */
   notConfiguredMessage?: string;
 } & (
@@ -82,7 +88,7 @@ export async function handleFormSubmission<T>(
 
   const clientKey =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  if (isRateLimited(`${table}:${clientKey}`)) {
+  if (isRateLimited(`${table}:${clientKey}`, options.rateLimitMax)) {
     return json(
       { ok: false, message: "Too many submissions. Please try again later." },
       429,
@@ -100,7 +106,7 @@ export async function handleFormSubmission<T>(
     return json({ ok: false, message: "Invalid submission." }, 400);
   }
 
-  const reference = `${referencePrefix}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+  let reference = `${referencePrefix}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
 
   const honeypot = (body as Record<string, unknown> | null)?.[honeypotFieldName];
   if (typeof honeypot === "string" && honeypot.length > 0) {
@@ -108,6 +114,7 @@ export async function handleFormSubmission<T>(
   }
 
   const parsed = parse(body);
+  if (parsed.ok && options.clientReference) reference = options.clientReference(parsed.data);
   if (!parsed.ok) {
     return json(
       {

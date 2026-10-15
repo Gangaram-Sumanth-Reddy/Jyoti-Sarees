@@ -19,17 +19,17 @@ export function SiteFooter() {
             className="inline-flex items-center gap-2.5 rounded-md lg:hidden"
           >
             <Image
-              src="/assets/Logo.png"
+              src="/assets/logo.webp"
               alt=""
-              width={1098}
-              height={1098}
+              width={512}
+              height={512}
               sizes="48px"
               className="size-12 shrink-0 rounded-full shadow-soft"
             />
             {/* The wordmark asset is white; masking it lets the footer show it in navy. */}
             <span
               aria-hidden="true"
-              className="block h-12 aspect-[1749/899] bg-[var(--jyoti-wordmark)] [mask-image:url(/assets/Logo-text.png)] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
+              className="block h-12 aspect-[600/308] bg-[var(--jyoti-wordmark)] [mask-image:url(/assets/logo-text-small.webp)] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
             />
           </Link>
           <p className="mt-4 max-w-[16rem] whitespace-pre-line text-small leading-relaxed text-rich-black">

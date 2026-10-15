@@ -546,18 +546,3 @@ export function getProductColourOptions(product: Product): ProductColourOption[]
   return product.colourOptions;
 }
 
-export function whatsappEnquiryUrl(
-  productName: string,
-  baseUrl: string,
-  productId?: string,
-  priceLabel?: string,
-) {
-  const reference = [productId ? `(${productId})` : "", priceLabel ? `Price: ${priceLabel}.` : ""]
-    .filter(Boolean)
-    .join(" ");
-  const text = reference
-    ? `Hi, I'm interested in ${productName} ${reference} Please share more details.`
-    : `Hi, I'm interested in ${productName}. Please share more details.`;
-  const separator = baseUrl.includes("?") ? "&" : "?";
-  return `${baseUrl}${separator}text=${encodeURIComponent(text)}`;
-}

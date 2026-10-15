@@ -8,6 +8,11 @@
  *   testimonial      -> "Testimonials"      (Status: Pending — publish manually)
  *   product_review   -> "Reviews"           (Status: Pending — set Approved to publish)
  *   privacy_request  -> "Privacy Requests"  (Status: New)
+ *   order_enquiry    -> "Order Enquiries"   (Status: New)
+ *
+ * An order enquiry (from the website's enquiry cart) is written as one row
+ * per saree. All rows of one enquiry share its Reference (the enquiry ID,
+ * e.g. JSE-7K3M9QXA) and repeat the customer details and enquiry totals.
  *
  * New rows always get the initial status above, whatever the request says,
  * so nothing is published without someone changing Status in the sheet.
@@ -82,10 +87,53 @@ var FORMS = {
       ['policyVersion', 'Privacy Policy Version'],
     ],
   },
+  order_enquiry: {
+    sheet: 'Order Enquiries',
+    initialStatus: 'New',
+    statuses: ['New', 'Contacted', 'Confirmed', 'Closed'],
+    required: ['leadSource', 'fullName', 'whatsapp', 'totalDesigns', 'totalQuantity', 'enquiryTotal'],
+    columns: [
+      ['leadSource', 'Lead Source'],
+      ['fullName', 'Customer Name'],
+      ['whatsapp', 'WhatsApp Number'],
+    ],
+    // One row per saree, between the customer columns and the enquiry totals.
+    itemColumns: [
+      ['itemNo', 'Item No.'],
+      ['productName', 'Product'],
+      ['sku', 'SKU'],
+      ['colour', 'Colour'],
+      ['quantity', 'Quantity'],
+      ['mrp', 'MRP (₹)'],
+      ['discount', 'Discount per Saree (₹)'],
+      ['price', 'Price per Saree (₹)'],
+      ['subtotal', 'Item Subtotal (₹)'],
+      ['productUrl', 'Product URL'],
+    ],
+    itemRequired: ['itemNo', 'productName', 'sku', 'quantity', 'price', 'subtotal'],
+    summaryColumns: [
+      ['totalDesigns', 'Total Designs'],
+      ['totalQuantity', 'Total Quantity'],
+      ['totalMrp', 'Total MRP (₹)'],
+      ['totalSavings', 'Total Savings (₹)'],
+      ['enquiryTotal', 'Enquiry Total (₹)'],
+      ['policyVersion', 'Privacy Policy Version'],
+    ],
+    currencyHeaders: [
+      'MRP (₹)',
+      'Discount per Saree (₹)',
+      'Price per Saree (₹)',
+      'Item Subtotal (₹)',
+      'Total MRP (₹)',
+      'Total Savings (₹)',
+      'Enquiry Total (₹)',
+    ],
+    maxItems: 40,
+  },
 };
 
 var FIXED_HEADERS = ['Submitted At', 'Reference', 'Status'];
-var MAX_BODY_CHARS = 20000;
+var MAX_BODY_CHARS = 60000;
 var MAX_FIELD_CHARS = 5000;
 
 /** Health check only. Never returns submission data. */
@@ -139,6 +187,12 @@ function append_(body) {
     var sheet = getSheet_(form);
     if (hasReference_(sheet, reference)) return { ok: true, duplicate: true };
 
+    if (form.itemColumns) {
+      var rows = itemRows_(form, submittedAt, reference, body.data);
+      sheet.getRange(sheet.getLastRow() + 1, 1, rows.length, rows[0].length).setValues(rows);
+      return { ok: true, rows: rows.length };
+    }
+
     var row = [submittedAt, reference, form.initialStatus];
     form.columns.forEach(function (column) {
       row.push(cell_(body.data[column[0]]));
@@ -150,6 +204,31 @@ function append_(body) {
   }
 }
 
+/** One row per item: customer columns, the item's columns, then the enquiry totals. */
+function itemRows_(form, submittedAt, reference, data) {
+  var lead = [submittedAt, reference, form.initialStatus];
+  form.columns.forEach(function (column) {
+    lead.push(cell_(data[column[0]]));
+  });
+  var totals = form.summaryColumns.map(function (column) {
+    return cell_(data[column[0]]);
+  });
+  return data.items.map(function (item) {
+    var cells = form.itemColumns.map(function (column) {
+      return cell_(item[column[0]]);
+    });
+    return lead.concat(cells, totals);
+  });
+}
+
+function headers_(form) {
+  return FIXED_HEADERS.concat(
+    form.columns.map(function (c) { return c[1]; }),
+    (form.itemColumns || []).map(function (c) { return c[1]; }),
+    (form.summaryColumns || []).map(function (c) { return c[1]; })
+  );
+}
+
 /** Only rows whose Status is exactly "Approved". Pending and rejected rows never leave the sheet. */
 function listApprovedReviews_() {
   var form = FORMS.product_review;
@@ -157,7 +236,7 @@ function listApprovedReviews_() {
   var lastRow = sheet.getLastRow();
   if (lastRow < 2) return { ok: true, reviews: [] };
 
-  var headers = FIXED_HEADERS.concat(form.columns.map(function (c) { return c[1]; }));
+  var headers = headers_(form);
   var values = sheet.getRange(2, 1, lastRow - 1, headers.length).getValues();
   var index = {};
   headers.forEach(function (header, i) { index[header] = i; });
@@ -190,10 +269,14 @@ function getSheet_(form) {
   if (sheet) return sheet;
 
   sheet = spreadsheet.insertSheet(form.sheet);
-  var headers = FIXED_HEADERS.concat(form.columns.map(function (c) { return c[1]; }));
+  var headers = headers_(form);
   sheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold');
   sheet.setFrozenRows(1);
   sheet.getRange(2, 1, sheet.getMaxRows() - 1, 1).setNumberFormat('dd mmm yyyy, hh:mm');
+  (form.currencyHeaders || []).forEach(function (header) {
+    var column = headers.indexOf(header) + 1;
+    if (column > 0) sheet.getRange(2, column, sheet.getMaxRows() - 1, 1).setNumberFormat('#,##0');
+  });
   var statusRule = SpreadsheetApp.newDataValidation()
     .requireValueInList(form.statuses, true)
     .setAllowInvalid(false)
@@ -231,22 +314,45 @@ function cell_(value) {
  * from 1 to 5 for reviews.
  */
 function isValidData_(form, data) {
-  if (!data || typeof data !== 'object' || Array.isArray(data)) return false;
-  var known = {};
-  form.columns.forEach(function (column) { known[column[0]] = true; });
-  for (var key in data) {
-    if (!Object.prototype.hasOwnProperty.call(data, key)) continue;
-    if (!known[key]) return false;
-    var value = data[key];
-    if (value !== null && ['string', 'number', 'boolean'].indexOf(typeof value) === -1) return false;
-  }
-  for (var i = 0; i < form.required.length; i++) {
-    var required = data[form.required[i]];
-    if (required === null || required === undefined || String(required).trim() === '') return false;
+  var columns = form.columns.concat(form.summaryColumns || []);
+  if (!isSimpleRecord_(data, columns, form.itemColumns ? 'items' : null)) return false;
+  if (!hasRequired_(data, form.required)) return false;
+  if (form.itemColumns) {
+    var items = data.items;
+    if (!Array.isArray(items) || items.length === 0 || items.length > form.maxItems) return false;
+    for (var j = 0; j < items.length; j++) {
+      if (!isSimpleRecord_(items[j], form.itemColumns, null)) return false;
+      if (!hasRequired_(items[j], form.itemRequired)) return false;
+      var quantity = items[j].quantity;
+      if (typeof quantity !== 'number' || quantity % 1 !== 0 || quantity < 1) return false;
+    }
   }
   if (form === FORMS.product_review) {
     var rating = data.rating;
     if (typeof rating !== 'number' || rating % 1 !== 0 || rating < 1 || rating > 5) return false;
+  }
+  return true;
+}
+
+/** An object holding only the given columns (plus `listKey`, checked by the caller), with simple values. */
+function isSimpleRecord_(record, columns, listKey) {
+  if (!record || typeof record !== 'object' || Array.isArray(record)) return false;
+  var known = {};
+  columns.forEach(function (column) { known[column[0]] = true; });
+  for (var key in record) {
+    if (!Object.prototype.hasOwnProperty.call(record, key)) continue;
+    if (key === listKey) continue;
+    if (!known[key]) return false;
+    var value = record[key];
+    if (value !== null && ['string', 'number', 'boolean'].indexOf(typeof value) === -1) return false;
+  }
+  return true;
+}
+
+function hasRequired_(record, required) {
+  for (var i = 0; i < required.length; i++) {
+    var value = record[required[i]];
+    if (value === null || value === undefined || String(value).trim() === '') return false;
   }
   return true;
 }

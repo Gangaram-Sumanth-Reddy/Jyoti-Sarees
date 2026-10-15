@@ -2,11 +2,12 @@
 
 import { useEffect, type RefObject } from "react";
 import Link from "next/link";
-import { navigation, site } from "@/lib/site";
+import { navigation } from "@/lib/site";
 import { BrandMark } from "@/components/layout/BrandMark";
 import { NavPendingBar } from "@/components/layout/NavPendingBar";
 import { ExternalButtonLink } from "@/components/ui/Button";
 import { isNavActive } from "@/lib/nav";
+import { whatsappGeneralUrl } from "@/lib/whatsapp";
 
 type MobileMenuProps = {
   open: boolean;
@@ -72,7 +73,7 @@ export function MobileMenu({
           ))}
           <div className="pt-8">
             <ExternalButtonLink
-              href={site.whatsappUrl}
+              href={whatsappGeneralUrl}
               size="lg"
               className="w-full"
               onClick={onClose}

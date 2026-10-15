@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { cn } from "@/lib/cn";
 import { copy, site } from "@/lib/site";
 import { testimonials, type Testimonial } from "@/lib/testimonials";
+import { whatsappGeneralUrl } from "@/lib/whatsapp";
 
 function StarRating({ rating, className }: { rating: number; className?: string }) {
   return (
@@ -113,7 +114,7 @@ function HouseNote() {
           ))}
         </ol>
         <p className="house-note-foot mt-8 border-t pt-4 text-small leading-relaxed">
-          <a href={site.whatsappUrl} className="font-semibold underline underline-offset-4">
+          <a href={whatsappGeneralUrl} className="font-semibold underline underline-offset-4">
             WhatsApp {site.whatsapp}
           </a>
           <span className="mt-1 block">

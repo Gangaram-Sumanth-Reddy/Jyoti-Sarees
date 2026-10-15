@@ -5,7 +5,8 @@ import Link from "next/link";
 import { ButtonLink, ExternalButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { aboutContent } from "@/lib/about";
-import { copy, site } from "@/lib/site";
+import { copy } from "@/lib/site";
+import { whatsappGeneralUrl } from "@/lib/whatsapp";
 
 type CtaLink = {
   label: string;
@@ -24,7 +25,7 @@ type PreCtaContent = {
 
 const whatsapp: CtaLink = {
   label: "WhatsApp Us",
-  href: site.whatsappUrl,
+  href: whatsappGeneralUrl,
   external: true,
 };
 

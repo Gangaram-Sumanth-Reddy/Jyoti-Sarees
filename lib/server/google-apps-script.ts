@@ -15,7 +15,13 @@ export type SheetFormType =
   | "enquiry"
   | "testimonial"
   | "product_review"
-  | "privacy_request";
+  | "privacy_request"
+  | "order_enquiry";
+
+export type SheetValue = string | number | boolean | null;
+
+/** One submission. `items` (order enquiries only) becomes one sheet row per entry. */
+export type SheetRow = Record<string, SheetValue | Record<string, SheetValue>[]>;
 
 export type InsertOutcome = "stored" | "not_configured";
 
@@ -99,7 +105,7 @@ async function callAppsScript(
 export async function appendSubmission(
   formType: SheetFormType,
   reference: string,
-  data: Record<string, string | number | boolean | null>,
+  data: SheetRow,
 ): Promise<InsertOutcome> {
   const url = appsScriptUrl();
   if (!url) return "not_configured";

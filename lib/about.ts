@@ -6,11 +6,11 @@ export const aboutContent = {
       "Every beautiful saree has a story. Ours began with a dream, courage and an unwavering belief in building something of our own.",
     founder: "Potnuru Jyoti",
     portrait: {
-      src: "/assets/Jyoti.png",
+      src: "/assets/jyoti.webp",
       alt: "Potnuru Jyoti, founder of Jyoti Sarees, in a cream silk saree with a pink and gold border",
     },
     image: {
-      src: "/assets/Jyoti.png",
+      src: "/assets/jyoti.webp",
       alt: "Potnuru Jyoti, founder of Jyoti Sarees, in a cream silk saree with a pink and gold border",
     },
   },

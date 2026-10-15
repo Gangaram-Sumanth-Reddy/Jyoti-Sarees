@@ -239,10 +239,7 @@ export function PrivacyRequestForm({
         {submitState.status === "submitting" ? "Sending…" : "Submit Request"}
       </Button>
 
-      <FormPrivacyNotice>
-        We use these details only to verify and respond to your request, and to
-        keep a record that we did. See our
-      </FormPrivacyNotice>
+      <FormPrivacyNotice />
     </form>
   );
 }

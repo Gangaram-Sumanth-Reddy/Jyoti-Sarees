@@ -239,10 +239,7 @@ export function TestimonialModal({ open, onClose }: TestimonialModalProps) {
                 {status === "submitting" ? "Submitting…" : "Submit Testimonial"}
               </Button>
 
-              <FormPrivacyNotice openInNewTab>
-                We use these details only to review and, with your consent,
-                publish your testimonial. See our
-              </FormPrivacyNotice>
+              <FormPrivacyNotice openInNewTab />
             </form>
           </>
         )}

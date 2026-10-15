@@ -414,12 +414,7 @@ export function ContactEnquiryPanel() {
                   {submitState.status === "submitting" ? "Sending…" : "Send Enquiry"}
                 </Button>
 
-                <FormPrivacyNotice className="!text-xs">
-                  We use your name, contact number and enquiry details only to
-                  respond to this enquiry and help with any order that follows.
-                  Email and location details are optional and help us check
-                  availability and delivery. See our
-                </FormPrivacyNotice>
+                <FormPrivacyNotice />
               </div>
             </form>
           </>

@@ -19,17 +19,11 @@ import {
   setEnquiryQuantity,
   useEnquiryCart,
 } from "@/lib/enquiry-cart";
-import {
-  buildEnquiryOrderMessage,
-  getEnquiryLines,
-  summarizeEnquiry,
-  type EnquiryLine,
-} from "@/lib/enquiry-order";
+import { getEnquiryLines, summarizeEnquiry, type EnquiryLine } from "@/lib/enquiry-order";
 import { formatPrice } from "@/lib/products";
 import { cn } from "@/lib/cn";
 import { useProductShare } from "@/components/product/ProductShareButton";
 import { useSiteOrigin } from "@/lib/use-site-origin";
-import { whatsappMessageUrl } from "@/lib/whatsapp";
 
 function TrashIcon() {
   return (
@@ -209,7 +203,6 @@ export function CartPageContent() {
   const [stage, setStage] = useState<OrderStage>("closed");
   const lines = getEnquiryLines(items);
   const summary = summarizeEnquiry(lines);
-  const whatsappUrl = whatsappMessageUrl(buildEnquiryOrderMessage(lines, origin));
 
   function clearCart() {
     if (window.confirm("Remove all sarees from your enquiry list?")) {
@@ -307,8 +300,8 @@ export function CartPageContent() {
         stage={stage}
         lines={lines}
         summary={summary}
-        whatsappUrl={whatsappUrl}
-        onConfirm={() => setStage("opened")}
+        origin={origin}
+        onSaved={() => setStage("opened")}
         onClose={() => setStage("closed")}
         onClearCart={clearCart}
       />

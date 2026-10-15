@@ -11,9 +11,19 @@ Apps Script, which appends a row to the matching tab in your spreadsheet.
 | `testimonial`     | `Testimonials`     | Pending           | No — copy approved ones into `lib/testimonials.ts` |
 | `product_review`  | `Reviews`          | Pending           | Only after you set Status to **Approved**          |
 | `privacy_request` | `Privacy Requests` | New               | No                                                 |
+| `order_enquiry`   | `Order Enquiries`  | New               | No                                                 |
 
 Every tab starts with **Submitted At**, **Reference** and **Status** (a
 dropdown), followed by the form's fields.
+
+**Order Enquiries** come from the enquiry cart (`/api/order-enquiries`), just
+before the customer is sent to WhatsApp. Each saree is its own row; all rows of
+one enquiry share the same Reference (the enquiry ID, e.g. `JSE-7K3M9QXA`, also
+shown in the customer's WhatsApp message) and repeat the customer name,
+WhatsApp number, lead source (`Enquiry Cart`) and enquiry totals. Prices are
+taken from the website's catalogue on the server, not from the visitor's
+browser. A retry with the same enquiry ID is ignored, so a lead is never
+stored twice.
 
 ## 1. Paste the script
 
@@ -84,8 +94,11 @@ Submit each form once and check that a row appears in the right tab:
 - **Product review** — any saree page, "Write a Review" → Reviews (Pending,
   not visible on the site)
 - **Privacy request** — `/privacy-requests` → Privacy Requests
+- **Cart enquiry** — add two sarees to the enquiry cart, open `/cart`,
+  **Proceed to Order**, enter a name and WhatsApp number, then **Confirm &
+  Continue to WhatsApp** → Order Enquiries (one row per saree)
 
-Treat the integration as live only after all four rows arrive. If the URL is
+Treat the integration as live only after all five arrive. If the URL is
 missing, wrong, or the script fails, the form shows an error and suggests
 WhatsApp — it never reports success unless the script confirms the row was
 saved.

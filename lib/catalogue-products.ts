@@ -11,7 +11,7 @@ export type CatalogueImage = {
 
 /** `file` is the slugged source name, e.g. "Pure Ajreek  red saree 1.png" -> "pure-ajreek-red-saree-1". */
 function photo(file: string, label: string): CatalogueImage {
-  return { src: `/assets/sarees/${file}.jpg`, label };
+  return { src: `/assets/sarees/${file}.webp`, label };
 }
 
 export type CatalogueEntry = {

@@ -19,7 +19,7 @@ import {
   type ReviewErrors,
   type ReviewSubmission,
 } from "@/lib/reviews";
-import { site } from "@/lib/site";
+import { whatsappFeedbackUrl } from "@/lib/whatsapp";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -238,7 +238,7 @@ export function ReviewModal({
                   you on WhatsApp.
                 </p>
                 <a
-                  href={site.whatsappUrl}
+                  href={whatsappFeedbackUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-3 inline-block font-semibold text-navy underline underline-offset-2 hover:text-accent"
@@ -319,10 +319,7 @@ export function ReviewModal({
                   {status === "submitting" ? "Submitting…" : "Submit Review"}
                 </Button>
 
-                <FormPrivacyNotice openInNewTab>
-                  Reviews are checked by our team before they are published. We use
-                  these details only for that. See our
-                </FormPrivacyNotice>
+                <FormPrivacyNotice openInNewTab />
               </form>
             )}
           </>

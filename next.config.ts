@@ -34,6 +34,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
+    // Asset file names are reused when a photo is replaced, so this is a week rather than "immutable".
+    minimumCacheTTL: 604800,
   },
   redirects() {
     return [
@@ -56,6 +58,12 @@ const nextConfig: NextConfig = {
   headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
+      {
+        source: "/assets/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" },
+        ],
+      },
       {
         source: "/api/:path*",
         headers: [{ key: "X-Robots-Tag", value: "noindex" }],

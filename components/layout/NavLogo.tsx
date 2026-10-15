@@ -18,22 +18,21 @@ export function NavLogo({ className }: NavLogoProps) {
       )}
     >
       <Image
-        src="/assets/Logo.png"
+        src="/assets/logo.webp"
         alt=""
-        width={1098}
-        height={1098}
+        width={512}
+        height={512}
         preload
         sizes="44px"
         className="size-10 shrink-0 rounded-full min-[360px]:size-11"
       />
-      {/* Served at full resolution so the script stays crisp at any zoom level. */}
       <Image
-        src="/assets/Logo-text.png"
+        src="/assets/logo-text.webp"
         alt={site.name}
-        width={1749}
-        height={899}
-        unoptimized
+        width={600}
+        height={308}
         preload
+        sizes="(min-width: 768px) 94px, (min-width: 360px) 86px, 78px"
         className="h-10 w-auto min-[360px]:h-11 md:h-12"
       />
     </Link>

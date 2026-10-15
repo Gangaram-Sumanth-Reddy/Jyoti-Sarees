@@ -68,7 +68,8 @@ export function productPhotos(product: Product) {
 export function productOgImage(product: Product): SeoImage {
   const [photo] = productPhotos(product);
   const alt = `${product.name} — ${product.colour} ${product.fabric.toLowerCase()} saree from ${seoConfig.siteName}`;
-  if (photo) return { url: photo, width: 1024, height: 1536, alt };
+  // Some link-preview crawlers (e.g. WhatsApp) don't render WebP, so share the JPEG copy.
+  if (photo) return { url: photo.replace(/\.webp$/, ".jpg"), width: 1024, height: 1536, alt };
   return { url: `/og/product/${product.slug}`, width: 1200, height: 630, alt };
 }
 

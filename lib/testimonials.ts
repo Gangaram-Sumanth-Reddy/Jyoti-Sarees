@@ -71,7 +71,7 @@ export const testimonials: readonly Testimonial[] = [
     rating: 5,
     quote:
       "The navy silk held its shape through a long evening. Soft in the hand, and the gold border is exactly what I was hoping for.",
-    image: "/assets/H3.png",
+    image: "/assets/hero-3.webp",
     imagePosition: "16% 22%",
   },
 ];

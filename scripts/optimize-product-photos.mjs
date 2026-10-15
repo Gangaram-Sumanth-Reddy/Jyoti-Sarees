@@ -1,8 +1,9 @@
 /**
  * Converts the supplied product photos (public/assets/Products/*.png, ~3.4 MB
- * each) into web-ready JPEGs in public/assets/sarees/ with URL-safe names:
+ * each) into web-ready copies in public/assets/sarees/ with URL-safe names:
  *
- *   "Pure Ajreek  red saree 1.png" -> "pure-ajreek-red-saree-1.jpg"
+ *   "Pure Ajreek  red saree 1.png" -> "pure-ajreek-red-saree-1.webp" (site)
+ *                                  -> "pure-ajreek-red-saree-1.jpg"  (social previews)
  *
  * Usage: npm run photos
  * Existing outputs that are newer than their source are skipped.
@@ -14,7 +15,8 @@ import sharp from "sharp";
 const SOURCE_DIR = "public/assets/Products";
 const OUTPUT_DIR = "public/assets/sarees";
 const MAX_WIDTH = 1024;
-const QUALITY = 82;
+const JPEG_QUALITY = 82;
+const WEBP_QUALITY = 80;
 
 function slugify(value) {
   return value
@@ -64,17 +66,21 @@ for (const file of files) {
   const number = name.slice(set.length).trim();
   const slug = number ? `${setSlugs.get(set)}-${number}` : setSlugs.get(set);
   const source = path.join(SOURCE_DIR, file);
-  const output = path.join(OUTPUT_DIR, `${slug}.jpg`);
-  if (await isFresh(source, output)) continue;
-
-  await sharp(source)
-    .rotate()
-    .resize({ width: MAX_WIDTH, withoutEnlargement: true })
-    .flatten({ background: "#ffffff" })
-    .jpeg({ quality: QUALITY, mozjpeg: true })
-    .toFile(output);
-  written += 1;
-  console.log(`${file} -> ${output}`);
+  const outputs = [
+    [`${slug}.webp`, (image) => image.webp({ quality: WEBP_QUALITY, effort: 5 })],
+    [`${slug}.jpg`, (image) => image.jpeg({ quality: JPEG_QUALITY, mozjpeg: true })],
+  ];
+  for (const [outputName, encode] of outputs) {
+    const output = path.join(OUTPUT_DIR, outputName);
+    if (await isFresh(source, output)) continue;
+    const image = sharp(source)
+      .rotate()
+      .resize({ width: MAX_WIDTH, withoutEnlargement: true })
+      .flatten({ background: "#ffffff" });
+    await encode(image).toFile(output);
+    written += 1;
+    console.log(`${file} -> ${output}`);
+  }
 }
 
-console.log(`${written} written, ${files.length - written} up to date.`);
+console.log(`${written} files written for ${files.length} photos.`);

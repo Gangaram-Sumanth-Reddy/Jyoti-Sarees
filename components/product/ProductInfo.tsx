@@ -7,11 +7,12 @@ import { AddToCartControl } from "@/components/cart/AddToCartControl";
 import { ProductRatingSummary } from "@/components/reviews/ProductRatingSummary";
 import { cn } from "@/lib/cn";
 import {
-  whatsappEnquiryUrl,
+  productHref,
   type Product,
   type ProductColourOption,
 } from "@/lib/products";
-import { site } from "@/lib/site";
+import { useSiteOrigin } from "@/lib/use-site-origin";
+import { productEnquiryMessage, whatsappMessageUrl } from "@/lib/whatsapp";
 
 type ProductInfoProps = {
   product: Product;
@@ -76,6 +77,7 @@ export function ProductInfo({
   selectedColour,
   onSelectColour,
 }: ProductInfoProps) {
+  const origin = useSiteOrigin();
   const productDetails = [
     { label: "Fabric", value: product.fabric },
     { label: "Weave", value: product.weave },
@@ -182,13 +184,20 @@ export function ProductInfo({
 
       <div className="mt-7 flex flex-col gap-3 max-sm:grid max-sm:grid-cols-2 max-sm:gap-[clamp(0.5rem,0.2rem+1.2vw,0.75rem)] sm:flex-row sm:flex-wrap sm:items-center">
         <ExternalButtonLink
-          href={whatsappEnquiryUrl(
-            selectedColour.label
-              ? `${product.name} (${selectedColour.label})`
-              : product.name,
-            site.whatsappUrl,
-            product.productId,
-            product.priceLabel,
+          href={whatsappMessageUrl(
+            productEnquiryMessage({
+              name: product.name,
+              sku: product.productId,
+              colour: selectedColour.label,
+              priceLabel: product.priceLabel,
+              url: origin
+                ? `${origin}${
+                    colourOptions.length > 1
+                      ? productHref(product, selectedColour.id)
+                      : productHref(product)
+                  }`
+                : undefined,
+            }),
           )}
           size="lg"
           className="w-full bg-navy text-white hover:bg-navy-mid max-sm:min-w-0 max-sm:px-2 max-sm:text-[clamp(0.78rem,0.62rem+0.8vw,0.9375rem)] max-sm:tracking-[0.02em] sm:w-auto sm:min-w-[14rem]"

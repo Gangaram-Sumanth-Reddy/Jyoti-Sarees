@@ -11,7 +11,8 @@ import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Container } from "@/components/ui/Container";
 import { ExternalButtonLink } from "@/components/ui/Button";
 import { isNavActive } from "@/lib/nav";
-import { navigation, site } from "@/lib/site";
+import { navigation } from "@/lib/site";
+import { whatsappGeneralUrl } from "@/lib/whatsapp";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -79,7 +80,7 @@ export function SiteHeader() {
           <CartNavButton inverse />
           <div className="hidden xl:block">
             <ExternalButtonLink
-              href={site.whatsappUrl}
+              href={whatsappGeneralUrl}
               variant="secondary"
               size="sm"
               className="!border-[#ffffff] !bg-[#ffffff] !text-[#0a2472] hover:!border-[#e7eefc] hover:!bg-[#e7eefc] hover:!text-[#0a2472]"

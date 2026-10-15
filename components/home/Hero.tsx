@@ -5,7 +5,8 @@ import Image from "next/image";
 import { ButtonLink, ExternalButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/cn";
-import { copy, site } from "@/lib/site";
+import { copy } from "@/lib/site";
+import { whatsappGeneralUrl } from "@/lib/whatsapp";
 
 const SLIDE_MS = 3000;
 
@@ -35,7 +36,7 @@ const slides: readonly HeroSlide[] = [
     title: copy.hero.title,
     description:
       "Handpicked silks and heritage weaves, from everyday drapes to wedding grandeur.",
-    image: "/assets/H1.png",
+    image: "/assets/hero-1.webp",
     alt: "Model in an ivory silk saree with a royal blue and gold zari border",
     objectPosition: "100% 70%",
   },
@@ -45,7 +46,7 @@ const slides: readonly HeroSlide[] = [
     title: "Elegance Woven with Quality.",
     description:
       "Thoughtfully selected sarees crafted with beautiful fabrics, refined details and timeless appeal.",
-    image: "/assets/H2.png",
+    image: "/assets/hero-2.webp",
     alt: "Model in a soft peach checked saree with a scalloped gold border",
     objectPosition: "0% 50%",
     softTopFade: true,
@@ -62,7 +63,7 @@ const slides: readonly HeroSlide[] = [
     description:
       "Explore our latest saree collection and discover special offers for the season.",
     offer: "Up to 20% Off",
-    image: "/assets/H3.png",
+    image: "/assets/hero-3.webp",
     alt: "Model seated in a royal blue saree with silver motifs and border",
     objectPosition: "16% 50%",
     softTopFade: true,
@@ -171,7 +172,7 @@ function HeroActions({ className }: { className?: string }) {
         Explore Sarees
       </ButtonLink>
       <ExternalButtonLink
-        href={site.whatsappUrl}
+        href={whatsappGeneralUrl}
         variant="secondary"
         size="lg"
         className="bg-white/60 max-sm:min-w-0 max-sm:px-[clamp(0.5rem,0.1rem+1.6vw,1rem)] max-sm:text-[clamp(0.78rem,0.62rem+0.8vw,0.9375rem)] max-sm:tracking-[0.02em]"

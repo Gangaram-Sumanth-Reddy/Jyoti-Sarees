@@ -4,6 +4,7 @@ import {
   type CountryDialCode,
 } from "@/lib/country-codes";
 import { site } from "@/lib/site";
+import { whatsappGeneralUrl } from "@/lib/whatsapp";
 
 export type ContactAddress = {
   id: string;
@@ -38,7 +39,7 @@ export const contactSocials = [
   {
     id: "whatsapp",
     label: "WhatsApp",
-    href: site.whatsappUrl,
+    href: whatsappGeneralUrl,
   },
   {
     id: "instagram",

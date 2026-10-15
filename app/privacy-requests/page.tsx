@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { privacyConfig, privacyContactEmail, privacyRoutes } from "@/lib/privacy-config";
 import { buildMetadata } from "@/lib/seo";
-import { site } from "@/lib/site";
+import { whatsappPrivacyUrl } from "@/lib/whatsapp";
 
 export const metadata = buildMetadata({
   title: "Privacy Requests",
@@ -80,7 +80,7 @@ export default function PrivacyRequestsPage() {
                 </a>{" "}
                 or message us on{" "}
                 <a
-                  href={site.whatsappUrl}
+                  href={whatsappPrivacyUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-semibold text-navy underline decoration-border-strong underline-offset-2 hover:text-accent"

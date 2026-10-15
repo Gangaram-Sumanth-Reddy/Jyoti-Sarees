@@ -18,7 +18,7 @@ export function NewArrivalsHero() {
           </div>
           <div className="relative aspect-[2/1] w-full overflow-hidden rounded-lg bg-cream shadow-soft sm:aspect-[5/2]">
             <Image
-              src="/assets/New%20arrivals.png"
+              src="/assets/new-arrivals.webp"
               alt="Three models in lilac, coral and aqua sarees seated in a sunlit room beneath a New Arrivals title"
               fill
               preload

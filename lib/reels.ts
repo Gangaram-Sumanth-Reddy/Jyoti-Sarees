@@ -39,7 +39,7 @@ function toReel({ link, photo }: (typeof reelEntries)[number]): Reel {
   return {
     id,
     url: `https://www.instagram.com/reel/${id}/`,
-    previewImage: `/assets/sarees/${photo}.jpg`,
+    previewImage: `/assets/sarees/${photo}.webp`,
   };
 }
 

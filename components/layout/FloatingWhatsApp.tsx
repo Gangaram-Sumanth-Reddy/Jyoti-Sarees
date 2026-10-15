@@ -2,12 +2,10 @@
 
 import { SocialIcon } from "@/components/layout/SocialIcons";
 import { site } from "@/lib/site";
-import { useSiteOrigin } from "@/lib/use-site-origin";
-import { generalEnquiryMessage, whatsappMessageUrl } from "@/lib/whatsapp";
+import { whatsappGeneralUrl } from "@/lib/whatsapp";
 
 export function FloatingWhatsApp() {
-  const origin = useSiteOrigin();
-  const href = whatsappMessageUrl(generalEnquiryMessage(origin ? `${origin}/` : undefined));
+  const href = whatsappGeneralUrl;
 
   return (
     <a
