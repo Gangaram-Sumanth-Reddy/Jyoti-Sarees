@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { NavPendingBar } from "@/components/layout/NavPendingBar";
 import { RatingBadge } from "@/components/reviews/RatingBadge";
-import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { cn } from "@/lib/cn";
@@ -71,9 +70,9 @@ export function ProductCard({
             <ImagePlaceholder label={name} />
           )}
           {badge ? (
-            <Badge variant="inverse" className="absolute right-2 top-2 z-10 shadow-soft sm:right-2.5 sm:top-2.5">
+            <span className="absolute right-1.5 top-1.5 z-10 rounded-pill bg-navy/90 px-2 py-0.5 text-[0.6rem] font-semibold uppercase leading-4 tracking-[0.12em] text-white shadow-soft ring-1 ring-white/25 backdrop-blur-sm sm:right-2.5 sm:top-2.5 sm:px-2.5 sm:py-1 sm:text-[0.68rem]">
               {badge}
-            </Badge>
+            </span>
           ) : null}
           {product ? (
             <RatingBadge
