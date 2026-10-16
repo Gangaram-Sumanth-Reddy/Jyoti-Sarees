@@ -33,6 +33,7 @@ yarn-error.log*
 # env files — contain credentials, never commit
 .env
 .env.*
+!.env.example
 
 # vercel
 .vercel

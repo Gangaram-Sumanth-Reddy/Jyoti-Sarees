@@ -22,9 +22,21 @@ function listFromEnv(name: string) {
     .filter(Boolean);
 }
 
+/** Live custom domain (apex redirects to www). */
+export const PRODUCTION_SITE_URL = "https://www.jyotisarees.co.in";
+
 function resolveSiteUrl() {
-  const explicit = fromEnv("NEXT_PUBLIC_SITE_URL");
-  if (explicit) return explicit.replace(/\/$/, "");
+  const explicit = fromEnv("NEXT_PUBLIC_SITE_URL")?.replace(/\/$/, "") ?? null;
+  const vercelEnv = fromEnv("VERCEL_ENV");
+  // Production builds must never emit the *.vercel.app host in canonicals,
+  // robots, sitemap or JSON-LD — that hostname was left configured by mistake.
+  if (
+    vercelEnv === "production" &&
+    (!explicit || /jyoti-sarees\.vercel\.app$/i.test(new URL(explicit).hostname))
+  ) {
+    return PRODUCTION_SITE_URL;
+  }
+  if (explicit) return explicit;
   const vercel = fromEnv("VERCEL_PROJECT_PRODUCTION_URL");
   if (vercel) return `https://${vercel}`;
   return "http://localhost:3000";
@@ -81,9 +93,9 @@ export const seoConfig = {
   titleTemplate: `%s | ${site.name}`,
   defaultTitle: `${site.name} | Premium Sarees, Silk Sarees & New Collections`,
   defaultDescription:
-    "Premium sarees from Jyoti Sarees — Kanchipuram, Banarasi, soft silk and designer weaves for weddings and festivals. Browse new arrivals and enquire on WhatsApp.",
+    "Premium sarees from Jyoti Sarees in Nabrangpur and Jeypore — Ajrakh, Banarasi, Pattu, Kora, silk and designer weaves for weddings and festivals. Browse new arrivals and enquire on WhatsApp.",
   brandDescription:
-    "Jyoti Sarees is an Indian saree business curating silk, brocade and designer sarees for weddings, festivals and everyday wear, with enquiries handled personally over WhatsApp, phone and email.",
+    "Jyoti Sarees is an Indian saree business with stores in Nabrangpur and Jeypore, curating silk, brocade and designer sarees for weddings, festivals and everyday wear, with enquiries handled personally over WhatsApp, phone and email.",
   defaultOgImage: seoImages.brand,
   twitterCard: "summary_large_image" as const,
   twitterHandle: fromEnv("NEXT_PUBLIC_TWITTER_HANDLE"),
@@ -92,28 +104,66 @@ export const seoConfig = {
 export type PostalAddress = {
   streetAddress: string;
   addressLocality: string;
-  addressRegion: string;
-  postalCode: string;
+  /** Indian state/UT — omit until confirmed on the public site. */
+  addressRegion?: string;
+  postalCode?: string;
   addressCountry: "IN";
 };
 
+function postalCodeFromLines(lines: readonly string[]) {
+  for (const line of lines) {
+    const match = line.match(/\b(\d{6})\b/);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+function streetFromStore(lines: readonly string[]) {
+  return lines
+    .filter((line) => !/\b\d{6}\b/.test(line))
+    .map((line) => line.replace(/,\s*$/, "").trim())
+    .filter(Boolean)
+    .join(", ");
+}
+
+/** Store addresses shown on Contact — used for LocalBusiness markup only. */
+export const verifiedStores = site.stores.map((store) => {
+  const postalCode = postalCodeFromLines(store.lines);
+  return {
+    id: store.id,
+    name: `${site.name} — ${store.city}`,
+    city: store.city,
+    address: {
+      streetAddress: streetFromStore(store.lines),
+      addressLocality: store.city,
+      ...(postalCode ? { postalCode } : {}),
+      addressCountry: "IN" as const,
+    } satisfies PostalAddress,
+  };
+});
+
 /**
- * Verified business entity details. Leave a field null until the business
- * confirms it — structured data omits null fields and LocalBusiness markup is
- * only emitted once a verified address exists.
+ * Verified business entity details. Leave optional fields null until confirmed —
+ * structured data omits null/empty values. Store addresses come from `site.stores`
+ * (the same NAP shown on Contact); geo and priceRange stay unset until verified.
  */
 export const businessProfile = {
   name: site.name,
   legalName: fromEnv("BUSINESS_LEGAL_NAME"),
   logo: { url: "/assets/logo-512.png", width: 512, height: 512 },
-  email: fromEnv("BUSINESS_EMAIL"),
+  email: fromEnv("BUSINESS_EMAIL") ?? site.email,
   phone: fromEnv("BUSINESS_PHONE") ?? site.phone,
-  address: null as PostalAddress | null,
+  /** Primary store (Nabrangpur) for Organization.address. */
+  address: (verifiedStores[0]?.address ?? null) as PostalAddress | null,
   geo: null as { latitude: number; longitude: number } | null,
-  /** Schema.org openingHours strings, e.g. "Mo-Sa 10:00-20:00". */
-  openingHours: [] as string[],
+  /** Matches the hours shown on Contact (10:00 AM – 8:30 PM, every day). */
+  openingHours: ["Mo-Su 10:00-20:30"] as string[],
   /** Official profile URLs only (Instagram, Facebook, YouTube, Google Business Profile). */
-  socialProfiles: listFromEnv("BUSINESS_SOCIAL_PROFILES"),
+  socialProfiles: (() => {
+    const fromEnvList = listFromEnv("BUSINESS_SOCIAL_PROFILES");
+    if (fromEnvList.length > 0) return fromEnvList;
+    return [site.instagramUrl, site.facebookUrl];
+  })(),
   googleBusinessProfileUrl: fromEnv("BUSINESS_GOOGLE_PROFILE_URL"),
   priceRange: null as string | null,
 };

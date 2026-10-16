@@ -11,6 +11,7 @@
     "photos:site": "node scripts/optimize-site-images.mjs"
   },
   "dependencies": {
+    "@next/third-parties": "^16.3.5",
     "next": "16.3.5",
     "react": "19.2.8",
     "react-dom": "19.2.8"

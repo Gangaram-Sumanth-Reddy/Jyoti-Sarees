@@ -21,9 +21,12 @@ doorway or city pages, no hidden text, no "#1" or guaranteed-ranking claims.
 | Sitemap, robots, manifest | `app/sitemap.ts`, `app/robots.ts`, `app/manifest.ts` |
 | Redirects, image formats, `/shipping` gate | `next.config.ts` |
 
-Set `NEXT_PUBLIC_SITE_URL` (e.g. `https://www.jyotisarees.com`) in production.
-Canonicals, sitemap, robots and structured data all derive from it. Vercel
-preview deployments are automatically `noindex` and disallowed in robots.
+Set `NEXT_PUBLIC_SITE_URL` to `https://www.jyotisarees.co.in` in production
+(Vercel Project Settings → Environment Variables). Canonicals, sitemap, robots
+and structured data all derive from it. Apex `jyotisarees.co.in` already
+308-redirects to `www`. If a production build still sees the old
+`*.vercel.app` value, `lib/seo.ts` remaps it to the live custom domain.
+Preview deployments are automatically `noindex` and disallowed in robots.
 
 ## 2. URL structure
 
@@ -94,9 +97,9 @@ each page sets the complete set).
 
 | Schema | Where | Notes |
 | --- | --- | --- |
-| Organization | Home | Only verified fields; `sameAs` from env |
+| Organization | Home | Verified fields; `sameAs` from env or site social URLs |
 | WebSite | Home | |
-| ClothingStore (LocalBusiness) | Home | **Emitted only when `businessProfile.address` is set** |
+| ClothingStore (LocalBusiness) | Home | One entry per store in `site.stores` (Nabrangpur, Jeypore) |
 | BreadcrumbList | All content pages | Mirrors visible breadcrumbs |
 | CollectionPage + ItemList | `/sarees`, collections, `/new-arrivals` | |
 | Product / ProductGroup | Product pages | Price, INR, stock from `available`, colours as variants |
@@ -146,19 +149,18 @@ and [Schema Markup Validator](https://validator.schema.org/).
 
 ## 9. Local SEO
 
-Currently **no** LocalBusiness markup — the address on the site is a
-placeholder. To enable:
+LocalBusiness (ClothingStore) markup is emitted for both verified stores in
+`lib/site.ts` (Nabrangpur and Jeypore), with the same NAP shown on Contact.
+Opening hours match the Contact page (`10:00 AM – 8:30 PM`). Geo coordinates
+and `priceRange` stay omitted until independently verified.
 
-1. Fill `businessProfile.address` (and optionally `geo`, `openingHours`,
-   `priceRange`) in `lib/seo.ts` with the verified store address.
-2. Set `BUSINESS_PHONE`, `BUSINESS_EMAIL`, `BUSINESS_SOCIAL_PROFILES`,
-   `BUSINESS_GOOGLE_PROFILE_URL`.
-3. Replace the placeholder addresses in `lib/contact.ts` and `lib/site.ts` so
-   the visible NAP (name, address, phone) matches the markup and the Google
-   Business Profile exactly.
-4. Claim and verify the Google Business Profile.
+Still recommended:
 
-No city landing pages — a single accurate store/contact page is enough.
+1. Set `BUSINESS_GOOGLE_PROFILE_URL` once the Google Business Profile is
+   claimed, and keep GBP NAP identical to Contact.
+2. Optionally set `BUSINESS_LEGAL_NAME` / `BUSINESS_PHONE` overrides in env.
+
+No city doorway pages — Contact and store markup are enough.
 
 ## 10. Delivery SEO
 
@@ -181,7 +183,10 @@ answer and the sitemap entry switch on automatically. Rebuild to apply.
 
 ## 12. Search Console checklist
 
-- [ ] Set `NEXT_PUBLIC_SITE_URL` to the production domain and redeploy.
+- [ ] Set `NEXT_PUBLIC_SITE_URL=https://www.jyotisarees.co.in` in Vercel
+      Production (and Preview if desired), then redeploy.
+- [ ] Confirm `/robots.txt` sitemap line and every canonical use
+      `www.jyotisarees.co.in` (not `*.vercel.app`).
 - [ ] Add a Domain property in Google Search Console; verify via DNS.
 - [ ] Submit `https://{domain}/sitemap.xml`.
 - [ ] URL-inspect home, `/sarees`, one collection, one product, one article.

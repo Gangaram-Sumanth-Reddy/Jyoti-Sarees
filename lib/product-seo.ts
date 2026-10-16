@@ -36,22 +36,30 @@ export function productTitle(product: Product, colour?: ProductColourOption) {
   const name = colour ? `${product.name} in ${colour.label}` : product.name;
   const descriptor = productDescriptor(product);
   if (descriptor) return `${name} | ${descriptor}`;
-  return /saree$/i.test(name) ? name : `${name} Saree`;
+  // Colour titles end with the colour label, so test the product name — not the full string.
+  return /saree\b/i.test(product.name) ? name : `${name} Saree`;
 }
 
 /** Unique, data-derived description kept within a typical snippet length. */
 export function productDescription(product: Product, max = 160) {
-  const parts = [
-    product.shortDescription,
-    `${product.fabric}, ${product.priceLabel}.`,
-    "Enquire on WhatsApp.",
-  ];
-  let text = parts[0];
-  for (const part of parts.slice(1)) {
-    if (`${text} ${part}`.length > max) break;
-    text = `${text} ${part}`;
+  const base = product.shortDescription.replace(/\s+/g, " ").trim();
+  const extras: string[] = [];
+  // Avoid repeating fabric/price when the short description already carries them.
+  if (!new RegExp(product.fabric.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i").test(base)) {
+    extras.push(product.fabric);
   }
-  return text;
+  if (!base.includes(product.priceLabel)) extras.push(product.priceLabel);
+  if (!/whatsapp/i.test(base)) extras.push("Enquire on WhatsApp");
+
+  let text = base.replace(/[.!?]?$/, "");
+  for (const part of extras) {
+    const next = `${text}. ${part}`;
+    if (next.length + 1 > max) break;
+    text = next;
+  }
+  text = /[.!?]$/.test(text) ? text : `${text}.`;
+  if (text.length <= max) return text;
+  return `${text.slice(0, max - 1).replace(/\s+\S*$/, "")}…`;
 }
 
 export function productPath(product: Product) {

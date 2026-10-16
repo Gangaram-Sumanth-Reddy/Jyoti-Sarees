@@ -60,7 +60,7 @@ export function ProductCard({
           {photo ? (
             <Image
               src={photo}
-              alt={`${name}${colour ? ` in ${colour}` : ""} saree`}
+              alt={`${name}${colour ? ` in ${colour}` : ""}${/saree$/i.test(name) ? "" : " saree"}`}
               fill
               loading={eager ? "eager" : "lazy"}
               sizes="(min-width: 1440px) 420px, (min-width: 1024px) 30vw, 48vw"

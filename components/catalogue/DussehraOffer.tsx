@@ -5,9 +5,10 @@ export function DussehraOffer() {
   return (
     <section className="bg-section-muted pt-4 sm:pt-6" aria-labelledby="dussehra-offer-title">
       <Container className="max-w-[90rem]">
-        <h1 id="dussehra-offer-title" className="sr-only">
+        {/* Keep the catalogue page's single H1 for "Sarees"; this is a promo banner. */}
+        <p id="dussehra-offer-title" className="sr-only">
           Dussehra Festive Offer: buy up to ₹5,000 and get one premium saree free
-        </h1>
+        </p>
         <a
           href="#sarees-listing"
           className="group block overflow-hidden rounded-2xl border border-border bg-cream shadow-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:rounded-3xl"

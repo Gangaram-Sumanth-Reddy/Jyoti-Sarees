@@ -7,7 +7,12 @@ import {
   type Crumb,
 } from "@/lib/product-seo";
 import { productHref, type Product } from "@/lib/products";
-import { absoluteUrl, businessProfile, seoConfig } from "@/lib/seo";
+import {
+  absoluteUrl,
+  businessProfile,
+  seoConfig,
+  verifiedStores,
+} from "@/lib/seo";
 
 /**
  * Schema.org JSON-LD builders. Every property comes from real catalogue or
@@ -81,29 +86,35 @@ export function websiteSchema(): JsonLd {
   };
 }
 
-/** Only emitted once the business has a verified physical address. */
+/**
+ * One ClothingStore per verified store on Contact (Nabrangpur, Jeypore).
+ * Geo coordinates and priceRange stay omitted until independently verified.
+ */
+export function localBusinessSchemas(): JsonLd[] {
+  if (verifiedStores.length === 0) return [];
+  return verifiedStores.map((store) =>
+    compact({
+      "@context": "https://schema.org",
+      "@type": "ClothingStore",
+      "@id": absoluteUrl(`/#store-${store.id}`),
+      name: store.name,
+      url: absoluteUrl("/contact"),
+      image: absoluteUrl(seoConfig.defaultOgImage.url),
+      logo: logoObject(),
+      telephone: businessProfile.phone,
+      email: businessProfile.email,
+      address: { "@type": "PostalAddress", ...store.address },
+      openingHours: businessProfile.openingHours,
+      priceRange: businessProfile.priceRange,
+      sameAs: sameAs(),
+      parentOrganization: { "@id": ORGANIZATION_ID },
+    }),
+  );
+}
+
+/** @deprecated Prefer `localBusinessSchemas()` for multi-store NAP. */
 export function localBusinessSchema(): JsonLd | null {
-  const address = postalAddress();
-  if (!address) return null;
-  return compact({
-    "@context": "https://schema.org",
-    "@type": "ClothingStore",
-    "@id": absoluteUrl("/#store"),
-    name: businessProfile.name,
-    url: absoluteUrl("/"),
-    image: absoluteUrl(seoConfig.defaultOgImage.url),
-    logo: logoObject(),
-    telephone: businessProfile.phone,
-    email: businessProfile.email,
-    address,
-    geo: businessProfile.geo
-      ? { "@type": "GeoCoordinates", ...businessProfile.geo }
-      : null,
-    openingHours: businessProfile.openingHours,
-    priceRange: businessProfile.priceRange,
-    sameAs: sameAs(),
-    parentOrganization: { "@id": ORGANIZATION_ID },
-  });
+  return localBusinessSchemas()[0] ?? null;
 }
 
 export function breadcrumbSchema(items: Crumb[]): JsonLd {
@@ -126,6 +137,10 @@ function offerFor(product: Product, path: string) {
     price: product.price,
     priceCurrency: "INR",
     itemCondition: "https://schema.org/NewCondition",
+    // Catalogue `available` flag only — never invent stock or shipping.
+    availability: product.available
+      ? "https://schema.org/InStock"
+      : "https://schema.org/OutOfStock",
   };
 }
 

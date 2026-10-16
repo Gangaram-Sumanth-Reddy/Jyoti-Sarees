@@ -32,7 +32,7 @@ function CarouselCard({ product }: { product: Product }) {
           {photo ? (
             <Image
               src={photo}
-              alt={`${product.name} saree`}
+              alt={/saree$/i.test(product.name) ? product.name : `${product.name} saree`}
               fill
               loading="lazy"
               sizes="(min-width: 1024px) 200px, (min-width: 640px) 184px, 168px"

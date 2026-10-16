@@ -7,7 +7,7 @@ import { Testimonials } from "@/components/home/Testimonials";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildMetadata, seoConfig } from "@/lib/seo";
 import {
-  localBusinessSchema,
+  localBusinessSchemas,
   organizationSchema,
   websiteSchema,
 } from "@/lib/structured-data";
@@ -20,12 +20,10 @@ export const metadata = buildMetadata({
 });
 
 export default function Page() {
-  const local = localBusinessSchema();
-
   return (
     <>
       <JsonLd
-        data={[organizationSchema(), websiteSchema(), ...(local ? [local] : [])]}
+        data={[organizationSchema(), websiteSchema(), ...localBusinessSchemas()]}
       />
       <Hero />
       <FeaturedCollections />

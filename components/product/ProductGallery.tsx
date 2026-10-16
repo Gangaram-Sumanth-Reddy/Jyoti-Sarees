@@ -55,7 +55,9 @@ function GalleryVisual({
         alt={
           compact
             ? ""
-            : `${productName} saree${colourLabel ? ` in ${colourLabel}` : ""} — ${item.label.toLowerCase()}`
+            : `${/saree$/i.test(productName) ? productName : `${productName} saree`}${
+                colourLabel ? ` in ${colourLabel}` : ""
+              } — ${item.label.toLowerCase()}`
         }
         fill
         preload={preload}
