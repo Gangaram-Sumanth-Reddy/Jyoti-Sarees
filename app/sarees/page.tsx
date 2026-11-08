@@ -1,5 +1,5 @@
 import { CatalogueBrowser } from "@/components/catalogue/CatalogueBrowser";
-import { DussehraOffer } from "@/components/catalogue/DussehraOffer";
+import { FestiveOffer } from "@/components/catalogue/FestiveOffer";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -29,7 +29,7 @@ export default function SareesPage() {
           ]),
         ]}
       />
-      <DussehraOffer />
+      <FestiveOffer />
       <Section tone="muted" className="!pb-0 pt-8 sm:pt-10">
         <Container className="max-w-[90rem]">
           <SectionHeading
